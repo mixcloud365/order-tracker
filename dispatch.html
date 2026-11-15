@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>YOJQI 多平台下单需求提报与派单中心</title>
+  <title>多平台下单需求提报与派单中心</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
@@ -426,21 +426,16 @@
 </head>
 <body>
 
-  <!-- Top Global Navigation Bar -->
+  <!-- Top Header -->
   <header class="top-nav">
     <div class="nav-container">
-      <a href="index.html" class="brand">
-        <div class="brand-logo">Y</div>
-        <div class="brand-title">YOJQI 跨境与多平台运营中枢</div>
-      </a>
-      <nav class="nav-tabs">
-        <a href="index.html" class="nav-tab">
-          <span>🚚</span> 亚马逊物流看板
-        </a>
-        <a href="dispatch.html" class="nav-tab active">
-          <span>📝</span> 多平台下单提报
-        </a>
-      </nav>
+      <div class="brand">
+        <div class="brand-logo">📋</div>
+        <div class="brand-title">全球多平台采购与派单中心</div>
+      </div>
+      <div style="font-size: 13px; color: var(--text-muted); font-weight: 500;">
+        内部提报专属系统
+      </div>
     </div>
   </header>
 
@@ -488,7 +483,7 @@
                 <div class="platform-card" onclick="selectPlatform('TRIP', this)">
                   <div class="icon">✈️</div>
                   <div class="name">Trip.com</div>
-                  <div class="sub">携程国际/百弘</div>
+                  <div class="sub">携程国际/酒店民宿</div>
                 </div>
                 <div class="platform-card" onclick="selectPlatform('EXPEDIA', this)">
                   <div class="icon">🌐</div>
@@ -510,7 +505,7 @@
                 <label for="storeName">店铺 / 酒店名称 <span class="required">*</span></label>
                 <input type="text" id="storeName" placeholder="例如: baihong 或 Sun Garden Official" required oninput="checkStoreRule(this.value)">
                 <div id="cooldownBadge">
-                  <span>⏳</span> <span id="cooldownText">已识别百弘(baihong)相关房源：执行3个月防关联隔离规则</span>
+                  <span>⏳</span> <span id="cooldownText">已识别重点店铺/房源：执行3个月防关联隔离规则</span>
                 </div>
               </div>
               <div class="form-group" style="margin-bottom: 0;">
@@ -647,7 +642,7 @@
   </div>
 
   <script>
-    const STORAGE_KEY = "yojqi_dispatch_tasks";
+    const STORAGE_KEY = "cloud_dispatch_tasks";
 
     // Set default date to today
     document.getElementById("requiredDate").value = new Date().toISOString().split("T")[0];
@@ -665,18 +660,13 @@
       const text = document.getElementById("cooldownText");
 
       const isHotel = ["BOOKING", "TRIP", "EXPEDIA"].includes(platform);
-      const isBaihong = val.toLowerCase().includes("baihong") || val.includes("百弘");
+      const isTargetStore = val.trim().length > 0;
 
-      if (isHotel && isBaihong) {
+      if (isHotel && isTargetStore) {
         badge.style.display = "flex";
         badge.style.background = "#fefce8";
         badge.style.borderColor = "#fef08a";
-        text.innerText = `已识别 ${platform} 百弘房源：将自动启用 3 个月单账号防关联冷却保护`;
-      } else if (isHotel) {
-        badge.style.display = "flex";
-        badge.style.background = "#eff6ff";
-        badge.style.borderColor = "#bfdbfe";
-        text.innerText = `${platform} 平台规则：同一酒店 90 天内仅分配 1 个账号下单`;
+        text.innerText = `已识别 ${platform} 店铺/房源：将自动启用 3 个月单账号防关联冷却保护`;
       } else {
         badge.style.display = "none";
       }
@@ -767,14 +757,14 @@
       const tasks = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
       const t = tasks.find(x => x.id === id);
       if (!t) return;
-      const text = `【YOJQI 下单派单指令】\n平台: ${t.platform}\n店铺/酒店: ${t.storeName}\n商品/房型: ${t.productTitle} (${t.productId || '无SKU'})\n金额: ${t.amount} (数量: ${t.quantity})\n收件/入住人: ${t.recipient}\n期望日期: ${t.requiredDate}\n紧急度: ${t.urgency}\n备注: ${t.notes || '无'}\n提报人: ${t.submitter}`;
+      const text = `【采购与派单工单指令】\n平台: ${t.platform}\n店铺/酒店: ${t.storeName}\n商品/房型: ${t.productTitle} (${t.productId || '无SKU'})\n金额: ${t.amount} (数量: ${t.quantity})\n收件/入住人: ${t.recipient}\n期望日期: ${t.requiredDate}\n紧急度: ${t.urgency}\n备注: ${t.notes || '无'}\n提报人: ${t.submitter}`;
       navigator.clipboard.writeText(text).then(() => {
         showToast("已成功复制派单指令，可直接发送给管理员！");
       });
     }
 
     function copyQuickTemplate() {
-      const text = "【YOJQI 下单需求格式】\n平台：Amazon / Booking / Trip / Expedia / Walmart\n店铺/酒店名：\n商品或房源链接/SKU：\n预算金额与币种：\n收件人或入住人信息：\n期望完成时间：\n特殊备注说明：";
+      const text = "【多平台下单需求格式】\n平台：Amazon / Booking / Trip / Expedia / Walmart\n店铺/酒店名：\n商品或房源链接/SKU：\n预算金额与币种：\n收件人或入住人信息：\n期望完成时间：\n特殊备注说明：";
       navigator.clipboard.writeText(text).then(() => {
         showToast("已复制空白模板至剪贴板！");
       });
@@ -793,7 +783,7 @@
       const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
-      link.download = `yojqi_dispatch_orders_${new Date().toISOString().split("T")[0]}.csv`;
+      link.download = `dispatch_orders_${new Date().toISOString().split("T")[0]}.csv`;
       link.click();
     }
 

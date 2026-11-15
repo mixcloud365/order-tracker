@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>YOJQI 跨境电商采购与物流追踪看板</title>
+  <title>亚马逊采购与物流追踪看板</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
@@ -414,29 +414,11 @@
 
   <!-- DASHBOARD CONTENT (SHOWN AFTER UNLOCK) -->
   <div id="dashboardContent">
-    <!-- Top Global Navigation Bar -->
-    <header class="top-nav">
-      <div class="nav-container">
-        <a href="index.html" class="brand">
-          <div class="brand-logo">Y</div>
-          <div class="brand-title">YOJQI 跨境与多平台运营中枢</div>
-        </a>
-        <nav class="nav-tabs">
-          <a href="index.html" class="nav-tab active">
-            <span>🚚</span> 亚马逊物流看板
-          </a>
-          <a href="dispatch.html" class="nav-tab">
-            <span>📝</span> 多平台下单提报
-          </a>
-        </nav>
-      </div>
-    </header>
-
     <div class="container">
       <header>
         <div class="title-area">
-          <h1>📦 跨境采购与全链条物流追踪看板</h1>
-          <p class="subtitle">实时同步采购订单状态、支付结算、物流承运商及签收轨迹</p>
+          <h1>📦 亚马逊采购与全链条物流追踪看板</h1>
+          <p class="subtitle">实时同步亚马逊跨境采购订单状态、支付结算、物流承运商及签收轨迹</p>
         </div>
         <div class="actions">
           <button class="btn" onclick="exportTableToCSV('orders_tracker.csv')">📥 导出 Excel / CSV 表格</button>
@@ -504,8 +486,8 @@
     const ENCRYPTED_PAYLOAD = "W3sib3JkZXJfZGF0ZSI6ICIyMDI2LTExLTA5IiwgImFjY291bnRfbmlja25hbWUiOiAiMTEgLSBUcmFjaSBMYW5kZXJzIChmcl9taWdyYXRlZF8xMSkiLCAiY291bnRyeSI6ICLwn4er8J+HtyDms5Xlm70iLCAidGl0bGUiOiAiU3VuIEdhcmRlbiBNYXRlbGFzIHBvdXIgZW5mYW50IDkwIHggMjAwIGNtLCAzIMOgIDEyIGFucywgZmFicmlxdcOpIGVuIEV1cm9wZSB8IHN5c3TDqG1lIMOpdm9sdXRpZiAyLWVuLTEgcG91ciBsaXQgZCdlbmZhbnQgZXQgbGl0IGQnYWRvbGVzY2VudCwgY2VydGlmacOpIE9la28tVGV4IGV0IERlcm1hdGVzdCAtIFRyw6hzIGJpZW4sIFJHMjggZGUgMTUgY20iLCAidG90YWxfYW1vdW50IjogIjEwNiw5NSDigqwiLCAib3JkZXJfaWQiOiAiNDAyLTU1NzE5NDItNzc2Mjc0NiIsICJ0cmFja2luZ19udW1iZXIiOiAiQ0EwODYxNjc0MzNERSAoREhMKSIsICJzaGlwcGluZ190aW1lIjogIjIwMjYtMTEtMTAgMTg6MTMgKERFKSIsICJkZWxpdmVyeV9zdGF0dXMiOiAi5bey562+5pS2IiwgInN0YXR1c19iYWRnZSI6ICLlt7LpgIHovr7nrb7mlLYiLCAic3RhdHVzX2NvbG9yIjogInN1Y2Nlc3MiLCAic3RhdHVzX2Rlc2MiOiAi5bey562+5pS2IChESEwgQ0EwODYxNjc0MzNERSkiLCAiZXN0aW1hdGVkX2RlbGl2ZXJ5IjogIjIwMjYtMTEtMTQgLSAyMDI2LTExLTE3IiwgInJlY2lwaWVudCI6ICJNciBDQVNURUwgUGF1bGluZSAoQWxpeGFuKSJ9XQ==";
 
     function checkStoredAuth() {
-      const saved = localStorage.getItem("yojqi_tracker_auth");
-      const expire = localStorage.getItem("yojqi_tracker_expire");
+      const saved = localStorage.getItem("tracker_access_auth");
+      const expire = localStorage.getItem("tracker_access_expire");
       if (saved && expire && Date.now() < parseInt(expire)) {
         unlockDashboard(saved);
       }
@@ -519,8 +501,8 @@
       if (hash === TARGET_HASH) {
         document.getElementById("errorMsg").style.display = "none";
         if (document.getElementById("rememberMe").checked) {
-          localStorage.setItem("yojqi_tracker_auth", entered);
-          localStorage.setItem("yojqi_tracker_expire", (Date.now() + 7 * 24 * 3600 * 1000).toString());
+          localStorage.setItem("tracker_access_auth", entered);
+          localStorage.setItem("tracker_access_expire", (Date.now() + 7 * 24 * 3600 * 1000).toString());
         }
         unlockDashboard(entered);
       } else {
@@ -547,8 +529,8 @@
     }
 
     function lockPage() {
-      localStorage.removeItem("yojqi_tracker_auth");
-      localStorage.removeItem("yojqi_tracker_expire");
+      localStorage.removeItem("tracker_access_auth");
+      localStorage.removeItem("tracker_access_expire");
       window.location.reload();
     }
 
