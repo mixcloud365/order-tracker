@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YOJQI 多平台下单需求提报与派单中心</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-light: #eff6ff;
+      --primary-dark: #1d4ed8;
+      --success: #16a34a;
+      --success-light: #f0fdf4;
+      --warning: #eab308;
+      --warning-light: #fefce8;
+      --danger: #dc2626;
+      --danger-light: #fef2f2;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --border: #e2e8f0;
+      --radius: 12px;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      line-height: 1.5;
+      min-height: 100vh;
+      padding-bottom: 60px;
+    }
+
+    /* Top Global Navigation Bar */
+    .top-nav {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+    }
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text-main);
+    }
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, #2563eb, #3b82f6);
+      color: white;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 16px;
+    }
+    .brand-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .nav-tabs {
+      display: flex;
+      gap: 8px;
+    }
+    .nav-tab {
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 600;
+      text-decoration: none;
+      color: var(--text-muted);
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .nav-tab:hover {
+      background: #f1f5f9;
+      color: var(--text-main);
+    }
+    .nav-tab.active {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: 28px auto 0;
+      padding: 0 24px;
+    }
+
+    /* Page Header */
+    .page-header {
+      margin-bottom: 24px;
+    }
+    .page-header h1 {
+      font-size: 26px;
+      font-weight: 700;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .page-header p {
+      font-size: 14.5px;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    /* Rule Alert */
+    .rule-alert {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+    .rule-icon {
+      font-size: 22px;
+      line-height: 1;
+      margin-top: 2px;
+    }
+    .rule-content h3 {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: #1e40af;
+      margin-bottom: 4px;
+    }
+    .rule-content p {
+      font-size: 13px;
+      color: #3b82f6;
+      line-height: 1.6;
+    }
+
+    /* Layout Grid */
+    .layout-grid {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 24px;
+    }
+    @media (max-width: 960px) {
+      .layout-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Form Card */
+    .card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      padding: 28px;
+      margin-bottom: 24px;
+    }
+    .card-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* Form Fields */
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 640px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+    label {
+      display: block;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #334155;
+      margin-bottom: 8px;
+    }
+    .required {
+      color: var(--danger);
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 14.5px;
+      color: var(--text-main);
+      background: #ffffff;
+      outline: none;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+    .input-hint {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    /* Platform Radio Grid */
+    .platform-selector {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .platform-card {
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: #ffffff;
+    }
+    .platform-card:hover {
+      border-color: #93c5fd;
+      background: #f8fafc;
+    }
+    .platform-card.selected {
+      border-color: var(--primary);
+      background: var(--primary-light);
+      box-shadow: 0 0 0 2px var(--primary);
+    }
+    .platform-card .icon {
+      font-size: 24px;
+      margin-bottom: 4px;
+    }
+    .platform-card .name {
+      font-size: 13px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .platform-card .sub {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* Store Cooldown Dynamic Warning Badge */
+    #cooldownBadge {
+      display: none;
+      background: #fefce8;
+      border: 1px solid #fef08a;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 12.5px;
+      color: #854d0e;
+      margin-top: 8px;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 14.5px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      width: 100%;
+    }
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+    .btn-secondary {
+      background: #f1f5f9;
+      color: #334155;
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover {
+      background: #e2e8f0;
+    }
+
+    /* Sidebar Quick Status & Guidelines */
+    .side-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .guide-box {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: var(--shadow);
+    }
+    .guide-box h4 {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .guide-list {
+      list-style: none;
+      font-size: 13px;
+      color: #475569;
+      line-height: 1.7;
+    }
+    .guide-list li {
+      position: relative;
+      padding-left: 18px;
+      margin-bottom: 8px;
+    }
+    .guide-list li::before {
+      content: "•";
+      position: absolute;
+      left: 4px;
+      color: var(--primary);
+      font-weight: bold;
+    }
+
+    /* Submission History Table */
+    .history-card {
+      margin-top: 32px;
+    }
+    .table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13.5px;
+      text-align: left;
+    }
+    th {
+      background: #f8fafc;
+      padding: 12px 16px;
+      font-weight: 600;
+      color: #475569;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      color: #1e293b;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .badge-primary { background: #eff6ff; color: #1d4ed8; }
+    .badge-warning { background: #fefce8; color: #854d0e; }
+    .badge-success { background: #f0fdf4; color: #166534; }
+
+    /* Success Toast */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #0f172a;
+      color: white;
+      padding: 14px 22px;
+      border-radius: 10px;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+      font-size: 14px;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      z-index: 1000;
+      animation: slideIn 0.3s ease;
+    }
+    @keyframes slideIn {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Global Navigation Bar -->
+  <header class="top-nav">
+    <div class="nav-container">
+      <a href="index.html" class="brand">
+        <div class="brand-logo">Y</div>
+        <div class="brand-title">YOJQI 跨境与多平台运营中枢</div>
+      </a>
+      <nav class="nav-tabs">
+        <a href="index.html" class="nav-tab">
+          <span>🚚</span> 亚马逊物流看板
+        </a>
+        <a href="dispatch.html" class="nav-tab active">
+          <span>📝</span> 多平台下单提报
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="container">
+    <div class="page-header">
+      <h1>📝 下单需求与采购任务提报</h1>
+      <p>面向 Amazon、Booking.com、Trip.com、Expedia、Walmart 等多平台的统一工单提报与智能派单系统</p>
+    </div>
+
+    <!-- Rule Alert -->
+    <div class="rule-alert">
+      <div class="rule-icon">🛡️</div>
+      <div class="rule-content">
+        <h3>多平台防关联与合规下单规则保护已开启</h3>
+        <p>• <strong>酒店/旅游平台（Booking、Trip、Expedia）</strong>：同一店铺/酒店严格执行 <strong>3 个月（90 天）单账号防关联冷却期</strong>，系统自动筛选可用纯净账号。<br>
+        • <strong>跨境购物平台（Amazon、Walmart）</strong>：支持正常采购分发与多环境隔离调度。</p>
+      </div>
+    </div>
+
+    <!-- Layout Grid -->
+    <div class="layout-grid">
+      <!-- Left: Form -->
+      <div>
+        <div class="card">
+          <div class="card-title">
+            <span>🎯</span> 填写下单需求
+          </div>
+
+          <form id="orderForm" onsubmit="handleSubmit(event)">
+            <!-- Platform Selection -->
+            <div class="form-group">
+              <label>目标平台 <span class="required">*</span></label>
+              <div class="platform-selector">
+                <div class="platform-card selected" onclick="selectPlatform('AMAZON', this)">
+                  <div class="icon">📦</div>
+                  <div class="name">Amazon</div>
+                  <div class="sub">跨境电商采购</div>
+                </div>
+                <div class="platform-card" onclick="selectPlatform('BOOKING', this)">
+                  <div class="icon">🏨</div>
+                  <div class="name">Booking.com</div>
+                  <div class="sub">酒店/民宿预订</div>
+                </div>
+                <div class="platform-card" onclick="selectPlatform('TRIP', this)">
+                  <div class="icon">✈️</div>
+                  <div class="name">Trip.com</div>
+                  <div class="sub">携程国际/百弘</div>
+                </div>
+                <div class="platform-card" onclick="selectPlatform('EXPEDIA', this)">
+                  <div class="icon">🌐</div>
+                  <div class="name">Expedia</div>
+                  <div class="sub">欧美旅行预订</div>
+                </div>
+                <div class="platform-card" onclick="selectPlatform('WALMART', this)">
+                  <div class="icon">🛒</div>
+                  <div class="name">Walmart</div>
+                  <div class="sub">商超零售采购</div>
+                </div>
+              </div>
+              <input type="hidden" id="selectedPlatform" value="AMAZON">
+            </div>
+
+            <!-- Store & Product -->
+            <div class="form-row">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="storeName">店铺 / 酒店名称 <span class="required">*</span></label>
+                <input type="text" id="storeName" placeholder="例如: baihong 或 Sun Garden Official" required oninput="checkStoreRule(this.value)">
+                <div id="cooldownBadge">
+                  <span>⏳</span> <span id="cooldownText">已识别百弘(baihong)相关房源：执行3个月防关联隔离规则</span>
+                </div>
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="productId">ASIN / 房型编号 / SKU</label>
+                <input type="text" id="productId" placeholder="例如: B0GZWGHDPN 或 BK-HOTEL-ROOM">
+              </div>
+            </div>
+
+            <!-- Title / Link -->
+            <div class="form-group">
+              <label for="productTitle">商品 / 房源标题或详情链接 <span class="required">*</span></label>
+              <textarea id="productTitle" rows="2" placeholder="粘贴商品链接或输入具体产品全称..." required></textarea>
+            </div>
+
+            <!-- Price & Quantity -->
+            <div class="form-row">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="orderAmount">预算金额与币种 <span class="required">*</span></label>
+                <div style="display: flex; gap: 8px;">
+                  <select id="currency" style="width: 100px;">
+                    <option value="EUR">EUR (€)</option>
+                    <option value="USD">USD ($)</option>
+                    <option value="CNY">CNY (¥)</option>
+                  </select>
+                  <input type="text" id="orderAmount" placeholder="如: 106.95 或 580" required>
+                </div>
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="quantity">数量 / 房间数 / 入住天数</label>
+                <input type="number" id="quantity" value="1" min="1" required>
+              </div>
+            </div>
+
+            <!-- Delivery / Checkin Details -->
+            <div class="form-row">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="recipient">收件人 / 入住人姓名 & 城市 <span class="required">*</span></label>
+                <input type="text" id="recipient" placeholder="例如: Mr CASTEL Pauline (Alixan) 或 张三" required>
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="requiredDate">期望下单日期 / 入住日期</label>
+                <input type="date" id="requiredDate">
+              </div>
+            </div>
+
+            <!-- Notes & Submitter -->
+            <div class="form-row">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="urgency">任务紧急度</label>
+                <select id="urgency">
+                  <option value="NORMAL">🟢 普通正常下单</option>
+                  <option value="PRIORITY">🟡 优先排单处理</option>
+                  <option value="URGENT">🔴 加急立项下单</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="submitter">提报人 / 归属负责人</label>
+                <input type="text" id="submitter" placeholder="您的姓名或工号" value="运营团队">
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 16px;">
+              <label for="notes">特殊需求说明 / 备注</label>
+              <textarea id="notes" rows="2" placeholder="如：需要保留发票、指定法国海外环境、需要留好评返图等要求..."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="margin-top: 10px;">
+              🚀 提交下单需求并派单给 Administrator
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Right: Sidebar Rules & Info -->
+      <div class="side-panel">
+        <div class="guide-box">
+          <h4>📌 下单执行规范指南</h4>
+          <ul class="guide-list">
+            <li><strong>自动防关联匹配</strong>：提交后，管理员将调用店铺选号校验器，自动过滤已在同店铺下过单的账号。</li>
+            <li><strong>独享 IP 真实隔离</strong>：每个平台账号均绑定海外独享住宅 IP 与专用浏览器环境，保障下单纯净度。</li>
+            <li><strong>状态追踪与反馈</strong>：下单成功后，订单编号、追踪单号与支付发票将同步至本看板。</li>
+            <li><strong>异常拦截保护</strong>：如遇发卡行风控或平台二次验证，管理员将第一时间沟通核验。</li>
+          </ul>
+        </div>
+
+        <div class="guide-box" style="background: #f8fafc;">
+          <h4>⚡ 常用快捷操作</h4>
+          <button class="btn btn-secondary" style="width: 100%; margin-bottom: 8px;" onclick="copyQuickTemplate()">
+            📋 复制提报格式模板
+          </button>
+          <button class="btn btn-secondary" style="width: 100%;" onclick="exportHistoryCSV()">
+            📥 导出历史提报清单 (CSV)
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom: Local Submission History -->
+    <div class="card history-card">
+      <div class="card-title" style="justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span>📋</span> 本地提报工单列表
+        </div>
+        <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;" onclick="clearHistory()">
+          清空本地记录
+        </button>
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>提报时间</th>
+              <th>目标平台</th>
+              <th>店铺 / 酒店</th>
+              <th>商品 / 房型详情</th>
+              <th>金额预算</th>
+              <th>收件 / 入住人</th>
+              <th>紧急度</th>
+              <th>当前执行状态</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="historyBody">
+            <!-- Rendered by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <div id="toast">
+    <span>✅</span> <span id="toastText">提交成功！已生成下单工单流水</span>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "yojqi_dispatch_tasks";
+
+    // Set default date to today
+    document.getElementById("requiredDate").value = new Date().toISOString().split("T")[0];
+
+    function selectPlatform(platform, el) {
+      document.querySelectorAll(".platform-card").forEach(c => c.classList.remove("selected"));
+      el.classList.add("selected");
+      document.getElementById("selectedPlatform").value = platform;
+      checkStoreRule(document.getElementById("storeName").value);
+    }
+
+    function checkStoreRule(val) {
+      const platform = document.getElementById("selectedPlatform").value;
+      const badge = document.getElementById("cooldownBadge");
+      const text = document.getElementById("cooldownText");
+
+      const isHotel = ["BOOKING", "TRIP", "EXPEDIA"].includes(platform);
+      const isBaihong = val.toLowerCase().includes("baihong") || val.includes("百弘");
+
+      if (isHotel && isBaihong) {
+        badge.style.display = "flex";
+        badge.style.background = "#fefce8";
+        badge.style.borderColor = "#fef08a";
+        text.innerText = `已识别 ${platform} 百弘房源：将自动启用 3 个月单账号防关联冷却保护`;
+      } else if (isHotel) {
+        badge.style.display = "flex";
+        badge.style.background = "#eff6ff";
+        badge.style.borderColor = "#bfdbfe";
+        text.innerText = `${platform} 平台规则：同一酒店 90 天内仅分配 1 个账号下单`;
+      } else {
+        badge.style.display = "none";
+      }
+    }
+
+    function handleSubmit(e) {
+      e.preventDefault();
+      const platform = document.getElementById("selectedPlatform").value;
+      const storeName = document.getElementById("storeName").value.trim();
+      const productId = document.getElementById("productId").value.trim();
+      const productTitle = document.getElementById("productTitle").value.trim();
+      const currency = document.getElementById("currency").value;
+      const orderAmount = document.getElementById("orderAmount").value.trim();
+      const quantity = document.getElementById("quantity").value;
+      const recipient = document.getElementById("recipient").value.trim();
+      const requiredDate = document.getElementById("requiredDate").value;
+      const urgency = document.getElementById("urgency").value;
+      const submitter = document.getElementById("submitter").value.trim();
+      const notes = document.getElementById("notes").value.trim();
+
+      const newTask = {
+        id: "TASK-" + Date.now().toString().slice(-6),
+        createTime: new Date().toLocaleString(),
+        platform,
+        storeName,
+        productId,
+        productTitle,
+        amount: `${orderAmount} ${currency}`,
+        quantity,
+        recipient,
+        requiredDate,
+        urgency,
+        submitter,
+        notes,
+        status: "待认领派单"
+      };
+
+      const tasks = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      tasks.unshift(newTask);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+
+      showToast(`工单 ${newTask.id} 提报成功！已加入派单队列`);
+      renderHistory();
+
+      // Reset fields
+      document.getElementById("productTitle").value = "";
+      document.getElementById("productId").value = "";
+      document.getElementById("orderAmount").value = "";
+      document.getElementById("notes").value = "";
+    }
+
+    function renderHistory() {
+      const tbody = document.getElementById("historyBody");
+      const tasks = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+
+      if (tasks.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: var(--text-muted); padding: 32px;">暂无历史提报记录，请在上方填写需求</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = tasks.map(t => {
+        let urgencyBadge = '<span class="badge badge-primary">普通</span>';
+        if (t.urgency === "PRIORITY") urgencyBadge = '<span class="badge badge-warning">优先</span>';
+        if (t.urgency === "URGENT") urgencyBadge = '<span class="badge badge-warning" style="background:#fee2e2;color:#b91c1c;">加急</span>';
+
+        return `
+          <tr>
+            <td style="white-space: nowrap; font-size: 12.5px; color: var(--text-muted);">${t.createTime}</td>
+            <td><strong>${t.platform}</strong></td>
+            <td><span class="badge badge-primary">${t.storeName}</span></td>
+            <td style="max-width: 240px; word-break: break-all;">
+              <div style="font-weight: 600;">${t.productTitle}</div>
+              ${t.productId ? `<div style="font-size: 11.5px; color: var(--text-muted);">ID/SKU: ${t.productId}</div>` : ''}
+            </td>
+            <td style="font-weight: 700; white-space: nowrap;">${t.amount} (x${t.quantity})</td>
+            <td>${t.recipient}</td>
+            <td>${urgencyBadge}</td>
+            <td><span class="badge badge-success">⏳ ${t.status}</span></td>
+            <td style="white-space: nowrap;">
+              <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="copyTaskDetail('${t.id}')">复制任务</button>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function copyTaskDetail(id) {
+      const tasks = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      const t = tasks.find(x => x.id === id);
+      if (!t) return;
+      const text = `【YOJQI 下单派单指令】\n平台: ${t.platform}\n店铺/酒店: ${t.storeName}\n商品/房型: ${t.productTitle} (${t.productId || '无SKU'})\n金额: ${t.amount} (数量: ${t.quantity})\n收件/入住人: ${t.recipient}\n期望日期: ${t.requiredDate}\n紧急度: ${t.urgency}\n备注: ${t.notes || '无'}\n提报人: ${t.submitter}`;
+      navigator.clipboard.writeText(text).then(() => {
+        showToast("已成功复制派单指令，可直接发送给管理员！");
+      });
+    }
+
+    function copyQuickTemplate() {
+      const text = "【YOJQI 下单需求格式】\n平台：Amazon / Booking / Trip / Expedia / Walmart\n店铺/酒店名：\n商品或房源链接/SKU：\n预算金额与币种：\n收件人或入住人信息：\n期望完成时间：\n特殊备注说明：";
+      navigator.clipboard.writeText(text).then(() => {
+        showToast("已复制空白模板至剪贴板！");
+      });
+    }
+
+    function exportHistoryCSV() {
+      const tasks = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      if (tasks.length === 0) {
+        alert("暂无记录可导出");
+        return;
+      }
+      let csv = "工单号,提报时间,平台,店铺,商品/房型,金额,收件人,期望日期,紧急度,状态,备注\n";
+      tasks.forEach(t => {
+        csv += `"${t.id}","${t.createTime}","${t.platform}","${t.storeName}","${t.productTitle.replace(/"/g, '""')}","${t.amount}","${t.recipient}","${t.requiredDate}","${t.urgency}","${t.status}","${(t.notes||'').replace(/"/g, '""')}"\n`;
+      });
+      const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `yojqi_dispatch_orders_${new Date().toISOString().split("T")[0]}.csv`;
+      link.click();
+    }
+
+    function clearHistory() {
+      if (confirm("确定要清空本地的工单提报记录吗？")) {
+        localStorage.removeItem(STORAGE_KEY);
+        renderHistory();
+      }
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById("toast");
+      document.getElementById("toastText").innerText = msg;
+      toast.style.display = "flex";
+      setTimeout(() => { toast.style.display = "none"; }, 3500);
+    }
+
+    // Init history on load
+    window.addEventListener("DOMContentLoaded", renderHistory);
+  </script>
+</body>
+</html>
