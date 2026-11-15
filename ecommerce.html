@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>跨境电商采购需求提报通道</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-light: #eff6ff;
+      --primary-dark: #1d4ed8;
+      --success: #16a34a;
+      --success-light: #f0fdf4;
+      --warning: #eab308;
+      --warning-light: #fefce8;
+      --danger: #dc2626;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --border: #e2e8f0;
+      --radius: 12px;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      line-height: 1.5;
+      min-height: 100vh;
+      padding-bottom: 60px;
+    }
+
+    /* Top Nav */
+    .top-nav {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      transition: all 0.2s;
+      background: #f1f5f9;
+    }
+    .back-btn:hover {
+      background: #e2e8f0;
+      color: var(--text-main);
+    }
+    .brand-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1100px;
+      margin: 28px auto 0;
+      padding: 0 24px;
+    }
+    .page-header {
+      margin-bottom: 24px;
+    }
+    .page-header h1 {
+      font-size: 26px;
+      font-weight: 700;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .page-header p {
+      font-size: 14.5px;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    /* Layout */
+    .layout-grid {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 24px;
+    }
+    @media (max-width: 900px) {
+      .layout-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Card */
+    .card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      padding: 28px;
+      margin-bottom: 24px;
+    }
+    .card-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* Forms */
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 640px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+    label {
+      display: block;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #334155;
+      margin-bottom: 8px;
+    }
+    .required {
+      color: var(--danger);
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      color: var(--text-main);
+      background: #ffffff;
+      outline: none;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+
+    /* Platform Radio Grid */
+    .platform-selector {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .platform-card {
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: #ffffff;
+    }
+    .platform-card:hover {
+      border-color: #93c5fd;
+      background: #f8fafc;
+    }
+    .platform-card.selected {
+      border-color: var(--primary);
+      background: var(--primary-light);
+      box-shadow: 0 0 0 2px var(--primary);
+    }
+    .platform-card .icon {
+      font-size: 24px;
+      margin-bottom: 4px;
+    }
+    .platform-card .name {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .platform-card .sub {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 14.5px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      width: 100%;
+    }
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+    .btn-secondary {
+      background: #f1f5f9;
+      color: #334155;
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover {
+      background: #e2e8f0;
+    }
+
+    /* Sidebar */
+    .guide-box {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+    }
+    .guide-box h4 {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 12px;
+    }
+    .guide-list {
+      list-style: none;
+      font-size: 13px;
+      color: #475569;
+      line-height: 1.7;
+    }
+    .guide-list li {
+      position: relative;
+      padding-left: 18px;
+      margin-bottom: 8px;
+    }
+    .guide-list li::before {
+      content: "•";
+      position: absolute;
+      left: 4px;
+      color: var(--primary);
+      font-weight: bold;
+    }
+
+    /* Table */
+    .table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13.5px;
+      text-align: left;
+    }
+    th {
+      background: #f8fafc;
+      padding: 12px 16px;
+      font-weight: 600;
+      color: #475569;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      color: #1e293b;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .badge-primary { background: #eff6ff; color: #1d4ed8; }
+    .badge-warning { background: #fefce8; color: #854d0e; }
+    .badge-success { background: #f0fdf4; color: #166534; }
+
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #0f172a;
+      color: white;
+      padding: 14px 22px;
+      border-radius: 10px;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+      font-size: 14px;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Nav -->
+  <header class="top-nav">
+    <div class="nav-container">
+      <div class="nav-left">
+        <a href="dispatch.html" class="back-btn">← 返回业务大厅</a>
+        <div class="brand-title">🛒 跨境电商采购需求提报</div>
+      </div>
+      <div style="font-size: 13px; color: var(--text-muted); font-weight: 500;">
+        电商采购专属通道
+      </div>
+    </div>
+  </header>
+
+  <!-- Container -->
+  <main class="container">
+    <div class="page-header">
+      <h1>🛒 电商实物采购与下单提报</h1>
+      <p>面向 Amazon、Walmart 等电商平台的采购工单录入，支持多环境独享 IP 与多账号轮换分发</p>
+    </div>
+
+    <div class="layout-grid">
+      <!-- Left: Form -->
+      <div>
+        <div class="card">
+          <div class="card-title">
+            <span>📦</span> 填写电商采购工单
+          </div>
+
+          <form id="ecomForm" onsubmit="handleEcomSubmit(event)">
+            <!-- Platform -->
+            <div class="form-group">
+              <label>采购目标平台 <span class="required">*</span></label>
+              <div class="platform-selector">
+                <div class="platform-card selected" onclick="selectPlatform('AMAZON', this)">
+                  <div class="icon">📦</div>
+                  <div class="name">Amazon</div>
+                  <div class="sub">欧美各站点</div>
+                </div>
+                <div class="platform-card" onclick="selectPlatform('WALMART', this)">
+                  <div class="icon">🛒</div>
+                  <div class="name">Walmart</div>
+                  <div class="sub">沃尔玛零售</div>
+                </div>
+                <div class="platform-card" onclick="selectPlatform('OTHER', this)">
+                  <div class="icon">🌐</div>
+                  <div class="name">其他电商</div>
+                  <div class="sub">独立站/多渠道</div>
+                </div>
+              </div>
+              <input type="hidden" id="selectedPlatform" value="AMAZON">
+            </div>
+
+            <!-- Store & ASIN -->
+            <div class="form-row">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="storeName">目标店铺 / 卖家品牌 <span class="required">*</span></label>
+                <input type="text" id="storeName" placeholder="例如: Sun Garden Official" required>
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="asin">ASIN / 商品编码 / SKU</label>
+                <input type="text" id="asin" placeholder="例如: B0GZWGHDPN">
+              </div>
+            </div>
+
+            <!-- Product URL / Title -->
+            <div class="form-group">
+              <label for="productTitle">商品链接或具体全称 <span class="required">*</span></label>
+              <textarea id="productTitle" rows="2" placeholder="粘贴商品 URL 链接或完整产品标题..." required></textarea>
+            </div>
+
+            <!-- Price & Quantity -->
+            <div class="form-row">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="price">单价或采购总预算 <span class="required">*</span></label>
+                <div style="display: flex; gap: 8px;">
+                  <select id="currency" style="width: 100px;">
+                    <option value="EUR">EUR (€)</option>
+                    <option value="USD">USD ($)</option>
+                    <option value="CNY">CNY (¥)</option>
+                  </select>
+                  <input type="text" id="price" placeholder="例如: 106.95" required>
+                </div>
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="quantity">采购数量</label>
+                <input type="number" id="quantity" value="1" min="1" required>
+              </div>
+            </div>
+
+            <!-- Shipping Recipient -->
+            <div class="form-row">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="recipient">收件人姓名 & 所在城市 <span class="required">*</span></label>
+                <input type="text" id="recipient" placeholder="例如: Mr CASTEL Pauline (Alixan)" required>
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="targetDate">期望下单 / 送达时间</label>
+                <input type="date" id="targetDate">
+              </div>
+            </div>
+
+            <!-- Address -->
+            <div class="form-group">
+              <label for="address">完整配送地址 (含邮编与国家)</label>
+              <input type="text" id="address" placeholder="例如: 12 Rue de Paris, 75001 Paris, France">
+            </div>
+
+            <!-- Urgency & Submitter -->
+            <div class="form-row">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="urgency">任务紧急度</label>
+                <select id="urgency">
+                  <option value="NORMAL">🟢 普通正常采购</option>
+                  <option value="PRIORITY">🟡 优先排单采购</option>
+                  <option value="URGENT">🔴 加急采购</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="submitter">提报人 / 归属组</label>
+                <input type="text" id="submitter" value="电商运营组">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="notes">特殊采购说明</label>
+              <textarea id="notes" rows="2" placeholder="如：需开具 VAT 发票、需使用法国独享 IP 下单、收货后需保留包装图等..."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="margin-top: 10px;">
+              🚀 提交电商采购任务并派单
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Right: Sidebar -->
+      <div>
+        <div class="guide-box">
+          <h4>📌 电商采购执行规范</h4>
+          <ul class="guide-list">
+            <li><strong>独享 IP 下单保障</strong>：所有采购操作均在对应国家的纯净家庭住宅 IP 下执行，保护买家账号信誉。</li>
+            <li><strong>多账号自动调度</strong>：采购型平台无严苛单店限制，系统按库存与账号健康度智能分配。</li>
+            <li><strong>凭证与物流闭环</strong>：下单成功后，发票凭证与快递追踪单号将统一同步归档。</li>
+          </ul>
+        </div>
+
+        <div class="guide-box" style="background: #f8fafc;">
+          <h4>⚡ 快捷操作</h4>
+          <button class="btn btn-secondary" style="width: 100%; margin-bottom: 8px;" onclick="copyTemplate()">
+            📋 复制电商提报模板
+          </button>
+          <button class="btn btn-secondary" style="width: 100%;" onclick="exportCSV()">
+            📥 导出电商采购记录 (CSV)
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- History Table -->
+    <div class="card" style="margin-top: 24px;">
+      <div class="card-title" style="justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span>📋</span> 本地电商提报记录
+        </div>
+        <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 12px;" onclick="clearHistory()">
+          清空记录
+        </button>
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>提报时间</th>
+              <th>平台</th>
+              <th>店铺</th>
+              <th>商品 / ASIN</th>
+              <th>金额预算</th>
+              <th>收件人 & 城市</th>
+              <th>紧急度</th>
+              <th>状态</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="historyBody">
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <div id="toast">
+    <span>✅</span> <span id="toastText">工单提交成功！</span>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "cloud_ecommerce_tasks";
+    document.getElementById("targetDate").value = new Date().toISOString().split("T")[0];
+
+    function selectPlatform(platform, el) {
+      document.querySelectorAll(".platform-card").forEach(c => c.classList.remove("selected"));
+      el.classList.add("selected");
+      document.getElementById("selectedPlatform").value = platform;
+    }
+
+    function handleEcomSubmit(e) {
+      e.preventDefault();
+      const platform = document.getElementById("selectedPlatform").value;
+      const storeName = document.getElementById("storeName").value.trim();
+      const asin = document.getElementById("asin").value.trim();
+      const productTitle = document.getElementById("productTitle").value.trim();
+      const currency = document.getElementById("currency").value;
+      const price = document.getElementById("price").value.trim();
+      const quantity = document.getElementById("quantity").value;
+      const recipient = document.getElementById("recipient").value.trim();
+      const address = document.getElementById("address").value.trim();
+      const targetDate = document.getElementById("targetDate").value;
+      const urgency = document.getElementById("urgency").value;
+      const submitter = document.getElementById("submitter").value.trim();
+      const notes = document.getElementById("notes").value.trim();
+
+      const newTask = {
+        id: "ECOM-" + Date.now().toString().slice(-6),
+        createTime: new Date().toLocaleString(),
+        platform,
+        storeName,
+        asin,
+        productTitle,
+        amount: `${price} ${currency}`,
+        quantity,
+        recipient,
+        address,
+        targetDate,
+        urgency,
+        submitter,
+        notes,
+        status: "待认领采购"
+      };
+
+      const tasks = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      tasks.unshift(newTask);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+
+      showToast(`工单 ${newTask.id} 提交成功！已加入采购队列`);
+      renderHistory();
+
+      document.getElementById("productTitle").value = "";
+      document.getElementById("asin").value = "";
+      document.getElementById("price").value = "";
+      document.getElementById("notes").value = "";
+    }
+
+    function renderHistory() {
+      const tbody = document.getElementById("historyBody");
+      const tasks = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+
+      if (tasks.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: var(--text-muted); padding: 32px;">暂无电商采购提报记录</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = tasks.map(t => {
+        let urgencyBadge = '<span class="badge badge-primary">普通</span>';
+        if (t.urgency === "PRIORITY") urgencyBadge = '<span class="badge badge-warning">优先</span>';
+        if (t.urgency === "URGENT") urgencyBadge = '<span class="badge badge-warning" style="background:#fee2e2;color:#b91c1c;">加急</span>';
+
+        return `
+          <tr>
+            <td style="white-space: nowrap; font-size: 12.5px; color: var(--text-muted);">${t.createTime}</td>
+            <td><strong>${t.platform}</strong></td>
+            <td><span class="badge badge-primary">${t.storeName}</span></td>
+            <td style="max-width: 240px; word-break: break-all;">
+              <div style="font-weight: 600;">${t.productTitle}</div>
+              ${t.asin ? `<div style="font-size: 11.5px; color: var(--text-muted);">ASIN: ${t.asin}</div>` : ''}
+            </td>
+            <td style="font-weight: 700; white-space: nowrap;">${t.amount} (x${t.quantity})</td>
+            <td>${t.recipient}</td>
+            <td>${urgencyBadge}</td>
+            <td><span class="badge badge-success">⏳ ${t.status}</span></td>
+            <td style="white-space: nowrap;">
+              <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="copyTask('${t.id}')">复制任务</button>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function copyTask(id) {
+      const tasks = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      const t = tasks.find(x => x.id === id);
+      if (!t) return;
+      const text = `【电商采购派单指令】\n平台: ${t.platform}\n店铺: ${t.storeName}\n商品: ${t.productTitle} (ASIN: ${t.asin || '无'})\n金额: ${t.amount} (数量: ${t.quantity})\n收件人: ${t.recipient}\n地址: ${t.address || '按默认'}\n期望时间: ${t.targetDate}\n紧急度: ${t.urgency}\n备注: ${t.notes || '无'}\n提报人: ${t.submitter}`;
+      navigator.clipboard.writeText(text).then(() => {
+        showToast("已成功复制采购指令！");
+      });
+    }
+
+    function copyTemplate() {
+      const text = "【电商采购需求模板】\n平台：Amazon / Walmart\n店铺/品牌：\n商品链接/ASIN：\n预算单价与币种：\n收件人及城市：\n送达地址：\n期望完成时间：\n特殊说明（如需发票）：";
+      navigator.clipboard.writeText(text).then(() => {
+        showToast("已复制空白模板至剪贴板！");
+      });
+    }
+
+    function exportCSV() {
+      const tasks = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      if (tasks.length === 0) return alert("暂无数据可导出");
+      let csv = "工单号,提报时间,平台,店铺,商品,金额,收件人,地址,期望时间,紧急度,状态,备注\n";
+      tasks.forEach(t => {
+        csv += `"${t.id}","${t.createTime}","${t.platform}","${t.storeName}","${t.productTitle.replace(/"/g, '""')}","${t.amount}","${t.recipient}","${(t.address||'').replace(/"/g, '""')}","${t.targetDate}","${t.urgency}","${t.status}","${(t.notes||'').replace(/"/g, '""')}"\n`;
+      });
+      const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `ecom_orders_${new Date().toISOString().split("T")[0]}.csv`;
+      link.click();
+    }
+
+    function clearHistory() {
+      if (confirm("确定要清空本地记录吗？")) {
+        localStorage.removeItem(STORAGE_KEY);
+        renderHistory();
+      }
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById("toast");
+      document.getElementById("toastText").innerText = msg;
+      toast.style.display = "flex";
+      setTimeout(() => { toast.style.display = "none"; }, 3500);
+    }
+
+    window.addEventListener("DOMContentLoaded", renderHistory);
+  </script>
+</body>
+</html>
