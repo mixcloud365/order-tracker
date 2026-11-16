@@ -419,11 +419,8 @@
         <button class="nav-tab" onclick="switchTab('pending', this)">
           🛒 待采购新订单 <span class="tab-pill pill-primary" id="navPendingCount">0</span>
         </button>
-        <button class="nav-tab" onclick="switchTab('purchased', this)">
-          ✅ 采购成功待发货 <span class="tab-pill pill-success" id="navPurchasedCount">0</span>
-        </button>
         <button class="nav-tab" onclick="switchTab('logistics', this)">
-          🚚 亚马逊物流追踪 <span class="tab-pill pill-primary" id="navLogisticsCount">0</span>
+          🚚 亚马逊采购与物流追踪 <span class="tab-pill pill-success" id="navLogisticsCount">0</span>
         </button>
       </div>
     </div>
@@ -473,15 +470,6 @@
       </div>
 
       <div class="stat-card">
-        <div class="stat-icon icon-success">✅</div>
-        <div class="stat-info">
-          <div class="stat-label">采购成功待发货</div>
-          <div class="stat-val" id="kpiPurchased" style="color: #16a34a;">0 笔</div>
-          <div class="stat-sub">已扣款下单，待出库回填</div>
-        </div>
-      </div>
-
-      <div class="stat-card">
         <div class="stat-icon icon-warning">💰</div>
         <div class="stat-info">
           <div class="stat-label">待采购预估利润</div>
@@ -493,9 +481,9 @@
       <div class="stat-card">
         <div class="stat-icon icon-primary" style="background: #e0f2fe; color: #0284c7;">🚚</div>
         <div class="stat-info">
-          <div class="stat-label">亚马逊物流追踪</div>
+          <div class="stat-label">亚马逊采购与物流追踪</div>
           <div class="stat-val" id="kpiLogistics">0 笔</div>
-          <div class="stat-sub">在途配送与签收历史</div>
+          <div class="stat-sub">备货出库与妥投历史</div>
         </div>
       </div>
     </div>
@@ -564,39 +552,6 @@
       </div>
     </div>
 
-    <!-- SECTION 2.5: PURCHASED & PREPARING SHIPMENT ORDERS -->
-    <div class="section-card" id="sectionPurchased" style="border-left: 4px solid #16a34a; margin-top: 24px;">
-      <div class="section-header" style="background: #f0fdf4;">
-        <div class="section-title" style="color: #15803d;">
-          <span>✅ 采购成功待发货 (已在亚马逊完成扣款下单，待出库回传物流单号)</span>
-          <span class="badge badge-success" id="purchasedBadgeCount">0 笔已完成采购</span>
-        </div>
-        <div style="font-size: 13px; color: #16a34a;">
-          状态说明：亚马逊买家号已完成扣款，官方仓库正在备货拣货，生成单号后自动回填 Cdiscount
-        </div>
-      </div>
-      <div class="table-wrapper">
-        <table id="purchasedTable">
-          <thead>
-            <tr>
-              <th>Cdiscount 订单号</th>
-              <th>亚马逊 ASIN</th>
-              <th>已采购商品详情</th>
-              <th>售价 vs 采购成本</th>
-              <th>已锁定毛利润</th>
-              <th>最迟发货时效</th>
-              <th>下单买家号</th>
-              <th>当前采购就绪状态</th>
-              <th>收件人及城市</th>
-            </tr>
-          </thead>
-          <tbody id="purchasedTbody">
-            <!-- Rendered by JS -->
-          </tbody>
-        </table>
-      </div>
-    </div>
-
     <!-- SECTION 3: AMAZON LOGISTICS & SHIPMENTS -->
     <div class="section-card" id="sectionLogistics">
       <div class="section-header">
@@ -636,7 +591,7 @@
 
   <script>
     const TARGET_HASH = "895789b8d8ad587c690004287c8628046c7d40ab0dc4fb8360db82f63c4121cd";
-    const ENCRYPTED_PAYLOAD = "eyJzdW1tYXJ5IjogeyJ0b3RhbF9uZXdfb3JkZXJzIjogMywgIm91dF9vZl9zdG9ja19jb3VudCI6IDEsICJwZW5kaW5nX3B1cmNoYXNlX2NvdW50IjogMSwgInB1cmNoYXNlZF9jb3VudCI6IDEsICJkZWxpdmVyZWRfY291bnQiOiAxLCAidG90YWxfcHJvamVjdGVkX3Byb2ZpdCI6ICIrNTcuMzcg4oKsIiwgInRvdGFsX3B1cmNoYXNlZF9wcm9maXQiOiAiKzEwMS45MiDigqwiLCAibGFzdF9zeW5jX3RpbWUiOiAiMjAyNi0xMS0xNiAxNzoyMTozMSJ9LCAib3V0X29mX3N0b2NrX29yZGVycyI6IFt7Im9yZGVyX2lkIjogIjI2MTExNDIzNDRQQllEUiIsICJjaGFubmVsIjogIkNkaXNjb3VudCBGUiIsICJwdXJjaGFzZWRfYXQiOiAiMjAyNi0xMS0xNCAyMjo0NDozOCIsICJzaGlwcGVkX2F0X21heCI6ICIyMDI2LTExLTE3IDIzOjQ1OjIzIiwgImFzaW4iOiAiQjBGRFRaRDQzSiIsICJhbWF6b25fdXJsIjogImh0dHBzOi8vd3d3LmFtYXpvbi5mci9kcC9CMEZEVFpENDNKIiwgInRpdGxlIjogIklETWFya2V0IFRhYmxlIMOgIG1hbmdlciBleHRlbnNpYmxlIHJvbmRlIDExMC0xNTAgY20gYmxhbmNoZSBldCBib2lzIEFMSVgiLCAicXVhbnRpdHkiOiAxLCAic2VsbGluZ19wcmljZSI6IDEzNC44MiwgInNlbGxpbmdfcHJpY2Vfc3RyIjogIjEzNC44MiDigqwiLCAiYW1hem9uX2Nvc3QiOiA3OS45OSwgImFtYXpvbl9jb3N0X3N0ciI6ICI3OS45OSDigqwiLCAicHJvZml0IjogMC4wLCAicHJvZml0X3N0ciI6ICIwLjAwIOKCrCIsICJwcm9maXRfbWFyZ2luX3N0ciI6ICIwJSIsICJzdG9ja19zdGF0dXMiOiAib3V0X29mX3N0b2NrIiwgInN0b2NrX2JhZGdlIjogIvCfmqgg5Lil6YeN57y66LSnICjml6DotKcpIiwgInN0b2NrX2Rlc2MiOiAiQWN0dWVsbGVtZW50IGluZGlzcG9uaWJsZSAtIOS6mumprOmAiuWumOaWueaWrei0p+aXoOWcqOWUruWNluWutiIsICJvcmRlcl9zdGF0ZSI6ICJvdXRfb2Zfc3RvY2siLCAib3JkZXJfc3RhdGVfYmFkZ2UiOiAi8J+aqCDml6DotKfpooToraYiLCAib3JkZXJfc3RhdGVfZGVzYyI6ICLkuprpqazpgIrmlq3otKfml6Dms5Xph4fotK3vvIzlu7rorq7lnKggQ2Rpc2NvdW50IOWNluWutuWQjuWPsOWPiuaXtuiBlOezu+S5sOWutuWNj+WVhuaIlumAgOasviIsICJiYWRnZV9jb2xvciI6ICJkYW5nZXIiLCAiYW1hem9uX29yZGVyX2lkIjogIiIsICJhc3NpZ25lZF9hY2NvdW50IjogbnVsbCwgImFzc2lnbmVkX2FjY291bnRfbmFtZSI6ICLml6AgKOezu+e7n+W3suaLpuaIquS4i+WNlSkiLCAicmVjaXBpZW50X25hbWUiOiAiTWHDqSBIdWV0IiwgInJlY2lwaWVudF9jaXR5IjogIkluZ3JlIiwgInJlY2lwaWVudF96aXAiOiAiNDUxNDAiLCAicmVjaXBpZW50X3Bob25lIjogIjA2NTA1NzIwMzgiLCAicmVjaXBpZW50X2FkZHJlc3NfZnVsbCI6ICJNYcOpIEh1ZXQsIDEwMyBSdWUgRGUgTGEgSnVzdGljZSwgNDUxNDAgSW5ncmUsIEZyYW5jZSIsICJhY3Rpb25fYWR2aWNlIjogIuS+m+W6lOWVhuaWrei0p++8jOivt+WcqCBDZGlzY291bnQg5Y2W5a625ZCO5Y+w6IGU57O75Lmw5a625Y2P5ZWG5oiW5Y+W5raIIn1dLCAicGVuZGluZ19vcmRlcnMiOiBbeyJvcmRlcl9pZCI6ICIyNjExMTMyMDUzUDhOVEQiLCAiY2hhbm5lbCI6ICJDZGlzY291bnQgRlIiLCAicHVyY2hhc2VkX2F0IjogIjIwMjYtMTEtMTMgMTk6NTM6NDYiLCAic2hpcHBlZF9hdF9tYXgiOiAiMjAyNi0xMS0xOCAyMDo1MzoyMSIsICJhc2luIjogIkIwR1FLM0NTWjciLCAiYW1hem9uX3VybCI6ICJodHRwczovL3d3dy5hbWF6b24uZnIvZHAvQjBHUUszQ1NaNyIsICJ0aXRsZSI6ICJXT0xUVSBCdXJlYXUgQXNzaXMgRGVib3V0IMOJbGVjdHJpcXVlLCBSw6lnbGFibGUgZW4gSGF1dGV1ciwgODB4NDgsIE5vaXIiLCAicXVhbnRpdHkiOiAxLCAic2VsbGluZ19wcmljZSI6IDE0Mi4zNiwgInNlbGxpbmdfcHJpY2Vfc3RyIjogIjE0Mi4zNiDigqwiLCAiYW1hem9uX2Nvc3QiOiA4NC45OSwgImFtYXpvbl9jb3N0X3N0ciI6ICI4NC45OSDigqwiLCAicHJvZml0IjogNTcuMzcsICJwcm9maXRfc3RyIjogIis1Ny4zNyDigqwiLCAicHJvZml0X21hcmdpbl9zdHIiOiAiNDAuMyUiLCAic3RvY2tfc3RhdHVzIjogImluX3N0b2NrIiwgInN0b2NrX2JhZGdlIjogIuKchSDnjrDotKflhYXotrMgKOWVhuWutuiHquWPkei0p0ZCTSkiLCAic3RvY2tfZGVzYyI6ICJJbiBzdG9jayAtIFdPTFRVIEdtYkgg5ZWG5a626Ieq5Y+R6LSnICg4NC45OSDigqwg5YWN6L+Q6LS5KSIsICJvcmRlcl9zdGF0ZSI6ICJwZW5kaW5nIiwgIm9yZGVyX3N0YXRlX2JhZGdlIjogIuW+hemHh+i0reS4i+WNlSIsICJvcmRlcl9zdGF0ZV9kZXNjIjogIueOsOi0p+WFhei2syAo5ZWG5a626Ieq5Y+R6LSnRkJNKe+8jOW3suWIhumFjeS5sOWutuWPtyBmcl9taWdyYXRlZF8wN++8jOS/oeaBr+WNoeWPt+Wwsee7qu+8jOmaj+aXtuWPr+iHquWKqOmHh+i0rSIsICJiYWRnZV9jb2xvciI6ICJwcmltYXJ5IiwgImFtYXpvbl9vcmRlcl9pZCI6ICIiLCAiYXNzaWduZWRfYWNjb3VudCI6ICJmcl9taWdyYXRlZF8wNyIsICJhc3NpZ25lZF9hY2NvdW50X25hbWUiOiAiMDcgLSBBbGV4IChmcl9taWdyYXRlZF8wNykiLCAicmVjaXBpZW50X25hbWUiOiAiU2FtaXIgQWJhaHJpIiwgInJlY2lwaWVudF9jaXR5IjogIkxpZXVzYWludCIsICJyZWNpcGllbnRfemlwIjogIjc3MTI3IiwgInJlY2lwaWVudF9waG9uZSI6ICIwNjIyNTEwMTI5IiwgInJlY2lwaWVudF9hZGRyZXNzX2Z1bGwiOiAiU2FtaXIgQWJhaHJpLCAxMCBSdWUgUGllcnJlIE1lY2hhaW4sIEFwcGFydGVtZW50IEcxMDQsIDc3MTI3IExpZXVzYWludCwgRnJhbmNlIiwgImFjdGlvbl9hZHZpY2UiOiAi5bey6ZSB5Y2V5b6F55So5oi356Gu6K6k5ZCO5Y2z5Y+v6Ieq5Yqo5LiL5Y2VIn1dLCAicHVyY2hhc2VkX29yZGVycyI6IFt7Im9yZGVyX2lkIjogIjI2MTExNTEyNTVQRDFCVCIsICJjaGFubmVsIjogIkNkaXNjb3VudCBGUiIsICJwdXJjaGFzZWRfYXQiOiAiMjAyNi0xMS0xNSAxMTo1NToyMSIsICJzaGlwcGVkX2F0X21heCI6ICIyMDI2LTExLTE4IDEyOjU1OjIyIiwgImFzaW4iOiAiQjBHUVoySjEzViIsICJhbWF6b25fdXJsIjogImh0dHBzOi8vd3d3LmFtYXpvbi5mci9kcC9CMEdRWjJKMTNWIiwgInRpdGxlIjogIkdUUExBWUVSIENoYWlzZSBHYW1pbmcgRXJnb25vbWlxdWUgYXZlYyBSZXBvc2UtUGllZHMgZXQgSGF1dC1QYXJsZXVycyBCbHVldG9vdGgsIEJsYW5jIiwgInF1YW50aXR5IjogMSwgInNlbGxpbmdfcHJpY2UiOiAyNzEuOTEsICJzZWxsaW5nX3ByaWNlX3N0ciI6ICIyNzEuOTEg4oKsIiwgImFtYXpvbl9jb3N0IjogMTY5Ljk5LCAiYW1hem9uX2Nvc3Rfc3RyIjogIjE2OS45OSDigqwiLCAicHJvZml0IjogMTAxLjkyLCAicHJvZml0X3N0ciI6ICIrMTAxLjkyIOKCrCIsICJwcm9maXRfbWFyZ2luX3N0ciI6ICIzNy41JSIsICJzdG9ja19zdGF0dXMiOiAicHVyY2hhc2VkIiwgInN0b2NrX2JhZGdlIjogIuKchSDph4fotK3miJDlip8iLCAic3RvY2tfZGVzYyI6ICJBbWF6b24g5a6Y5pa55bey5oiQ5Yqf5LiL5Y2VICjkuprpqazpgIrorqLljZXlj7c6IDQwNi01ODU5MTkzLTYyNjkxMjcpIiwgIm9yZGVyX3N0YXRlIjogInB1cmNoYXNlZCIsICJvcmRlcl9zdGF0ZV9iYWRnZSI6ICLlt7LlrozmiJDph4fotK0iLCAib3JkZXJfc3RhdGVfZGVzYyI6ICLlt7Lkvb/nlKjkubDlrrbotKblj7cgZnJfbWlncmF0ZWRfMTMg5a6M5oiQ5omj5qy+5LiL5Y2VICjorqLljZXlj7c6IDQwNi01ODU5MTkzLTYyNjkxMjcpIiwgImJhZGdlX2NvbG9yIjogInN1Y2Nlc3MiLCAiYW1hem9uX29yZGVyX2lkIjogIjQwNi01ODU5MTkzLTYyNjkxMjciLCAiYXNzaWduZWRfYWNjb3VudCI6ICJmcl9taWdyYXRlZF8xMyIsICJhc3NpZ25lZF9hY2NvdW50X25hbWUiOiAiMTMgLSBTYXJhaCAoZnJfbWlncmF0ZWRfMTMpIiwgInJlY2lwaWVudF9uYW1lIjogIkFsZWtzYW5kcmEgVkVSU1lDSyIsICJyZWNpcGllbnRfY2l0eSI6ICJGbGlucyBTdXIgU2VpbmUiLCAicmVjaXBpZW50X3ppcCI6ICI3ODQxMCIsICJyZWNpcGllbnRfcGhvbmUiOiAiMDc4MTgwNDA4MiIsICJyZWNpcGllbnRfYWRkcmVzc19mdWxsIjogIkFsZWtzYW5kcmEgVkVSU1lDSywgMSBSdWUgRGVzIEdsYWlzaWVyZXMsIDc4NDEwIEZsaW5zIFN1ciBTZWluZSwgRnJhbmNlIiwgImFjdGlvbl9hZHZpY2UiOiAi5bey5Zyo5Lqa6ams6YCK5a6M5oiQ6YeH6LSt5LiL5Y2V77yM562J5b6F5Y+R6LSn5LiO5Zue5Lyg54mp5rWB5Y2V5Y+3In1dLCAiYW1hem9uX29yZGVycyI6IFt7Im9yZGVyX2lkIjogIjQwNi01ODU5MTkzLTYyNjkxMjciLCAib3JkZXJfZGF0ZSI6ICIyMDI2LTExLTE2IiwgImNkaXNjb3VudF9vcmRlcl9pZCI6ICIyNjExMTUxMjU1UEQxQlQiLCAiY2Rpc2NvdW50X3B1cmNoYXNlZF9hdCI6ICIyMDI2LTExLTE1IDExOjU1OjIxIiwgImFjY291bnRfbmlja25hbWUiOiAiMTMgLSBTYXJhaCBaaXZlIChmcl9taWdyYXRlZF8xMykiLCAiY291bnRyeSI6ICLwn4er8J+HtyDms5Xlm70iLCAidGl0bGUiOiAiR1RQTEFZRVIgQ2hhaXNlIEdhbWluZyBCbGFuYyIsICJ0b3RhbF9hbW91bnQiOiAiMTY5LDk5IOKCrCIsICJ0cmFja2luZ19udW1iZXIiOiAi562J5b6F5Ye65bqT5YiG6YWN5Y2V5Y+3IiwgInNoaXBwaW5nX3RpbWUiOiAi5aSH6LSn5LitICjlvoXlh7rlupMpIiwgImRlbGl2ZXJ5X3N0YXR1cyI6ICLnrYnlvoXlj5HotKflh7rlupMgKOmihOiuoemAgei+vjogMjUtMjcgbm92LiAyMDI2KSIsICJzdGF0dXNfYmFkZ2UiOiAi5bey5LiL5Y2VICjlpIfotKfkuK0pIiwgInN0YXR1c19jb2xvciI6ICJ3YXJuaW5nIiwgInJlY2lwaWVudCI6ICJBbGVrc2FuZHJhIFZFUlNZQ0sgKEZsaW5zIFN1ciBTZWluZSkifSwgeyJvcmRlcl9pZCI6ICI0MDItNTU3MTk0Mi03NzYyNzQ2IiwgIm9yZGVyX2RhdGUiOiAiMjAyNi0xMS0wOSIsICJjZGlzY291bnRfb3JkZXJfaWQiOiAiMjYxMTA4MjE0N09RT0lMIiwgImNkaXNjb3VudF9wdXJjaGFzZWRfYXQiOiAiMjAyNi0xMS0wOCAyMDo0NzowMSIsICJhY2NvdW50X25pY2tuYW1lIjogIjExIC0gVHJhY2kgTGFuZGVycyAoZnJfbWlncmF0ZWRfMTEpIiwgImNvdW50cnkiOiAi8J+Hq/Cfh7cg5rOV5Zu9IiwgInRpdGxlIjogIlN1biBHYXJkZW4gTWF0ZWxhcyBwb3VyIGVuZmFudCA5MCB4IDIwMCBjbSwgMyDDoCAxMiBhbnMsIGZhYnJpcXXDqSBlbiBFdXJvcGUgfCBzeXN0w6htZSDDqXZvbHV0aWYgMi1lbi0xIHBvdXIgbGl0IGQnZW5mYW50IGV0IGxpdCBkJ2Fkb2xlc2NlbnQsIGNlcnRpZmnDqSBPZWtvLVRleCBldCBEZXJtYXRlc3QgLSBUcsOocyBiaWVuLCBSRzI4IGRlIDE1IGNtIiwgInRvdGFsX2Ftb3VudCI6ICIxMDYsOTUg4oKsIiwgInRyYWNraW5nX251bWJlciI6ICJDQTA4NjE2NzQzM0RFIChESEwpIiwgInNoaXBwaW5nX3RpbWUiOiAiMjAyNi0xMS0xMCAxODoxMyAoREUpIiwgImRlbGl2ZXJ5X3N0YXR1cyI6ICLlt7Lnrb7mlLYgKOacgOe7iOeKtuaAgSkiLCAic3RhdHVzX2JhZGdlIjogIuW3sumAgei+vuetvuaUtiIsICJzdGF0dXNfY29sb3IiOiAic3VjY2VzcyIsICJyZWNpcGllbnQiOiAiTXIgQ0FTVEVMIFBhdWxpbmUgKEFsaXhhbikifV19";
+    const ENCRYPTED_PAYLOAD = "eyJzdW1tYXJ5IjogeyJ0b3RhbF9uZXdfb3JkZXJzIjogMywgIm91dF9vZl9zdG9ja19jb3VudCI6IDEsICJwZW5kaW5nX3B1cmNoYXNlX2NvdW50IjogMSwgImRlbGl2ZXJlZF9jb3VudCI6IDEsICJ0b3RhbF9wcm9qZWN0ZWRfcHJvZml0IjogIis1Ny4zNyDigqwiLCAibGFzdF9zeW5jX3RpbWUiOiAiMjAyNi0xMS0xNiAxNzoyNjo1OSJ9LCAib3V0X29mX3N0b2NrX29yZGVycyI6IFt7Im9yZGVyX2lkIjogIjI2MTExNDIzNDRQQllEUiIsICJjaGFubmVsIjogIkNkaXNjb3VudCBGUiIsICJwdXJjaGFzZWRfYXQiOiAiMjAyNi0xMS0xNCAyMjo0NDozOCIsICJzaGlwcGVkX2F0X21heCI6ICIyMDI2LTExLTE3IDIzOjQ1OjIzIiwgImFzaW4iOiAiQjBGRFRaRDQzSiIsICJhbWF6b25fdXJsIjogImh0dHBzOi8vd3d3LmFtYXpvbi5mci9kcC9CMEZEVFpENDNKIiwgInRpdGxlIjogIklETWFya2V0IFRhYmxlIMOgIG1hbmdlciBleHRlbnNpYmxlIHJvbmRlIDExMC0xNTAgY20gYmxhbmNoZSBldCBib2lzIEFMSVgiLCAicXVhbnRpdHkiOiAxLCAic2VsbGluZ19wcmljZSI6IDEzNC44MiwgInNlbGxpbmdfcHJpY2Vfc3RyIjogIjEzNC44MiDigqwiLCAiYW1hem9uX2Nvc3QiOiA3OS45OSwgImFtYXpvbl9jb3N0X3N0ciI6ICI3OS45OSDigqwiLCAicHJvZml0IjogMC4wLCAicHJvZml0X3N0ciI6ICIwLjAwIOKCrCIsICJwcm9maXRfbWFyZ2luX3N0ciI6ICIwJSIsICJzdG9ja19zdGF0dXMiOiAib3V0X29mX3N0b2NrIiwgInN0b2NrX2JhZGdlIjogIvCfmqgg5Lil6YeN57y66LSnICjml6DotKcpIiwgInN0b2NrX2Rlc2MiOiAiQWN0dWVsbGVtZW50IGluZGlzcG9uaWJsZSAtIOS6mumprOmAiuWumOaWueaWrei0p+aXoOWcqOWUruWNluWutiIsICJvcmRlcl9zdGF0ZSI6ICJvdXRfb2Zfc3RvY2siLCAib3JkZXJfc3RhdGVfYmFkZ2UiOiAi8J+aqCDml6DotKfpooToraYiLCAib3JkZXJfc3RhdGVfZGVzYyI6ICLkuprpqazpgIrmlq3otKfml6Dms5Xph4fotK3vvIzlu7rorq7lnKggQ2Rpc2NvdW50IOWNluWutuWQjuWPsOWPiuaXtuiBlOezu+S5sOWutuWNj+WVhuaIlumAgOasviIsICJiYWRnZV9jb2xvciI6ICJkYW5nZXIiLCAiYW1hem9uX29yZGVyX2lkIjogIiIsICJhc3NpZ25lZF9hY2NvdW50IjogbnVsbCwgImFzc2lnbmVkX2FjY291bnRfbmFtZSI6ICLml6AgKOezu+e7n+W3suaLpuaIquS4i+WNlSkiLCAicmVjaXBpZW50X25hbWUiOiAiTWHDqSBIdWV0IiwgInJlY2lwaWVudF9jaXR5IjogIkluZ3JlIiwgInJlY2lwaWVudF96aXAiOiAiNDUxNDAiLCAicmVjaXBpZW50X3Bob25lIjogIjA2NTA1NzIwMzgiLCAicmVjaXBpZW50X2FkZHJlc3NfZnVsbCI6ICJNYcOpIEh1ZXQsIDEwMyBSdWUgRGUgTGEgSnVzdGljZSwgNDUxNDAgSW5ncmUsIEZyYW5jZSIsICJhY3Rpb25fYWR2aWNlIjogIuS+m+W6lOWVhuaWrei0p++8jOivt+WcqCBDZGlzY291bnQg5Y2W5a625ZCO5Y+w6IGU57O75Lmw5a625Y2P5ZWG5oiW5Y+W5raIIn1dLCAicGVuZGluZ19vcmRlcnMiOiBbeyJvcmRlcl9pZCI6ICIyNjExMTMyMDUzUDhOVEQiLCAiY2hhbm5lbCI6ICJDZGlzY291bnQgRlIiLCAicHVyY2hhc2VkX2F0IjogIjIwMjYtMTEtMTMgMTk6NTM6NDYiLCAic2hpcHBlZF9hdF9tYXgiOiAiMjAyNi0xMS0xOCAyMDo1MzoyMSIsICJhc2luIjogIkIwR1FLM0NTWjciLCAiYW1hem9uX3VybCI6ICJodHRwczovL3d3dy5hbWF6b24uZnIvZHAvQjBHUUszQ1NaNyIsICJ0aXRsZSI6ICJXT0xUVSBCdXJlYXUgQXNzaXMgRGVib3V0IMOJbGVjdHJpcXVlLCBSw6lnbGFibGUgZW4gSGF1dGV1ciwgODB4NDgsIE5vaXIiLCAicXVhbnRpdHkiOiAxLCAic2VsbGluZ19wcmljZSI6IDE0Mi4zNiwgInNlbGxpbmdfcHJpY2Vfc3RyIjogIjE0Mi4zNiDigqwiLCAiYW1hem9uX2Nvc3QiOiA4NC45OSwgImFtYXpvbl9jb3N0X3N0ciI6ICI4NC45OSDigqwiLCAicHJvZml0IjogNTcuMzcsICJwcm9maXRfc3RyIjogIis1Ny4zNyDigqwiLCAicHJvZml0X21hcmdpbl9zdHIiOiAiNDAuMyUiLCAic3RvY2tfc3RhdHVzIjogImluX3N0b2NrIiwgInN0b2NrX2JhZGdlIjogIuKchSDnjrDotKflhYXotrMgKOWVhuWutuiHquWPkei0p0ZCTSkiLCAic3RvY2tfZGVzYyI6ICJJbiBzdG9jayAtIFdPTFRVIEdtYkgg5ZWG5a626Ieq5Y+R6LSnICg4NC45OSDigqwg5YWN6L+Q6LS5KSIsICJvcmRlcl9zdGF0ZSI6ICJwZW5kaW5nIiwgIm9yZGVyX3N0YXRlX2JhZGdlIjogIuW+hemHh+i0reS4i+WNlSIsICJvcmRlcl9zdGF0ZV9kZXNjIjogIueOsOi0p+WFhei2syAo5ZWG5a626Ieq5Y+R6LSnRkJNKe+8jOW3suWIhumFjeS5sOWutuWPtyBmcl9taWdyYXRlZF8wN++8jOS/oeaBr+WNoeWPt+Wwsee7qu+8jOmaj+aXtuWPr+iHquWKqOmHh+i0rSIsICJiYWRnZV9jb2xvciI6ICJwcmltYXJ5IiwgImFtYXpvbl9vcmRlcl9pZCI6ICIiLCAiYXNzaWduZWRfYWNjb3VudCI6ICJmcl9taWdyYXRlZF8wNyIsICJhc3NpZ25lZF9hY2NvdW50X25hbWUiOiAiMDcgLSBBbGV4IChmcl9taWdyYXRlZF8wNykiLCAicmVjaXBpZW50X25hbWUiOiAiU2FtaXIgQWJhaHJpIiwgInJlY2lwaWVudF9jaXR5IjogIkxpZXVzYWludCIsICJyZWNpcGllbnRfemlwIjogIjc3MTI3IiwgInJlY2lwaWVudF9waG9uZSI6ICIwNjIyNTEwMTI5IiwgInJlY2lwaWVudF9hZGRyZXNzX2Z1bGwiOiAiU2FtaXIgQWJhaHJpLCAxMCBSdWUgUGllcnJlIE1lY2hhaW4sIEFwcGFydGVtZW50IEcxMDQsIDc3MTI3IExpZXVzYWludCwgRnJhbmNlIiwgImFjdGlvbl9hZHZpY2UiOiAi5bey6ZSB5Y2V5b6F55So5oi356Gu6K6k5ZCO5Y2z5Y+v6Ieq5Yqo5LiL5Y2VIn1dLCAiYW1hem9uX29yZGVycyI6IFt7Im9yZGVyX2lkIjogIjQwNi01ODU5MTkzLTYyNjkxMjciLCAib3JkZXJfZGF0ZSI6ICIyMDI2LTExLTE2IiwgImNkaXNjb3VudF9vcmRlcl9pZCI6ICIyNjExMTUxMjU1UEQxQlQiLCAiY2Rpc2NvdW50X3B1cmNoYXNlZF9hdCI6ICIyMDI2LTExLTE1IDExOjU1OjIxIiwgImFjY291bnRfbmlja25hbWUiOiAiMTMgLSBTYXJhaCBaaXZlIChmcl9taWdyYXRlZF8xMykiLCAiY291bnRyeSI6ICLwn4er8J+HtyDms5Xlm70iLCAidGl0bGUiOiAiR1RQTEFZRVIgQ2hhaXNlIEdhbWluZyBCbGFuYyIsICJ0b3RhbF9hbW91bnQiOiAiMTY5LDk5IOKCrCIsICJ0cmFja2luZ19udW1iZXIiOiAi5pyq5omj5qy+5oiQ5YqfICjmmoLml6DljZXlj7cpIiwgInNoaXBwaW5nX3RpbWUiOiAi5omj5qy+5Y+X6Zi7ICjlvoXmjaLljaEpIiwgImRlbGl2ZXJ5X3N0YXR1cyI6ICLlj5HljaHooYzmnKrmibnlh4bmiaPmrL7vvIzpnIDmjaLljaHmiJblj5bmtojorqLljZUiLCAic3RhdHVzX2JhZGdlIjogIuW+heaUr+S7mOmqjOivgSAo5Y+R5Y2h6KGM5oum5oiqKSIsICJzdGF0dXNfY29sb3IiOiAiZGFuZ2VyIiwgInJlY2lwaWVudCI6ICJBbGVrc2FuZHJhIFZFUlNZQ0sgKEZsaW5zIFN1ciBTZWluZSkifSwgeyJvcmRlcl9pZCI6ICI0MDItNTU3MTk0Mi03NzYyNzQ2IiwgIm9yZGVyX2RhdGUiOiAiMjAyNi0xMS0wOSIsICJjZGlzY291bnRfb3JkZXJfaWQiOiAiMjYxMTA4MjE0N09RT0lMIiwgImNkaXNjb3VudF9wdXJjaGFzZWRfYXQiOiAiMjAyNi0xMS0wOCAyMDo0NzowMSIsICJhY2NvdW50X25pY2tuYW1lIjogIjExIC0gVHJhY2kgTGFuZGVycyAoZnJfbWlncmF0ZWRfMTEpIiwgImNvdW50cnkiOiAi8J+Hq/Cfh7cg5rOV5Zu9IiwgInRpdGxlIjogIlN1biBHYXJkZW4gTWF0ZWxhcyBwb3VyIGVuZmFudCA5MCB4IDIwMCBjbSwgMyDDoCAxMiBhbnMsIGZhYnJpcXXDqSBlbiBFdXJvcGUgfCBzeXN0w6htZSDDqXZvbHV0aWYgMi1lbi0xIHBvdXIgbGl0IGQnZW5mYW50IGV0IGxpdCBkJ2Fkb2xlc2NlbnQsIGNlcnRpZmnDqSBPZWtvLVRleCBldCBEZXJtYXRlc3QgLSBUcsOocyBiaWVuLCBSRzI4IGRlIDE1IGNtIiwgInRvdGFsX2Ftb3VudCI6ICIxMDYsOTUg4oKsIiwgInRyYWNraW5nX251bWJlciI6ICJDQTA4NjE2NzQzM0RFIChESEwpIiwgInNoaXBwaW5nX3RpbWUiOiAiMjAyNi0xMS0xMCAxODoxMyAoREUpIiwgImRlbGl2ZXJ5X3N0YXR1cyI6ICLlt7Lnrb7mlLYgKOacgOe7iOeKtuaAgSkiLCAic3RhdHVzX2JhZGdlIjogIuW3sumAgei+vuetvuaUtiIsICJzdGF0dXNfY29sb3IiOiAic3VjY2VzcyIsICJyZWNpcGllbnQiOiAiTXIgQ0FTVEVMIFBhdWxpbmUgKEFsaXhhbikifV19";
     let DASHBOARD_DATA = null;
 
     function checkStoredAuth() {
@@ -802,55 +757,6 @@
         });
       }
 
-      // 2b. Render Purchased Orders
-      const purchasedTbody = document.getElementById("purchasedTbody");
-      if (purchasedTbody) {
-        purchasedTbody.innerHTML = "";
-        (data.purchased_orders || []).forEach(o => {
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-            <td>
-              <span class="order-code">${o.order_id}
-                <button class="copy-btn" onclick="copyText('${o.order_id}')" title="复制">📋</button>
-              </span>
-            </td>
-            <td>
-              <a href="${o.amazon_url}" target="_blank" class="asin-link">
-                ${o.asin} ↗
-              </a>
-            </td>
-            <td class="cell-product">
-              <strong>${o.title}</strong>
-              <div class="cell-subtext" style="color: #16a34a; font-weight: 500;">现货状态: ${o.stock_desc}</div>
-            </td>
-            <td>
-              <div style="font-weight: 700; color: #0f172a;">售价: ${o.selling_price_str}</div>
-              <div class="cell-subtext">采购成本: ${o.amazon_cost_str}</div>
-            </td>
-            <td>
-              <div class="profit-positive">${o.profit_str}</div>
-              <div class="cell-subtext">毛利率: ${o.profit_margin_str}</div>
-            </td>
-            <td>
-              <div class="deadline-normal">${o.shipped_at_max}</div>
-              <div class="cell-subtext">下单: ${o.purchased_at}</div>
-            </td>
-            <td>
-              <span class="badge badge-neutral" style="font-family: monospace;">${o.assigned_account_name}</span>
-            </td>
-            <td>
-              <span class="badge badge-success">✅ ${o.order_state_badge}</span>
-              <div class="cell-subtext" style="max-width: 240px; color: #15803d; font-weight: 600;">${o.order_state_desc}</div>
-            </td>
-            <td>
-              <div style="font-weight: 600;">${o.recipient_name}</div>
-              <div class="cell-subtext">${o.recipient_city} (${o.recipient_zip})</div>
-            </td>
-          `;
-          purchasedTbody.appendChild(tr);
-        });
-      }
-
       // 3. Render Logistics
       const logTbody = document.getElementById("logisticsTbody");
       logTbody.innerHTML = "";
@@ -898,37 +804,26 @@
 
       const secDanger = document.getElementById("sectionDanger");
       const secPending = document.getElementById("sectionPending");
-      const secPurchased = document.getElementById("sectionPurchased");
       const secLogistics = document.getElementById("sectionLogistics");
 
       if (type === "all") {
         secDanger.style.display = "block";
         secPending.style.display = "block";
-        if (secPurchased) secPurchased.style.display = "block";
         secLogistics.style.display = "block";
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (type === "danger") {
         secDanger.style.display = "block";
         secPending.style.display = "none";
-        if (secPurchased) secPurchased.style.display = "none";
         secLogistics.style.display = "none";
         secDanger.scrollIntoView({ behavior: 'smooth' });
       } else if (type === "pending") {
         secDanger.style.display = "none";
         secPending.style.display = "block";
-        if (secPurchased) secPurchased.style.display = "none";
         secLogistics.style.display = "none";
         secPending.scrollIntoView({ behavior: 'smooth' });
-      } else if (type === "purchased") {
-        secDanger.style.display = "none";
-        secPending.style.display = "none";
-        if (secPurchased) secPurchased.style.display = "block";
-        secLogistics.style.display = "none";
-        secPurchased.scrollIntoView({ behavior: 'smooth' });
       } else if (type === "logistics") {
         secDanger.style.display = "none";
         secPending.style.display = "none";
-        if (secPurchased) secPurchased.style.display = "none";
         secLogistics.style.display = "block";
         secLogistics.scrollIntoView({ behavior: 'smooth' });
       }
@@ -952,11 +847,6 @@
       // Pending
       (DASHBOARD_DATA.pending_orders || []).forEach(o => {
         rows.push(["🛒 待采购新单", o.order_id, o.purchased_at, "-", o.asin, o.title, o.selling_price_str, o.amazon_cost_str, o.shipped_at_max, o.order_state_badge, o.recipient_address_full]);
-      });
-
-      // Purchased
-      (DASHBOARD_DATA.purchased_orders || []).forEach(o => {
-        rows.push(["✅ 采购成功待发货", o.order_id, o.purchased_at, o.amazon_order_id || "-", o.asin, o.title, o.selling_price_str, o.amazon_cost_str, o.shipped_at_max, o.order_state_badge, o.recipient_address_full]);
       });
 
       // Logistics
