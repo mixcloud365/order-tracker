@@ -364,10 +364,144 @@
     .copy-btn:hover { color: var(--primary); }
     .profit-positive { color: #16a34a; font-weight: 700; font-size: 14.5px; }
     .profit-zero { color: #94a3b8; font-weight: 600; }
-    .cell-product { max-width: 280px; font-weight: 500; color: #1e293b; }
+    .cell-product { max-width: 320px; font-weight: 500; color: #1e293b; }
     .cell-subtext { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
     .deadline-urgent { color: #dc2626; font-weight: 700; }
     .deadline-normal { color: #475569; font-weight: 500; }
+
+    /* Product Cell & Interactive Tooltip / Truncation */
+    .product-compact-box {
+      max-width: 340px;
+      cursor: pointer;
+      position: relative;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 7px 10px;
+      transition: all 0.2s ease-in-out;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .product-compact-box:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .product-header-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+    .product-asin-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-family: monospace;
+      font-weight: 700;
+      font-size: 11.5px;
+      color: #1d4ed8;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      padding: 2px 7px;
+      border-radius: 5px;
+      text-decoration: none;
+      transition: all 0.15s ease;
+      letter-spacing: 0.3px;
+    }
+    .product-asin-badge:hover {
+      background: #dbeafe;
+      color: #1e40af;
+      border-color: #93c5fd;
+      text-decoration: underline;
+    }
+    .product-expand-hint {
+      font-size: 11px;
+      color: #64748b;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 1px 6px;
+      border-radius: 4px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      user-select: none;
+      transition: all 0.15s ease;
+    }
+    .product-compact-box:hover .product-expand-hint {
+      color: #2563eb;
+      border-color: #bfdbfe;
+      background: #eff6ff;
+    }
+    .product-title-text {
+      font-size: 12.5px;
+      line-height: 1.4;
+      color: #1e293b;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: all 0.2s ease;
+    }
+    /* Expanded State */
+    .product-compact-box.is-expanded {
+      background: #ffffff;
+      border-color: #93c5fd;
+      box-shadow: 0 4px 12px rgba(37,99,235,0.08);
+    }
+    .product-compact-box.is-expanded .product-title-text {
+      white-space: normal;
+      overflow: visible;
+      text-overflow: clip;
+      word-break: break-word;
+    }
+    .product-compact-box.is-expanded .product-expand-hint {
+      background: #2563eb;
+      color: #ffffff;
+      border-color: #2563eb;
+    }
+    
+    /* Hover Floating Tooltip */
+    .product-compact-box .product-floating-tooltip {
+      visibility: hidden;
+      opacity: 0;
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 0;
+      width: max-content;
+      min-width: 260px;
+      max-width: 420px;
+      background: #0f172a;
+      color: #f8fafc;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      line-height: 1.5;
+      font-weight: 400;
+      z-index: 1000;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.35), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      transform: translateY(4px);
+      word-break: break-word;
+      white-space: normal;
+    }
+    .product-compact-box .product-floating-tooltip::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 20px;
+      border-width: 6px;
+      border-style: solid;
+      border-color: #0f172a transparent transparent transparent;
+    }
+    .product-compact-box:not(.is-expanded):hover .product-floating-tooltip {
+      visibility: visible;
+      opacity: 1;
+      transform: translateY(0);
+    }
 
     .banner-alert {
       background: #fef2f2;
@@ -572,7 +706,7 @@
               <th>亚马逊下单日期</th>
               <th>采购账号</th>
               <th>国家</th>
-              <th>采购商品</th>
+              <th>采购商品 (ASIN + 商品名称)</th>
               <th>采购金额</th>
               <th>亚马逊订单号</th>
               <th>物流承运商及单号</th>
@@ -591,7 +725,7 @@
 
   <script>
     const TARGET_HASH = "895789b8d8ad587c690004287c8628046c7d40ab0dc4fb8360db82f63c4121cd";
-    const ENCRYPTED_PAYLOAD = "eyJzdW1tYXJ5IjogeyJ0b3RhbF9uZXdfb3JkZXJzIjogMywgIm91dF9vZl9zdG9ja19jb3VudCI6IDEsICJwZW5kaW5nX3B1cmNoYXNlX2NvdW50IjogMCwgImRlbGl2ZXJlZF9jb3VudCI6IDEsICJ0b3RhbF9wcm9qZWN0ZWRfcHJvZml0IjogIiswLjAwIOKCrCIsICJsYXN0X3N5bmNfdGltZSI6ICIyMDI2LTExLTE2IDE5OjExOjMyIn0sICJvdXRfb2Zfc3RvY2tfb3JkZXJzIjogW3sib3JkZXJfaWQiOiAiMjYxMTE0MjM0NFBCWURSIiwgImNoYW5uZWwiOiAiQ2Rpc2NvdW50IEZSIiwgInB1cmNoYXNlZF9hdCI6ICIyMDI2LTExLTE0IDIyOjQ0OjM4IiwgInNoaXBwZWRfYXRfbWF4IjogIjIwMjYtMTEtMTcgMjM6NDU6MjMiLCAiYXNpbiI6ICJCMEZEVFpENDNKIiwgImFtYXpvbl91cmwiOiAiaHR0cHM6Ly93d3cuYW1hem9uLmZyL2RwL0IwRkRUWkQ0M0oiLCAidGl0bGUiOiAiSURNYXJrZXQgVGFibGUgw6AgbWFuZ2VyIGV4dGVuc2libGUgcm9uZGUgMTEwLTE1MCBjbSBibGFuY2hlIGV0IGJvaXMgQUxJWCIsICJxdWFudGl0eSI6IDEsICJzZWxsaW5nX3ByaWNlIjogMTM0LjgyLCAic2VsbGluZ19wcmljZV9zdHIiOiAiMTM0LjgyIOKCrCIsICJhbWF6b25fY29zdCI6IDc5Ljk5LCAiYW1hem9uX2Nvc3Rfc3RyIjogIjc5Ljk5IOKCrCIsICJwcm9maXQiOiAwLjAsICJwcm9maXRfc3RyIjogIjAuMDAg4oKsIiwgInByb2ZpdF9tYXJnaW5fc3RyIjogIjAlIiwgInN0b2NrX3N0YXR1cyI6ICJvdXRfb2Zfc3RvY2siLCAic3RvY2tfYmFkZ2UiOiAi8J+aqCDkuKXph43nvLrotKcgKOaXoOi0pykiLCAic3RvY2tfZGVzYyI6ICJBY3R1ZWxsZW1lbnQgaW5kaXNwb25pYmxlIC0g5Lqa6ams6YCK5a6Y5pa55pat6LSn5peg5Zyo5ZSu5Y2W5a62IiwgIm9yZGVyX3N0YXRlIjogIm91dF9vZl9zdG9jayIsICJvcmRlcl9zdGF0ZV9iYWRnZSI6ICLwn5qoIOaXoOi0p+mihOitpiIsICJvcmRlcl9zdGF0ZV9kZXNjIjogIuS6mumprOmAiuaWrei0p+aXoOazlemHh+i0re+8jOW7uuiuruWcqCBDZGlzY291bnQg5Y2W5a625ZCO5Y+w5Y+K5pe26IGU57O75Lmw5a625Y2P5ZWG5oiW6YCA5qy+IiwgImJhZGdlX2NvbG9yIjogImRhbmdlciIsICJhbWF6b25fb3JkZXJfaWQiOiAiIiwgImFzc2lnbmVkX2FjY291bnQiOiBudWxsLCAiYXNzaWduZWRfYWNjb3VudF9uYW1lIjogIuaXoCAo57O757uf5bey5oum5oiq5LiL5Y2VKSIsICJyZWNpcGllbnRfbmFtZSI6ICJNYcOpIEh1ZXQiLCAicmVjaXBpZW50X2NpdHkiOiAiSW5ncmUiLCAicmVjaXBpZW50X3ppcCI6ICI0NTE0MCIsICJyZWNpcGllbnRfcGhvbmUiOiAiMDY1MDU3MjAzOCIsICJyZWNpcGllbnRfYWRkcmVzc19mdWxsIjogIk1hw6kgSHVldCwgMTAzIFJ1ZSBEZSBMYSBKdXN0aWNlLCA0NTE0MCBJbmdyZSwgRnJhbmNlIiwgImFjdGlvbl9hZHZpY2UiOiAi5L6b5bqU5ZWG5pat6LSn77yM6K+35ZyoIENkaXNjb3VudCDljZblrrblkI7lj7DogZTns7vkubDlrrbljY/llYbmiJblj5bmtogifV0sICJwZW5kaW5nX29yZGVycyI6IFtdLCAiYW1hem9uX29yZGVycyI6IFt7Im9yZGVyX2lkIjogIjQwNi01ODU5MTkzLTYyNjkxMjciLCAib3JkZXJfZGF0ZSI6ICIyMDI2LTExLTE2IiwgImNkaXNjb3VudF9vcmRlcl9pZCI6ICIyNjExMTUxMjU1UEQxQlQiLCAiY2Rpc2NvdW50X3B1cmNoYXNlZF9hdCI6ICIyMDI2LTExLTE1IDExOjU1OjIxIiwgImFjY291bnRfbmlja25hbWUiOiAiMTMgLSBTYXJhaCBaaXZlIChmcl9taWdyYXRlZF8xMykiLCAiY291bnRyeSI6ICLwn4er8J+HtyDms5Xlm70iLCAidGl0bGUiOiAiR1RQTEFZRVIgQ2hhaXNlIEdhbWluZyBCbGFuYyIsICJ0b3RhbF9hbW91bnQiOiAiMTY5LDk5IOKCrCIsICJ0cmFja2luZ19udW1iZXIiOiAi5pyq5omj5qy+5oiQ5YqfICjmmoLml6DljZXlj7cpIiwgInNoaXBwaW5nX3RpbWUiOiAi5omj5qy+5Y+X6Zi7ICjlvoXmjaLljaEpIiwgImRlbGl2ZXJ5X3N0YXR1cyI6ICLlj5HljaHooYzmnKrmibnlh4bmiaPmrL7vvIzpnIDmjaLljaHmiJblj5bmtojorqLljZUiLCAic3RhdHVzX2JhZGdlIjogIuW+heaUr+S7mOmqjOivgSAo5Y+R5Y2h6KGM5oum5oiqKSIsICJzdGF0dXNfY29sb3IiOiAiZGFuZ2VyIiwgInJlY2lwaWVudCI6ICJBbGVrc2FuZHJhIFZFUlNZQ0sgKEZsaW5zIFN1ciBTZWluZSkifSwgeyJvcmRlcl9pZCI6ICI0MDItNTU3MTk0Mi03NzYyNzQ2IiwgIm9yZGVyX2RhdGUiOiAiMjAyNi0xMS0wOSIsICJjZGlzY291bnRfb3JkZXJfaWQiOiAiMjYxMTA4MjE0N09RT0lMIiwgImNkaXNjb3VudF9wdXJjaGFzZWRfYXQiOiAiMjAyNi0xMS0wOCAyMDo0NzowMSIsICJhY2NvdW50X25pY2tuYW1lIjogIjExIC0gVHJhY2kgTGFuZGVycyAoZnJfbWlncmF0ZWRfMTEpIiwgImNvdW50cnkiOiAi8J+Hq/Cfh7cg5rOV5Zu9IiwgInRpdGxlIjogIlN1biBHYXJkZW4gTWF0ZWxhcyBwb3VyIGVuZmFudCA5MCB4IDIwMCBjbSwgMyDDoCAxMiBhbnMsIGZhYnJpcXXDqSBlbiBFdXJvcGUgfCBzeXN0w6htZSDDqXZvbHV0aWYgMi1lbi0xIHBvdXIgbGl0IGQnZW5mYW50IGV0IGxpdCBkJ2Fkb2xlc2NlbnQsIGNlcnRpZmnDqSBPZWtvLVRleCBldCBEZXJtYXRlc3QgLSBUcsOocyBiaWVuLCBSRzI4IGRlIDE1IGNtIiwgInRvdGFsX2Ftb3VudCI6ICIxMDYsOTUg4oKsIiwgInRyYWNraW5nX251bWJlciI6ICJDQTA4NjE2NzQzM0RFIChESEwpIiwgInNoaXBwaW5nX3RpbWUiOiAiMjAyNi0xMS0xMCAxODoxMyAoREUpIiwgImRlbGl2ZXJ5X3N0YXR1cyI6ICLlt7Lnrb7mlLYgKOacgOe7iOeKtuaAgSkiLCAic3RhdHVzX2JhZGdlIjogIuW3sumAgei+vuetvuaUtiIsICJzdGF0dXNfY29sb3IiOiAic3VjY2VzcyIsICJyZWNpcGllbnQiOiAiTXIgQ0FTVEVMIFBhdWxpbmUgKEFsaXhhbikifSwgeyJvcmRlcl9pZCI6ICI0MDItOTY1MTQxMi0yODYxOTA5IiwgIm9yZGVyX2RhdGUiOiAiMjAyNi0xMS0xNiIsICJjZGlzY291bnRfb3JkZXJfaWQiOiAiMjYxMTEzMjA1M1A4TlREIiwgImNkaXNjb3VudF9wdXJjaGFzZWRfYXQiOiAiMjAyNi0xMS0xMyAxOTo1Mzo0NiIsICJhY2NvdW50X25pY2tuYW1lIjogIjExIC0gVHJhY2kgTGFuZGVycyAoZnJfbWlncmF0ZWRfMTEpIiwgImNvdW50cnkiOiAi8J+Hq/Cfh7cg5rOV5Zu9IiwgInRpdGxlIjogIldPTFRVIEJ1cmVhdSBBc3NpcyBEZWJvdXQgw4lsZWN0cmlxdWUgODB4NDggTm9pciIsICJ0b3RhbF9hbW91bnQiOiAiODQsOTkg4oKsIiwgInRyYWNraW5nX251bWJlciI6ICLlvoXlh7rlupPnlJ/miJAgKFdPTFRVIEdtYkggKEZCTeiHquWPkei0pykpIiwgInNoaXBwaW5nX3RpbWUiOiAiTGl2cmFpc29uIGVzdGltw6llIDIxIG5vdi4gLSAyMyBub3YuIiwgImRlbGl2ZXJ5X3N0YXR1cyI6ICLnrYnlvoXlj5HotKflh7rlupMgKExpdnJhaXNvbiBlc3RpbcOpZSAyMSBub3YuIC0gMjMgbm92LikiLCAic3RhdHVzX2JhZGdlIjogIuW3suS4i+WNlSAo5aSH6LSn5LitKSIsICJzdGF0dXNfY29sb3IiOiAid2FybmluZyIsICJyZWNpcGllbnQiOiAiICgpIn1dfQ==";
+    const ENCRYPTED_PAYLOAD = "eyJzdW1tYXJ5IjogeyJ0b3RhbF9uZXdfb3JkZXJzIjogMywgIm91dF9vZl9zdG9ja19jb3VudCI6IDEsICJwZW5kaW5nX3B1cmNoYXNlX2NvdW50IjogMCwgImRlbGl2ZXJlZF9jb3VudCI6IDEsICJ0b3RhbF9wcm9qZWN0ZWRfcHJvZml0IjogIiswLjAwIOKCrCIsICJsYXN0X3N5bmNfdGltZSI6ICIyMDI2LTExLTE2IDE5OjE4OjU0In0sICJvdXRfb2Zfc3RvY2tfb3JkZXJzIjogW3sib3JkZXJfaWQiOiAiMjYxMTE0MjM0NFBCWURSIiwgImNoYW5uZWwiOiAiQ2Rpc2NvdW50IEZSIiwgInB1cmNoYXNlZF9hdCI6ICIyMDI2LTExLTE0IDIyOjQ0OjM4IiwgInNoaXBwZWRfYXRfbWF4IjogIjIwMjYtMTEtMTcgMjM6NDU6MjMiLCAiYXNpbiI6ICJCMEZEVFpENDNKIiwgImFtYXpvbl91cmwiOiAiaHR0cHM6Ly93d3cuYW1hem9uLmZyL2RwL0IwRkRUWkQ0M0oiLCAidGl0bGUiOiAiSURNYXJrZXQgVGFibGUgw6AgbWFuZ2VyIGV4dGVuc2libGUgcm9uZGUgMTEwLTE1MCBjbSBibGFuY2hlIGV0IGJvaXMgQUxJWCIsICJxdWFudGl0eSI6IDEsICJzZWxsaW5nX3ByaWNlIjogMTM0LjgyLCAic2VsbGluZ19wcmljZV9zdHIiOiAiMTM0LjgyIOKCrCIsICJhbWF6b25fY29zdCI6IDc5Ljk5LCAiYW1hem9uX2Nvc3Rfc3RyIjogIjc5Ljk5IOKCrCIsICJwcm9maXQiOiAwLjAsICJwcm9maXRfc3RyIjogIjAuMDAg4oKsIiwgInByb2ZpdF9tYXJnaW5fc3RyIjogIjAlIiwgInN0b2NrX3N0YXR1cyI6ICJvdXRfb2Zfc3RvY2siLCAic3RvY2tfYmFkZ2UiOiAi8J+aqCDkuKXph43nvLrotKcgKOaXoOi0pykiLCAic3RvY2tfZGVzYyI6ICJBY3R1ZWxsZW1lbnQgaW5kaXNwb25pYmxlIC0g5Lqa6ams6YCK5a6Y5pa55pat6LSn5peg5Zyo5ZSu5Y2W5a62IiwgIm9yZGVyX3N0YXRlIjogIm91dF9vZl9zdG9jayIsICJvcmRlcl9zdGF0ZV9iYWRnZSI6ICLwn5qoIOaXoOi0p+mihOitpiIsICJvcmRlcl9zdGF0ZV9kZXNjIjogIuS6mumprOmAiuaWrei0p+aXoOazlemHh+i0re+8jOW7uuiuruWcqCBDZGlzY291bnQg5Y2W5a625ZCO5Y+w5Y+K5pe26IGU57O75Lmw5a625Y2P5ZWG5oiW6YCA5qy+IiwgImJhZGdlX2NvbG9yIjogImRhbmdlciIsICJhbWF6b25fb3JkZXJfaWQiOiAiIiwgImFzc2lnbmVkX2FjY291bnQiOiBudWxsLCAiYXNzaWduZWRfYWNjb3VudF9uYW1lIjogIuaXoCAo57O757uf5bey5oum5oiq5LiL5Y2VKSIsICJyZWNpcGllbnRfbmFtZSI6ICJNYcOpIEh1ZXQiLCAicmVjaXBpZW50X2NpdHkiOiAiSW5ncmUiLCAicmVjaXBpZW50X3ppcCI6ICI0NTE0MCIsICJyZWNpcGllbnRfcGhvbmUiOiAiMDY1MDU3MjAzOCIsICJyZWNpcGllbnRfYWRkcmVzc19mdWxsIjogIk1hw6kgSHVldCwgMTAzIFJ1ZSBEZSBMYSBKdXN0aWNlLCA0NTE0MCBJbmdyZSwgRnJhbmNlIiwgImFjdGlvbl9hZHZpY2UiOiAi5L6b5bqU5ZWG5pat6LSn77yM6K+35ZyoIENkaXNjb3VudCDljZblrrblkI7lj7DogZTns7vkubDlrrbljY/llYbmiJblj5bmtogifV0sICJwZW5kaW5nX29yZGVycyI6IFtdLCAiYW1hem9uX29yZGVycyI6IFt7Im9yZGVyX2lkIjogIjQwNi01ODU5MTkzLTYyNjkxMjciLCAib3JkZXJfZGF0ZSI6ICIyMDI2LTExLTE2IiwgImNkaXNjb3VudF9vcmRlcl9pZCI6ICIyNjExMTUxMjU1UEQxQlQiLCAiY2Rpc2NvdW50X3B1cmNoYXNlZF9hdCI6ICIyMDI2LTExLTE1IDExOjU1OjIxIiwgImFjY291bnRfbmlja25hbWUiOiAiMTMgLSBTYXJhaCBaaXZlIChmcl9taWdyYXRlZF8xMykiLCAiY291bnRyeSI6ICLwn4er8J+HtyDms5Xlm70iLCAiYXNpbiI6ICJCMEdRWjJKMTNWIiwgImFtYXpvbl91cmwiOiAiaHR0cHM6Ly93d3cuYW1hem9uLmZyL2RwL0IwR1FaMkoxM1YiLCAidGl0bGUiOiAiR1RQTEFZRVIgQ2hhaXNlIEdhbWluZyBCbGFuYyIsICJ0b3RhbF9hbW91bnQiOiAiMTY5LDk5IOKCrCIsICJ0cmFja2luZ19udW1iZXIiOiAi5pyq5omj5qy+5oiQ5YqfICjmmoLml6DljZXlj7cpIiwgInNoaXBwaW5nX3RpbWUiOiAi5omj5qy+5Y+X6Zi7ICjlvoXmjaLljaEpIiwgImRlbGl2ZXJ5X3N0YXR1cyI6ICLlj5HljaHooYzmnKrmibnlh4bmiaPmrL7vvIzpnIDmjaLljaHmiJblj5bmtojorqLljZUiLCAic3RhdHVzX2JhZGdlIjogIuW+heaUr+S7mOmqjOivgSAo5Y+R5Y2h6KGM5oum5oiqKSIsICJzdGF0dXNfY29sb3IiOiAiZGFuZ2VyIiwgInJlY2lwaWVudCI6ICJBbGVrc2FuZHJhIFZFUlNZQ0sgKEZsaW5zIFN1ciBTZWluZSkifSwgeyJvcmRlcl9pZCI6ICI0MDItNTU3MTk0Mi03NzYyNzQ2IiwgIm9yZGVyX2RhdGUiOiAiMjAyNi0xMS0wOSIsICJjZGlzY291bnRfb3JkZXJfaWQiOiAiMjYxMTA4MjE0N09RT0lMIiwgImNkaXNjb3VudF9wdXJjaGFzZWRfYXQiOiAiMjAyNi0xMS0wOCAyMDo0NzowMSIsICJhY2NvdW50X25pY2tuYW1lIjogIjExIC0gVHJhY2kgTGFuZGVycyAoZnJfbWlncmF0ZWRfMTEpIiwgImNvdW50cnkiOiAi8J+Hq/Cfh7cg5rOV5Zu9IiwgImFzaW4iOiAiQjBHWldHSERQTiIsICJhbWF6b25fdXJsIjogImh0dHBzOi8vd3d3LmFtYXpvbi5mci9kcC9CMEdaV0dIRFBOIiwgInRpdGxlIjogIlN1biBHYXJkZW4gTWF0ZWxhcyBwb3VyIGVuZmFudCA5MCB4IDIwMCBjbSwgMyDDoCAxMiBhbnMsIGZhYnJpcXXDqSBlbiBFdXJvcGUgfCBzeXN0w6htZSDDqXZvbHV0aWYgMi1lbi0xIHBvdXIgbGl0IGQnZW5mYW50IGV0IGxpdCBkJ2Fkb2xlc2NlbnQsIGNlcnRpZmnDqSBPZWtvLVRleCBldCBEZXJtYXRlc3QgLSBUcsOocyBiaWVuLCBSRzI4IGRlIDE1IGNtIiwgInRvdGFsX2Ftb3VudCI6ICIxMDYsOTUg4oKsIiwgInRyYWNraW5nX251bWJlciI6ICJDQTA4NjE2NzQzM0RFIChESEwpIiwgInNoaXBwaW5nX3RpbWUiOiAiMjAyNi0xMS0xMCAxODoxMyAoREUpIiwgImRlbGl2ZXJ5X3N0YXR1cyI6ICLlt7Lnrb7mlLYgKOacgOe7iOeKtuaAgSkiLCAic3RhdHVzX2JhZGdlIjogIuW3sumAgei+vuetvuaUtiIsICJzdGF0dXNfY29sb3IiOiAic3VjY2VzcyIsICJyZWNpcGllbnQiOiAiTXIgQ0FTVEVMIFBhdWxpbmUgKEFsaXhhbikifSwgeyJvcmRlcl9pZCI6ICI0MDItOTY1MTQxMi0yODYxOTA5IiwgIm9yZGVyX2RhdGUiOiAiMjAyNi0xMS0xNiIsICJjZGlzY291bnRfb3JkZXJfaWQiOiAiMjYxMTEzMjA1M1A4TlREIiwgImNkaXNjb3VudF9wdXJjaGFzZWRfYXQiOiAiMjAyNi0xMS0xMyAxOTo1Mzo0NiIsICJhY2NvdW50X25pY2tuYW1lIjogIjExIC0gVHJhY2kgTGFuZGVycyAoZnJfbWlncmF0ZWRfMTEpIiwgImNvdW50cnkiOiAi8J+Hq/Cfh7cg5rOV5Zu9IiwgImFzaW4iOiAiQjBHUUszQ1NaNyIsICJhbWF6b25fdXJsIjogImh0dHBzOi8vd3d3LmFtYXpvbi5mci9kcC9CMEdRSzNDU1o3IiwgInRpdGxlIjogIldPTFRVIEJ1cmVhdSBBc3NpcyBEZWJvdXQgw4lsZWN0cmlxdWUgODB4NDggTm9pciIsICJ0b3RhbF9hbW91bnQiOiAiODQsOTkg4oKsIiwgInRyYWNraW5nX251bWJlciI6ICLlvoXlh7rlupPnlJ/miJAgKFdPTFRVIEdtYkggKEZCTeiHquWPkei0pykpIiwgInNoaXBwaW5nX3RpbWUiOiAiTGl2cmFpc29uIGVzdGltw6llIDIxIG5vdi4gLSAyMyBub3YuIiwgImRlbGl2ZXJ5X3N0YXR1cyI6ICLnrYnlvoXlj5HotKflh7rlupMgKExpdnJhaXNvbiBlc3RpbcOpZSAyMSBub3YuIC0gMjMgbm92LikiLCAic3RhdHVzX2JhZGdlIjogIuW3suS4i+WNlSAo5aSH6LSn5LitKSIsICJzdGF0dXNfY29sb3IiOiAid2FybmluZyIsICJyZWNpcGllbnQiOiAiICgpIn1dfQ==";
     let DASHBOARD_DATA = null;
 
     function checkStoredAuth() {
@@ -633,6 +767,39 @@
       localStorage.removeItem("tracker_access_auth");
       localStorage.removeItem("tracker_access_expire");
       window.location.reload();
+    }
+
+    function toggleProductExpand(el) {
+      el.classList.toggle("is-expanded");
+      const hint = el.querySelector(".product-expand-hint");
+      if (hint) {
+        hint.innerText = el.classList.contains("is-expanded") ? "收起 ▲" : "展开 ▼";
+      }
+    }
+
+    function renderProductCell(asin, title, amazonUrl) {
+      const safeAsin = (asin || "").trim();
+      const safeTitle = (title || "未知商品").replace(/"/g, "&quot;");
+      const url = amazonUrl || (safeAsin ? `https://www.amazon.fr/dp/${safeAsin}` : "#");
+
+      return `
+        <div class="product-compact-box" onclick="toggleProductExpand(this)" title="点击展开/收起完整名称，鼠标悬浮查看详情">
+          <div class="product-header-line">
+            ${safeAsin ? `
+              <a href="${url}" target="_blank" class="product-asin-badge" onclick="event.stopPropagation()" title="在亚马逊打开 ASIN ${safeAsin}">
+                ${safeAsin} ↗
+              </a>
+            ` : `<span class="badge badge-neutral" style="font-size: 11px;">无 ASIN</span>`}
+            <span class="product-expand-hint">展开 ▼</span>
+          </div>
+          <div class="product-title-text">${safeTitle}</div>
+          <div class="product-floating-tooltip">
+            <div style="font-weight: 700; color: #93c5fd; margin-bottom: 4px; font-family: monospace;">ASIN: ${safeAsin || "未关联"}</div>
+            <div style="color: #f8fafc; font-size: 12px; line-height: 1.45;">${safeTitle}</div>
+            <div style="color: #94a3b8; font-size: 11px; margin-top: 6px;">💡 单击展开完整商品名称，点击 ASIN 标签可直达亚马逊</div>
+          </div>
+        </div>
+      `;
     }
 
     function renderFullDashboard(data) {
@@ -679,9 +846,9 @@
               ${o.asin} ↗
             </a>
           </td>
-          <td class="cell-product">
-            <strong>${o.title}</strong>
-            <div class="cell-subtext">数量: ${o.quantity} 件</div>
+          <td>
+            ${renderProductCell(o.asin, o.title, o.amazon_url)}
+            <div class="cell-subtext" style="margin-top: 4px;">数量: ${o.quantity} 件</div>
           </td>
           <td style="font-weight: 700; color: #0f172a;">${o.selling_price_str}</td>
           <td>
@@ -725,9 +892,9 @@
                 ${o.asin} ↗
               </a>
             </td>
-            <td class="cell-product">
-              <strong>${o.title}</strong>
-              <div class="cell-subtext">现货状态: ${o.stock_desc}</div>
+            <td>
+              ${renderProductCell(o.asin, o.title, o.amazon_url)}
+              <div class="cell-subtext" style="margin-top: 4px;">现货状态: ${o.stock_desc}</div>
             </td>
             <td>
               <div style="font-weight: 700; color: #0f172a;">售价: ${o.selling_price_str}</div>
@@ -778,7 +945,9 @@
           <td><strong>${row.order_date}</strong></td>
           <td><span class="badge badge-neutral">${row.account_nickname}</span></td>
           <td style="white-space: nowrap;">${row.country}</td>
-          <td class="cell-product">${row.title}</td>
+          <td>
+            ${renderProductCell(row.asin, row.title, row.amazon_url)}
+          </td>
           <td style="font-weight: 700; color: #0f172a;">${row.total_amount}</td>
           <td>
             <span class="order-code">${row.order_id}
@@ -851,7 +1020,7 @@
 
       // Logistics
       (DASHBOARD_DATA.amazon_orders || []).forEach(o => {
-        rows.push(["🚚 亚马逊物流追踪", o.cdiscount_order_id || "-", o.cdiscount_purchased_at || "-", o.order_id, o.tracking_number, o.title, o.total_amount, "-", o.shipping_time, o.status_badge, o.recipient]);
+        rows.push(["🚚 亚马逊物流追踪", o.cdiscount_order_id || "-", o.cdiscount_purchased_at || "-", o.order_id, o.tracking_number, (o.asin ? ("[" + o.asin + "] ") : "") + o.title, o.total_amount, "-", o.shipping_time, o.status_badge, o.recipient]);
       });
 
       let csvContent = "\uFEFF" + rows.map(r => r.map(cell => '"' + (cell || "").toString().replace(/"/g, '""') + '"').join(",")).join("\n");
