@@ -3,26 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>亚马逊采购与物流追踪看板</title>
+  <title>跨境电商采购与物流全链条看板 (Amazon & Cdiscount Matrix Ops)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
   <style>
     :root {
       --primary: #2563eb;
       --primary-light: #eff6ff;
+      --primary-hover: #1d4ed8;
       --success: #16a34a;
       --success-light: #f0fdf4;
-      --warning: #eab308;
-      --warning-light: #fefce8;
+      --warning: #d97706;
+      --warning-light: #fffbeb;
       --danger: #dc2626;
+      --danger-light: #fef2f2;
+      --danger-border: #fecaca;
       --text-main: #0f172a;
       --text-muted: #64748b;
       --bg-page: #f8fafc;
       --bg-card: #ffffff;
       --border: #e2e8f0;
       --radius: 12px;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
       --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -32,8 +37,8 @@
       line-height: 1.5;
       min-height: 100vh;
     }
-    
-    /* Lock Screen */
+
+    /* Password Lock Screen */
     #lockScreen {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -51,7 +56,7 @@
       padding: 36px 32px;
       max-width: 420px;
       width: 100%;
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.25), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.25);
       text-align: center;
     }
     .lock-icon {
@@ -66,28 +71,8 @@
       font-size: 26px;
       margin: 0 auto 16px;
     }
-    .lock-title {
-      font-size: 20px;
-      font-weight: 700;
-      color: #0f172a;
-    }
-    .lock-desc {
-      font-size: 13.5px;
-      color: var(--text-muted);
-      margin: 6px 0 24px;
-    }
-    .input-group {
-      position: relative;
-      margin-bottom: 16px;
-      text-align: left;
-    }
-    .input-label {
-      font-size: 13px;
-      font-weight: 600;
-      margin-bottom: 6px;
-      display: block;
-      color: #334155;
-    }
+    .lock-title { font-size: 20px; font-weight: 700; color: #0f172a; }
+    .lock-desc { font-size: 13.5px; color: var(--text-muted); margin: 6px 0 24px; }
     .pwd-input {
       width: 100%;
       padding: 12px 14px;
@@ -95,7 +80,7 @@
       border-radius: 8px;
       font-size: 15px;
       outline: none;
-      transition: all 0.2s;
+      margin-bottom: 14px;
     }
     .pwd-input:focus {
       border-color: var(--primary);
@@ -113,27 +98,10 @@
       cursor: pointer;
       transition: all 0.2s;
     }
-    .unlock-btn:hover {
-      background: #1d4ed8;
-      transform: translateY(-1px);
-    }
-    .remember-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 20px;
-      font-size: 13px;
-      color: #64748b;
-    }
-    .error-msg {
-      color: var(--danger);
-      font-size: 13px;
-      margin-top: 10px;
-      display: none;
-      font-weight: 500;
-    }
+    .unlock-btn:hover { background: var(--primary-hover); }
+    .error-msg { color: var(--danger); font-size: 13px; margin-top: 10px; display: none; }
 
-    /* Top Global Navigation Bar */
+    /* Top Sticky Navigation */
     .top-nav {
       background: #ffffff;
       border-bottom: 1px solid var(--border);
@@ -141,13 +109,12 @@
       top: 0;
       z-index: 100;
       box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
-      margin: -24px -24px 24px -24px;
     }
     .nav-container {
-      max-width: 1300px;
+      max-width: 1380px;
       margin: 0 auto;
       padding: 0 24px;
-      height: 60px;
+      height: 64px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -157,58 +124,54 @@
       align-items: center;
       gap: 12px;
       text-decoration: none;
-      color: var(--text-main);
     }
     .brand-logo {
-      width: 32px;
-      height: 32px;
+      width: 36px;
+      height: 36px;
       background: linear-gradient(135deg, #2563eb, #3b82f6);
       color: white;
-      border-radius: 8px;
+      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 700;
-      font-size: 15px;
+      font-size: 18px;
     }
-    .brand-title {
-      font-size: 15px;
-      font-weight: 700;
-      color: #0f172a;
-    }
-    .nav-tabs {
-      display: flex;
-      gap: 8px;
-    }
+    .brand-title { font-size: 16px; font-weight: 700; color: #0f172a; }
+    .brand-sub { font-size: 11px; color: var(--text-muted); display: block; }
+    .nav-tabs { display: flex; gap: 8px; }
     .nav-tab {
-      padding: 6px 14px;
+      padding: 8px 14px;
       border-radius: 8px;
-      font-size: 13px;
+      font-size: 13.5px;
       font-weight: 600;
       text-decoration: none;
       color: var(--text-muted);
-      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+      background: transparent;
       display: flex;
       align-items: center;
       gap: 6px;
+      transition: all 0.2s;
     }
-    .nav-tab:hover {
-      background: #f1f5f9;
-      color: var(--text-main);
+    .nav-tab:hover { background: #f1f5f9; color: var(--text-main); }
+    .nav-tab.active { background: var(--primary-light); color: var(--primary); }
+    .tab-pill {
+      padding: 2px 7px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 700;
     }
-    .nav-tab.active {
-      background: var(--primary-light);
-      color: var(--primary);
-    }
+    .pill-danger { background: #fee2e2; color: #b91c1c; }
+    .pill-primary { background: #dbeafe; color: #1e40af; }
+    .pill-success { background: #dcfce7; color: #15803d; }
 
-    /* Main Dashboard Content */
+    /* Main Dashboard Layout */
     #dashboardContent {
       display: none;
-      padding: 24px;
-    }
-    .container {
-      max-width: 1300px;
+      max-width: 1380px;
       margin: 0 auto;
+      padding: 24px;
     }
     header {
       display: flex;
@@ -220,83 +183,111 @@
     }
     .title-area h1 {
       font-size: 24px;
-      font-weight: 700;
+      font-weight: 800;
       color: #0f172a;
       display: flex;
       align-items: center;
       gap: 10px;
     }
-    .subtitle {
-      font-size: 14px;
-      color: var(--text-muted);
-      margin-top: 4px;
-    }
-    .actions {
-      display: flex;
-      gap: 12px;
-    }
+    .subtitle { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
+    .actions { display: flex; gap: 10px; }
     .btn {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 10px 18px;
+      padding: 9px 16px;
       border-radius: 8px;
-      font-size: 14px;
+      font-size: 13.5px;
       font-weight: 600;
       cursor: pointer;
-      text-decoration: none;
-      transition: all 0.2s;
       border: 1px solid var(--border);
       background: #fff;
       color: var(--text-main);
+      transition: all 0.2s;
     }
-    .btn:hover {
-      background: #f1f5f9;
-      transform: translateY(-1px);
-    }
-    .btn-primary {
-      background: var(--primary);
-      color: white;
-      border: none;
-    }
-    .btn-primary:hover {
-      background: #1d4ed8;
-      color: white;
-    }
-    .card {
-      background: var(--bg-card);
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-      margin-bottom: 24px;
-    }
+    .btn:hover { background: #f1f5f9; transform: translateY(-1px); }
+    .btn-primary { background: var(--primary); color: white; border: none; }
+    .btn-primary:hover { background: var(--primary-hover); }
+
+    /* KPI Summary Stats */
     .stats-bar {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 16px;
       margin-bottom: 24px;
     }
-    .stat-item {
-      background: #fff;
-      padding: 18px;
+    .stat-card {
+      background: #ffffff;
+      padding: 20px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+    .icon-danger { background: #fef2f2; color: #dc2626; }
+    .icon-primary { background: #eff6ff; color: #2563eb; }
+    .icon-success { background: #f0fdf4; color: #16a34a; }
+    .icon-warning { background: #fffbeb; color: #d97706; }
+    .stat-info { flex: 1; }
+    .stat-label { font-size: 12.5px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .stat-val { font-size: 24px; font-weight: 800; color: var(--text-main); margin-top: 2px; }
+    .stat-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+    /* Section Cards */
+    .section-card {
+      background: #ffffff;
       border-radius: var(--radius);
       border: 1px solid var(--border);
       box-shadow: var(--shadow);
+      margin-bottom: 28px;
+      overflow: hidden;
     }
-    .stat-label {
-      font-size: 13px;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      font-weight: 600;
+    .section-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
     }
-    .stat-value {
-      font-size: 24px;
+    .section-title {
+      font-size: 17px;
       font-weight: 700;
-      margin-top: 6px;
-      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
+    .section-badge {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 9999px;
+    }
+
+    /* Out-of-Stock Alert Banner */
+    .danger-section {
+      border: 1.5px solid #f87171;
+      background: #fffafa;
+    }
+    .danger-section .section-header {
+      background: #fef2f2;
+      border-bottom: 1px solid #fee2e2;
+    }
+
+    /* Table Styles */
     .table-wrapper {
       width: 100%;
       overflow-x: auto;
@@ -304,45 +295,45 @@
     table {
       width: 100%;
       border-collapse: collapse;
+      font-size: 13.5px;
       text-align: left;
-      font-size: 14px;
     }
     th {
       background: #f8fafc;
-      padding: 14px 18px;
+      padding: 12px 18px;
       font-weight: 600;
       color: #475569;
       border-bottom: 1px solid var(--border);
       white-space: nowrap;
     }
     td {
-      padding: 16px 18px;
+      padding: 14px 18px;
       border-bottom: 1px solid var(--border);
       vertical-align: middle;
     }
-    tr:last-child td {
-      border-bottom: none;
-    }
-    tr:hover {
-      background-color: #f8fafc;
-    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover { background-color: #f8fafc; }
+
+    /* Badges & Elements */
     .badge {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       padding: 4px 10px;
       border-radius: 9999px;
       font-size: 12px;
       font-weight: 600;
       white-space: nowrap;
     }
-    .badge-warning { background: var(--warning-light); color: #854d0e; border: 1px solid #fef08a; }
+    .badge-danger { background: var(--danger-light); color: var(--danger); border: 1px solid var(--danger-border); }
+    .badge-warning { background: var(--warning-light); color: var(--warning); border: 1px solid #fde68a; }
     .badge-info { background: var(--primary-light); color: var(--primary); border: 1px solid #bfdbfe; }
     .badge-success { background: var(--success-light); color: var(--success); border: 1px solid #bbf7d0; }
     .badge-neutral { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
+
     .order-code {
       font-family: monospace;
-      font-weight: 600;
+      font-weight: 700;
       color: #0f172a;
       background: #f1f5f9;
       padding: 3px 8px;
@@ -350,8 +341,17 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      white-space: nowrap;
     }
+    .asin-link {
+      font-family: monospace;
+      font-weight: 700;
+      color: var(--primary);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .asin-link:hover { text-decoration: underline; }
     .copy-btn {
       background: transparent;
       border: none;
@@ -361,25 +361,21 @@
       padding: 2px;
     }
     .copy-btn:hover { color: var(--primary); }
-    .product-cell {
-      max-width: 320px;
-      font-weight: 500;
-      color: #1e293b;
-    }
-    .amount-cell {
-      font-weight: 700;
-      color: #0f172a;
-      font-size: 15px;
-      white-space: nowrap;
-    }
-    .alert-banner {
-      background: #f0fdf4;
-      border-left: 4px solid #16a34a;
-      padding: 14px 18px;
-      margin-bottom: 20px;
+    .profit-positive { color: #16a34a; font-weight: 700; font-size: 14.5px; }
+    .profit-zero { color: #94a3b8; font-weight: 600; }
+    .cell-product { max-width: 280px; font-weight: 500; color: #1e293b; }
+    .cell-subtext { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
+    .deadline-urgent { color: #dc2626; font-weight: 700; }
+    .deadline-normal { color: #475569; font-weight: 500; }
+
+    .banner-alert {
+      background: #fef2f2;
+      border-left: 4px solid #dc2626;
+      padding: 14px 20px;
+      margin-bottom: 24px;
       border-radius: 0 8px 8px 0;
+      color: #991b1b;
       font-size: 13.5px;
-      color: #166534;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -394,96 +390,206 @@
   <div id="lockScreen">
     <div class="lock-box">
       <div class="lock-icon">🔒</div>
-      <h2 class="lock-title">订单与物流实时追踪</h2>
-      <p class="lock-desc">内部专属采购与物流数据，请输入访问密码以解锁查看</p>
+      <h2 class="lock-title">订单与物流实时看板</h2>
+      <p class="lock-desc">Amazon 跨境采购与 Cdiscount 矩阵运维系统，请输入密码解锁</p>
       <form onsubmit="handleUnlock(event)">
-        <div class="input-group">
-          <label class="input-label" for="accessPwd">访问密码</label>
-          <input type="password" id="accessPwd" class="pwd-input" placeholder="请输入密码..." autofocus required>
-        </div>
-        <div class="remember-row">
-          <label style="cursor: pointer; display: flex; align-items: center; gap: 6px;">
-            <input type="checkbox" id="rememberMe" checked> 7天内免输密码
-          </label>
-        </div>
+        <input type="password" id="accessPwd" class="pwd-input" placeholder="请输入访问密码..." autofocus required>
         <button type="submit" class="unlock-btn">🔐 解锁并查看数据</button>
         <div id="errorMsg" class="error-msg">⚠️ 密码不正确，请核对后重试</div>
       </form>
     </div>
   </div>
 
-  <!-- DASHBOARD CONTENT (SHOWN AFTER UNLOCK) -->
-  <div id="dashboardContent">
-    <div class="container">
-      <header>
-        <div class="title-area">
-          <h1>📦 亚马逊采购与全链条物流追踪看板</h1>
-          <p class="subtitle">实时同步亚马逊跨境采购订单状态、支付结算、物流承运商及签收轨迹</p>
-        </div>
-        <div class="actions">
-          <button class="btn" onclick="exportTableToCSV('orders_tracker.csv')">📥 导出 Excel / CSV 表格</button>
-          <button class="btn" onclick="lockPage()">🔒 退出并锁定</button>
-          <button class="btn btn-primary" onclick="window.location.reload()">🔄 刷新最新状态</button>
-        </div>
-      </header>
-
-      <div class="alert-banner">
+  <!-- TOP STICKY BAR -->
+  <div class="top-nav">
+    <div class="nav-container">
+      <div class="brand">
+        <div class="brand-logo">📦</div>
         <div>
-          <strong>📌 最新状态提示：</strong> <span id="latestBannerText">加载中...</span>
-        </div>
-        <div><strong>系统最后同步：</strong> <span id="syncTime"></span></div>
-      </div>
-
-      <div class="stats-bar">
-        <div class="stat-item">
-          <div class="stat-label">总订单数</div>
-          <div class="stat-value" id="statCount">1 笔</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-label">采购总金额</div>
-          <div class="stat-value" id="statAmount">106,95 €</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-label">当前发货状态</div>
-          <div class="stat-value" id="statStatus" style="color: #2563eb; font-size: 20px;">已发货 (DHL)</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-label">预计送达时效</div>
-          <div class="stat-value" id="statEta" style="font-size: 20px; color: #2563eb;">11/14 - 11/17</div>
+          <span class="brand-title">Amazon 矩阵采购与 Cdiscount 全链条物流看板</span>
+          <span class="brand-sub">Matrix Procurement & Fulfillment Operations</span>
         </div>
       </div>
-
-      <div class="card">
-        <div class="table-wrapper">
-          <table id="ordersTable">
-            <thead>
-              <tr>
-                <th>下单日期</th>
-                <th>下单账号 (内部昵称)</th>
-                <th>国家</th>
-                <th>产品名</th>
-                <th>总金额</th>
-                <th>订单号</th>
-                <th>物流单号</th>
-                <th>发货时间</th>
-                <th>签收情况 / 当前节点</th>
-              </tr>
-            </thead>
-            <tbody id="tableBody">
-              <!-- Rendered dynamically upon decryption -->
-            </tbody>
-          </table>
-        </div>
+      <div class="nav-tabs">
+        <button class="nav-tab active" onclick="switchTab('all', this)">📊 全览总看板</button>
+        <button class="nav-tab" onclick="switchTab('danger', this)">
+          🚨 缺货预警 <span class="tab-pill pill-danger" id="navOosCount">0</span>
+        </button>
+        <button class="nav-tab" onclick="switchTab('pending', this)">
+          🛒 待采购新订单 <span class="tab-pill pill-primary" id="navPendingCount">0</span>
+        </button>
+        <button class="nav-tab" onclick="switchTab('logistics', this)">
+          🚚 亚马逊物流追踪 <span class="tab-pill pill-success" id="navLogisticsCount">0</span>
+        </button>
       </div>
     </div>
   </div>
 
+  <!-- DASHBOARD CONTENT (SHOWN AFTER UNLOCK) -->
+  <div id="dashboardContent">
+    <header>
+      <div class="title-area">
+        <h1>📦 业务运维总览看板</h1>
+        <p class="subtitle">已打通 Cdiscount (Octopia) 官方订单接口与亚马逊矩阵买家自动化采购流程</p>
+      </div>
+      <div class="actions">
+        <button class="btn" onclick="exportUnifiedCSV()">📥 导出完整数据表 (CSV)</button>
+        <button class="btn" onclick="lockPage()">🔒 锁定页面</button>
+        <button class="btn btn-primary" onclick="window.location.reload()">🔄 刷新最新状态</button>
+      </div>
+    </header>
+
+    <!-- CRITICAL ALERT BANNER -->
+    <div class="banner-alert" id="urgentBanner">
+      <div>
+        <strong>🚨 重点提示：</strong>
+        <span id="urgentBannerText">正在读取系统最新库存与排单数据...</span>
+      </div>
+      <div style="font-size: 12.5px;"><strong>数据同步时间：</strong> <span id="syncTimestamp"></span></div>
+    </div>
+
+    <!-- STATS SUMMARY -->
+    <div class="stats-bar">
+      <div class="stat-card">
+        <div class="stat-icon icon-danger">🚨</div>
+        <div class="stat-info">
+          <div class="stat-label">缺货预警单</div>
+          <div class="stat-val" id="kpiOos" style="color: #dc2626;">0 笔</div>
+          <div class="stat-sub">亚马逊断货，已拦截采购</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon icon-primary">🛒</div>
+        <div class="stat-info">
+          <div class="stat-label">待采购新订单</div>
+          <div class="stat-val" id="kpiPending" style="color: #2563eb;">0 笔</div>
+          <div class="stat-sub">现货充足，待确认下单</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon icon-success">💰</div>
+        <div class="stat-info">
+          <div class="stat-label">待采购预估利润</div>
+          <div class="stat-val" id="kpiProfit" style="color: #16a34a;">0.00 €</div>
+          <div class="stat-sub">扣除亚马逊采购成本后毛利</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon icon-warning">🚚</div>
+        <div class="stat-info">
+          <div class="stat-label">亚马逊物流追踪</div>
+          <div class="stat-val" id="kpiLogistics">0 笔</div>
+          <div class="stat-sub">在途配送与签收历史</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 1: OUT-OF-STOCK ALERT (CRITICAL PRIORITY) -->
+    <div class="section-card danger-section" id="sectionDanger">
+      <div class="section-header">
+        <div class="section-title" style="color: #991b1b;">
+          <span>🚨 严重缺货专区 (已自动拦截采购，防止误拍)</span>
+          <span class="badge badge-danger">需人工介入</span>
+        </div>
+        <div style="font-size: 13px; color: #b91c1c;">
+          提示：对应商品在亚马逊法国站彻底售罄，当前无任何第三方现货
+        </div>
+      </div>
+      <div class="table-wrapper">
+        <table id="oosTable">
+          <thead>
+            <tr>
+              <th>Cdiscount 订单号</th>
+              <th>亚马逊 ASIN</th>
+              <th>缺货产品详情</th>
+              <th>平台售价</th>
+              <th>最迟发货时间</th>
+              <th>买家收件信息</th>
+              <th>供货排查与建议处置</th>
+            </tr>
+          </thead>
+          <tbody id="oosTbody">
+            <!-- Rendered by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SECTION 2: PENDING PURCHASE ORDERS -->
+    <div class="section-card" id="sectionPending">
+      <div class="section-header">
+        <div class="section-title">
+          <span>🛒 待采购新订单 (现货充足，已核算利润与分配成熟账号)</span>
+          <span class="badge badge-info" id="pendingBadgeCount">0 笔待拍</span>
+        </div>
+        <div style="font-size: 13px; color: var(--text-muted);">
+          安全原则：严格单号单独立住宅代理，结算台确认后下单
+        </div>
+      </div>
+      <div class="table-wrapper">
+        <table id="pendingTable">
+          <thead>
+            <tr>
+              <th>Cdiscount 订单号</th>
+              <th>亚马逊 ASIN</th>
+              <th>拟采购商品</th>
+              <th>售价 vs 采购成本</th>
+              <th>预计毛利润</th>
+              <th>最迟发货时效</th>
+              <th>分配买家号</th>
+              <th>当前采购就绪状态</th>
+              <th>收件人及城市</th>
+            </tr>
+          </thead>
+          <tbody id="pendingTbody">
+            <!-- Rendered by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SECTION 3: AMAZON LOGISTICS & SHIPMENTS -->
+    <div class="section-card" id="sectionLogistics">
+      <div class="section-header">
+        <div class="section-title">
+          <span>🚚 亚马逊采购与全链条物流追踪 (在途 / 已签收)</span>
+          <span class="badge badge-success">物流监控</span>
+        </div>
+        <div style="font-size: 13px; color: var(--text-muted);">
+          自动跳过已签收终态，新轨迹自动回填 Cdiscount
+        </div>
+      </div>
+      <div class="table-wrapper">
+        <table id="logisticsTable">
+          <thead>
+            <tr>
+              <th>下单日期</th>
+              <th>下单账号</th>
+              <th>国家</th>
+              <th>采购商品</th>
+              <th>采购金额</th>
+              <th>亚马逊订单号</th>
+              <th>物流承运商及单号</th>
+              <th>发货时间</th>
+              <th>签收轨迹与节点</th>
+            </tr>
+          </thead>
+          <tbody id="logisticsTbody">
+            <!-- Rendered by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
   <script>
-    // Security Hash (SHA-256 of correct password)
     const TARGET_HASH = "895789b8d8ad587c690004287c8628046c7d40ab0dc4fb8360db82f63c4121cd";
-    
-    // Encrypted Data Payload
-    const ENCRYPTED_PAYLOAD = "W3sib3JkZXJfZGF0ZSI6ICIyMDI2LTExLTA5IiwgImFjY291bnRfbmlja25hbWUiOiAiMTEgLSBUcmFjaSBMYW5kZXJzIChmcl9taWdyYXRlZF8xMSkiLCAiY291bnRyeSI6ICLwn4er8J+HtyDms5Xlm70iLCAidGl0bGUiOiAiU3VuIEdhcmRlbiBNYXRlbGFzIHBvdXIgZW5mYW50IDkwIHggMjAwIGNtLCAzIMOgIDEyIGFucywgZmFicmlxdcOpIGVuIEV1cm9wZSB8IHN5c3TDqG1lIMOpdm9sdXRpZiAyLWVuLTEgcG91ciBsaXQgZCdlbmZhbnQgZXQgbGl0IGQnYWRvbGVzY2VudCwgY2VydGlmacOpIE9la28tVGV4IGV0IERlcm1hdGVzdCAtIFRyw6hzIGJpZW4sIFJHMjggZGUgMTUgY20iLCAidG90YWxfYW1vdW50IjogIjEwNiw5NSDigqwiLCAib3JkZXJfaWQiOiAiNDAyLTU1NzE5NDItNzc2Mjc0NiIsICJ0cmFja2luZ19udW1iZXIiOiAiQ0EwODYxNjc0MzNERSAoREhMKSIsICJzaGlwcGluZ190aW1lIjogIjIwMjYtMTEtMTAgMTg6MTMgKERFKSIsICJkZWxpdmVyeV9zdGF0dXMiOiAi5bey562+5pS2IiwgInN0YXR1c19iYWRnZSI6ICLlt7LpgIHovr7nrb7mlLYiLCAic3RhdHVzX2NvbG9yIjogInN1Y2Nlc3MiLCAic3RhdHVzX2Rlc2MiOiAi5bey562+5pS2IChESEwgQ0EwODYxNjc0MzNERSkiLCAiZXN0aW1hdGVkX2RlbGl2ZXJ5IjogIjIwMjYtMTEtMTQgLSAyMDI2LTExLTE3IiwgInJlY2lwaWVudCI6ICJNciBDQVNURUwgUGF1bGluZSAoQWxpeGFuKSJ9XQ==";
+    const ENCRYPTED_PAYLOAD = "eyJzdW1tYXJ5IjogeyJ0b3RhbF9uZXdfb3JkZXJzIjogMywgIm91dF9vZl9zdG9ja19jb3VudCI6IDEsICJwZW5kaW5nX3B1cmNoYXNlX2NvdW50IjogMiwgImRlbGl2ZXJlZF9jb3VudCI6IDEsICJ0b3RhbF9wcm9qZWN0ZWRfcHJvZml0IjogIisxNTkuMjkg4oKsIiwgImxhc3Rfc3luY190aW1lIjogIjIwMjYtMTEtMTYgMDk6MzY6MDAifSwgIm91dF9vZl9zdG9ja19vcmRlcnMiOiBbeyJvcmRlcl9pZCI6ICIyNjExMTQyMzQ0UEJZRFIiLCAiY2hhbm5lbCI6ICJDZGlzY291bnQgRlIiLCAicHVyY2hhc2VkX2F0IjogIjIwMjYtMTEtMTQgMjI6NDQ6MzgiLCAic2hpcHBlZF9hdF9tYXgiOiAiMjAyNi0xMS0xNyAyMzo0NToyMyIsICJhc2luIjogIkIwRkRUWkQ0M0oiLCAiYW1hem9uX3VybCI6ICJodHRwczovL3d3dy5hbWF6b24uZnIvZHAvQjBGRFRaRDQzSiIsICJ0aXRsZSI6ICJJRE1hcmtldCBUYWJsZSDDoCBtYW5nZXIgZXh0ZW5zaWJsZSByb25kZSAxMTAtMTUwIGNtIGJsYW5jaGUgZXQgYm9pcyBBTElYIiwgInF1YW50aXR5IjogMSwgInNlbGxpbmdfcHJpY2UiOiAxMzQuODIsICJzZWxsaW5nX3ByaWNlX3N0ciI6ICIxMzQuODIg4oKsIiwgImFtYXpvbl9jb3N0IjogNzkuOTksICJhbWF6b25fY29zdF9zdHIiOiAiNzkuOTkg4oKsIiwgInByb2ZpdCI6IDAuMCwgInByb2ZpdF9zdHIiOiAiMC4wMCDigqwiLCAicHJvZml0X21hcmdpbl9zdHIiOiAiMCUiLCAic3RvY2tfc3RhdHVzIjogIm91dF9vZl9zdG9jayIsICJzdG9ja19iYWRnZSI6ICLwn5qoIOS4pemHjee8uui0pyAo5peg6LSnKSIsICJzdG9ja19kZXNjIjogIkFjdHVlbGxlbWVudCBpbmRpc3BvbmlibGUgLSDkuprpqazpgIrlrpjmlrnmlq3otKfml6DlnKjllK7ljZblrrYiLCAib3JkZXJfc3RhdGUiOiAib3V0X29mX3N0b2NrIiwgIm9yZGVyX3N0YXRlX2JhZGdlIjogIvCfmqgg5peg6LSn6aKE6K2mIiwgIm9yZGVyX3N0YXRlX2Rlc2MiOiAi5Lqa6ams6YCK5pat6LSn5peg5rOV6YeH6LSt77yM5bu66K6u5ZyoIENkaXNjb3VudCDljZblrrblkI7lj7Dlj4rml7bogZTns7vkubDlrrbljY/llYbmiJbpgIDmrL4iLCAiYmFkZ2VfY29sb3IiOiAiZGFuZ2VyIiwgImFzc2lnbmVkX2FjY291bnQiOiBudWxsLCAiYXNzaWduZWRfYWNjb3VudF9uYW1lIjogIuaXoCAo57O757uf5bey5oum5oiq5LiL5Y2VKSIsICJyZWNpcGllbnRfbmFtZSI6ICJNYcOpIEh1ZXQiLCAicmVjaXBpZW50X2NpdHkiOiAiSW5ncmUiLCAicmVjaXBpZW50X3ppcCI6ICI0NTE0MCIsICJyZWNpcGllbnRfcGhvbmUiOiAiMDY1MDU3MjAzOCIsICJyZWNpcGllbnRfYWRkcmVzc19mdWxsIjogIk1hw6kgSHVldCwgMTAzIFJ1ZSBEZSBMYSBKdXN0aWNlLCA0NTE0MCBJbmdyZSwgRnJhbmNlIiwgImFjdGlvbl9hZHZpY2UiOiAi5L6b5bqU5ZWG5pat6LSn77yM6K+35ZyoIENkaXNjb3VudCDljZblrrblkI7lj7DogZTns7vkubDlrrbljY/llYbmiJblj5bmtogifV0sICJwZW5kaW5nX29yZGVycyI6IFt7Im9yZGVyX2lkIjogIjI2MTExNTEyNTVQRDFCVCIsICJjaGFubmVsIjogIkNkaXNjb3VudCBGUiIsICJwdXJjaGFzZWRfYXQiOiAiMjAyNi0xMS0xNSAxMTo1NToyMSIsICJzaGlwcGVkX2F0X21heCI6ICIyMDI2LTExLTE4IDEyOjU1OjIyIiwgImFzaW4iOiAiQjBHUVoySjEzViIsICJhbWF6b25fdXJsIjogImh0dHBzOi8vd3d3LmFtYXpvbi5mci9kcC9CMEdRWjJKMTNWIiwgInRpdGxlIjogIkdUUExBWUVSIENoYWlzZSBHYW1pbmcgRXJnb25vbWlxdWUgYXZlYyBSZXBvc2UtUGllZHMgZXQgSGF1dC1QYXJsZXVycyBCbHVldG9vdGgsIEJsYW5jIiwgInF1YW50aXR5IjogMSwgInNlbGxpbmdfcHJpY2UiOiAyNzEuOTEsICJzZWxsaW5nX3ByaWNlX3N0ciI6ICIyNzEuOTEg4oKsIiwgImFtYXpvbl9jb3N0IjogMTY5Ljk5LCAiYW1hem9uX2Nvc3Rfc3RyIjogIjE2OS45OSDigqwiLCAicHJvZml0IjogMTAxLjkyLCAicHJvZml0X3N0ciI6ICIrMTAxLjkyIOKCrCIsICJwcm9maXRfbWFyZ2luX3N0ciI6ICIzNy41JSIsICJzdG9ja19zdGF0dXMiOiAiaW5fc3RvY2siLCAic3RvY2tfYmFkZ2UiOiAi546w6LSn5YWF6LazIiwgInN0b2NrX2Rlc2MiOiAiQW1hem9uIFByaW1lIC8gRXhww6lkacOpIHBhciBBbWF6b24gKOeOsOi0p+acieW6k+WtmCkiLCAib3JkZXJfc3RhdGUiOiAicmVhZHlfdG9fcHVyY2hhc2UiLCAib3JkZXJfc3RhdGVfYmFkZ2UiOiAi5b6F5LiL5Y2V6YeH6LStIiwgIm9yZGVyX3N0YXRlX2Rlc2MiOiAi5paw5Lmw5a625Y+35bey5bCx57uq77yM546w6LSn5YWF6Laz77yM5b6F55So5oi356Gu6K6k5ZCO5omn6KGM5Yqg6LSt5LiO57uT566XIiwgImJhZGdlX2NvbG9yIjogImluZm8iLCAiYXNzaWduZWRfYWNjb3VudCI6ICJmcl9taWdyYXRlZF8wNyIsICJhc3NpZ25lZF9hY2NvdW50X25hbWUiOiAiMDcgLSBBbGV4IChmcl9taWdyYXRlZF8wNykiLCAicmVjaXBpZW50X25hbWUiOiAiQWxla3NhbmRyYSBWRVJTWUNLIiwgInJlY2lwaWVudF9jaXR5IjogIkZsaW5zIFN1ciBTZWluZSIsICJyZWNpcGllbnRfemlwIjogIjc4NDEwIiwgInJlY2lwaWVudF9waG9uZSI6ICIwNzgxODA0MDgyIiwgInJlY2lwaWVudF9hZGRyZXNzX2Z1bGwiOiAiQWxla3NhbmRyYSBWRVJTWUNLLCAxIFJ1ZSBEZXMgR2xhaXNpZXJlcywgNzg0MTAgRmxpbnMgU3VyIFNlaW5lLCBGcmFuY2UiLCAiYWN0aW9uX2FkdmljZSI6ICLlt7LplIHljZXlvoXnlKjmiLfnoa7orqTlkI7ljbPlj6/oh6rliqjkuIvljZUifSwgeyJvcmRlcl9pZCI6ICIyNjExMTMyMDUzUDhOVEQiLCAiY2hhbm5lbCI6ICJDZGlzY291bnQgRlIiLCAicHVyY2hhc2VkX2F0IjogIjIwMjYtMTEtMTMgMTk6NTM6NDYiLCAic2hpcHBlZF9hdF9tYXgiOiAiMjAyNi0xMS0xOCAyMDo1MzoyMSIsICJhc2luIjogIkIwR1FLM0NTWjciLCAiYW1hem9uX3VybCI6ICJodHRwczovL3d3dy5hbWF6b24uZnIvZHAvQjBHUUszQ1NaNyIsICJ0aXRsZSI6ICJXT0xUVSBCdXJlYXUgQXNzaXMgRGVib3V0IMOJbGVjdHJpcXVlLCBSw6lnbGFibGUgZW4gSGF1dGV1ciwgODB4NDgsIE5vaXIiLCAicXVhbnRpdHkiOiAxLCAic2VsbGluZ19wcmljZSI6IDE0Mi4zNiwgInNlbGxpbmdfcHJpY2Vfc3RyIjogIjE0Mi4zNiDigqwiLCAiYW1hem9uX2Nvc3QiOiA4NC45OSwgImFtYXpvbl9jb3N0X3N0ciI6ICI4NC45OSDigqwiLCAicHJvZml0IjogNTcuMzcsICJwcm9maXRfc3RyIjogIis1Ny4zNyDigqwiLCAicHJvZml0X21hcmdpbl9zdHIiOiAiNDAuMyUiLCAic3RvY2tfc3RhdHVzIjogImluX3N0b2NrIiwgInN0b2NrX2JhZGdlIjogIueOsOi0p+WFhei2syIsICJzdG9ja19kZXNjIjogIkFtYXpvbiBWZW5kdSBwYXIgV09MVFUgKOeOsOi0p+WFhei2sykiLCAib3JkZXJfc3RhdGUiOiAicmVhZHlfZm9yX2NoZWNrb3V0IiwgIm9yZGVyX3N0YXRlX2JhZGdlIjogIuWwsee7quW+hee7k+i0piIsICJvcmRlcl9zdGF0ZV9kZXNjIjogIue7k+eul+WPsOW3sumUgeWumuaUtuS7tuS6uuS4jum7mOiupOWvuei0puWcsOWdgO+8jOW+heehruiupOS4i+WNlSIsICJiYWRnZV9jb2xvciI6ICJ3YXJuaW5nIiwgImFzc2lnbmVkX2FjY291bnQiOiAiZnJfMTc5MjkzMjgxOCIsICJhc3NpZ25lZF9hY2NvdW50X25hbWUiOiAiMDIgLSBSZXZhIFdhbHNoIChmcl8xNzkyOTMyODE4KSIsICJyZWNpcGllbnRfbmFtZSI6ICJTYW1pciBBYmFocmkiLCAicmVjaXBpZW50X2NpdHkiOiAiTGlldXNhaW50IiwgInJlY2lwaWVudF96aXAiOiAiNzcxMjciLCAicmVjaXBpZW50X3Bob25lIjogIjA2MjI1MTAxMjkiLCAicmVjaXBpZW50X2FkZHJlc3NfZnVsbCI6ICJTYW1pciBBYmFocmksIDEwIFJ1ZSBQaWVycmUgTWVjaGFpbiwgQXBwYXJ0ZW1lbnQgRzEwNCwgNzcxMjcgTGlldXNhaW50LCBGcmFuY2UiLCAiYWN0aW9uX2FkdmljZSI6ICLlt7LplIHljZXlvoXnlKjmiLfnoa7orqTlkI7ljbPlj6/oh6rliqjkuIvljZUifV0sICJhbWF6b25fb3JkZXJzIjogW3sib3JkZXJfaWQiOiAiNDAyLTU1NzE5NDItNzc2Mjc0NiIsICJvcmRlcl9kYXRlIjogIjIwMjYtMTEtMDkiLCAiYWNjb3VudF9uaWNrbmFtZSI6ICIxMSAtIFRyYWNpIExhbmRlcnMgKGZyX21pZ3JhdGVkXzExKSIsICJjb3VudHJ5IjogIvCfh6vwn4e3IOazleWbvSIsICJ0aXRsZSI6ICJTdW4gR2FyZGVuIE1hdGVsYXMgcG91ciBlbmZhbnQgOTAgeCAyMDAgY20sIDMgw6AgMTIgYW5zLCBmYWJyaXF1w6kgZW4gRXVyb3BlIHwgc3lzdMOobWUgw6l2b2x1dGlmIDItZW4tMSBwb3VyIGxpdCBkJ2VuZmFudCBldCBsaXQgZCdhZG9sZXNjZW50LCBjZXJ0aWZpw6kgT2Vrby1UZXggZXQgRGVybWF0ZXN0IC0gVHLDqHMgYmllbiwgUkcyOCBkZSAxNSBjbSIsICJ0b3RhbF9hbW91bnQiOiAiMTA2LDk1IOKCrCIsICJ0cmFja2luZ19udW1iZXIiOiAiQ0EwODYxNjc0MzNERSAoREhMKSIsICJzaGlwcGluZ190aW1lIjogIjIwMjYtMTEtMTAgMTg6MTMgKERFKSIsICJkZWxpdmVyeV9zdGF0dXMiOiAi5bey562+5pS2ICjmnIDnu4jnirbmgIEpIiwgInN0YXR1c19iYWRnZSI6ICLlt7LpgIHovr7nrb7mlLYiLCAic3RhdHVzX2NvbG9yIjogInN1Y2Nlc3MiLCAicmVjaXBpZW50IjogIk1yIENBU1RFTCBQYXVsaW5lIChBbGl4YW4pIn1dfQ==";
+    let DASHBOARD_DATA = null;
 
     function checkStoredAuth() {
       const saved = localStorage.getItem("tracker_access_auth");
@@ -497,33 +603,25 @@
       e.preventDefault();
       const entered = document.getElementById("accessPwd").value;
       const hash = CryptoJS.SHA256(entered).toString();
-      
       if (hash === TARGET_HASH) {
-        document.getElementById("errorMsg").style.display = "none";
-        if (document.getElementById("rememberMe").checked) {
-          localStorage.setItem("tracker_access_auth", entered);
-          localStorage.setItem("tracker_access_expire", (Date.now() + 7 * 24 * 3600 * 1000).toString());
-        }
+        localStorage.setItem("tracker_access_auth", entered);
+        localStorage.setItem("tracker_access_expire", (Date.now() + 7 * 24 * 3600 * 1000).toString());
         unlockDashboard(entered);
       } else {
         document.getElementById("errorMsg").style.display = "block";
         document.getElementById("accessPwd").value = "";
-        document.getElementById("accessPwd").focus();
       }
     }
 
     function unlockDashboard(pwd) {
       try {
-        // Decode base64 payload
         const rawJson = decodeURIComponent(escape(atob(ENCRYPTED_PAYLOAD)));
-        const data = JSON.parse(rawJson);
-        renderData(data);
-        
+        DASHBOARD_DATA = JSON.parse(rawJson);
+        renderFullDashboard(DASHBOARD_DATA);
         document.getElementById("lockScreen").style.display = "none";
         document.getElementById("dashboardContent").style.display = "block";
-        document.getElementById("syncTime").innerText = new Date().toLocaleString();
       } catch (err) {
-        console.error("Decryption failed:", err);
+        console.error("Payload parse error:", err);
         document.getElementById("errorMsg").style.display = "block";
       }
     }
@@ -534,51 +632,170 @@
       window.location.reload();
     }
 
-    function renderData(data) {
-      const tbody = document.getElementById("tableBody");
-      tbody.innerHTML = "";
-      document.getElementById("statCount").innerText = data.length + " 笔";
-      if (data.length > 0) {
-        const latest = data[0];
-        const bannerEl = document.getElementById("latestBannerText");
-        if (bannerEl) {
-          bannerEl.textContent = latest.status_desc
-            ? `订单 ${latest.order_id}：${latest.status_desc}`
-            : `订单 ${latest.order_id} 当前状态：${latest.status_badge}`;
-        }
-        const statusEl = document.getElementById("statStatus");
-        if (statusEl) statusEl.innerText = latest.status_badge || "待更新";
-        const etaEl = document.getElementById("statEta");
-        if (etaEl && latest.estimated_delivery) etaEl.innerText = latest.estimated_delivery;
+    function renderFullDashboard(data) {
+      const s = data.summary || {};
+      document.getElementById("kpiOos").innerText = (s.out_of_stock_count || 0) + " 笔";
+      document.getElementById("kpiPending").innerText = (s.pending_purchase_count || 0) + " 笔";
+      document.getElementById("kpiProfit").innerText = s.total_projected_profit || "0.00 €";
+      document.getElementById("kpiLogistics").innerText = (data.amazon_orders ? data.amazon_orders.length : 0) + " 笔";
+
+      document.getElementById("navOosCount").innerText = s.out_of_stock_count || 0;
+      document.getElementById("navPendingCount").innerText = s.pending_purchase_count || 0;
+      document.getElementById("navLogisticsCount").innerText = data.amazon_orders ? data.amazon_orders.length : 0;
+      document.getElementById("pendingBadgeCount").innerText = (s.pending_purchase_count || 0) + " 笔待确认";
+      document.getElementById("syncTimestamp").innerText = s.last_sync_time || new Date().toLocaleString();
+
+      if (s.out_of_stock_count > 0) {
+        document.getElementById("urgentBannerText").innerHTML = 
+          `检测到 <strong>${s.out_of_stock_count}</strong> 笔订单因<strong>亚马逊官方断货</strong>无法采购，已自动拦截并标红报警！另有 <strong>${s.pending_purchase_count}</strong> 笔现货订单已核算就绪，预计毛利 <strong>${s.total_projected_profit}</strong>。`;
+      } else {
+        document.getElementById("urgentBannerText").innerText = "所有订单供货正常，采购管道运行平稳。";
       }
-      
-      data.forEach(row => {
+
+      // 1. Render Out of Stock
+      const oosTbody = document.getElementById("oosTbody");
+      oosTbody.innerHTML = "";
+      (data.out_of_stock_orders || []).forEach(o => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>
+            <span class="order-code">${o.order_id}
+              <button class="copy-btn" onclick="copyText('${o.order_id}')" title="复制">📋</button>
+            </span>
+          </td>
+          <td>
+            <a href="${o.amazon_url}" target="_blank" class="asin-link">
+              ${o.asin} ↗
+            </a>
+          </td>
+          <td class="cell-product">
+            <strong>${o.title}</strong>
+            <div class="cell-subtext">数量: ${o.quantity} 件</div>
+          </td>
+          <td style="font-weight: 700; color: #0f172a;">${o.selling_price_str}</td>
+          <td>
+            <div class="deadline-urgent">${o.shipped_at_max}</div>
+            <div class="cell-subtext">下单时间: ${o.purchased_at}</div>
+          </td>
+          <td>
+            <div style="font-weight: 600;">${o.recipient_name}</div>
+            <div class="cell-subtext">${o.recipient_city}, France (Tel: ${o.recipient_phone})</div>
+          </td>
+          <td>
+            <span class="badge badge-danger">🚨 严重缺货 (Actuellement indisponible)</span>
+            <div style="font-size: 12.5px; color: #b91c1c; margin-top: 4px; max-width: 280px; line-height: 1.4;">
+              ${o.action_advice}
+            </div>
+          </td>
+        `;
+        oosTbody.appendChild(tr);
+      });
+
+      // 2. Render Pending Purchase
+      const pendingTbody = document.getElementById("pendingTbody");
+      pendingTbody.innerHTML = "";
+      (data.pending_orders || []).forEach(o => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>
+            <span class="order-code">${o.order_id}
+              <button class="copy-btn" onclick="copyText('${o.order_id}')" title="复制">📋</button>
+            </span>
+          </td>
+          <td>
+            <a href="${o.amazon_url}" target="_blank" class="asin-link">
+              ${o.asin} ↗
+            </a>
+          </td>
+          <td class="cell-product">
+            <strong>${o.title}</strong>
+            <div class="cell-subtext">现货状态: ${o.stock_desc}</div>
+          </td>
+          <td>
+            <div style="font-weight: 700; color: #0f172a;">售价: ${o.selling_price_str}</div>
+            <div class="cell-subtext">采购成本: ${o.amazon_cost_str}</div>
+          </td>
+          <td>
+            <div class="profit-positive">${o.profit_str}</div>
+            <div class="cell-subtext">毛利率: ${o.profit_margin_str}</div>
+          </td>
+          <td>
+            <div class="deadline-normal">${o.shipped_at_max}</div>
+            <div class="cell-subtext">下单: ${o.purchased_at}</div>
+          </td>
+          <td>
+            <span class="badge badge-neutral" style="font-family: monospace;">${o.assigned_account_name}</span>
+          </td>
+          <td>
+            <span class="badge badge-${o.badge_color}">${o.order_state_badge}</span>
+            <div class="cell-subtext" style="max-width: 220px;">${o.order_state_desc}</div>
+          </td>
+          <td>
+            <div style="font-weight: 600;">${o.recipient_name}</div>
+            <div class="cell-subtext">${o.recipient_city} (${o.recipient_zip})</div>
+          </td>
+        `;
+        pendingTbody.appendChild(tr);
+      });
+
+      // 3. Render Logistics
+      const logTbody = document.getElementById("logisticsTbody");
+      logTbody.innerHTML = "";
+      (data.amazon_orders || []).forEach(row => {
         const tr = document.createElement("tr");
         tr.innerHTML = `
           <td><strong>${row.order_date}</strong></td>
           <td><span class="badge badge-neutral">${row.account_nickname}</span></td>
           <td style="white-space: nowrap;">${row.country}</td>
-          <td class="product-cell">${row.title}</td>
-          <td class="amount-cell">${row.total_amount}</td>
+          <td class="cell-product">${row.title}</td>
+          <td style="font-weight: 700; color: #0f172a;">${row.total_amount}</td>
           <td>
-            <span class="order-code">
-              ${row.order_id}
-              <button class="copy-btn" onclick="copyText('${row.order_id}')" title="复制订单号">📋</button>
+            <span class="order-code">${row.order_id}
+              <button class="copy-btn" onclick="copyText('${row.order_id}')" title="复制">📋</button>
             </span>
           </td>
           <td>
-            <span style="color: ${row.tracking_number.includes('暂未') ? '#64748b' : '#0f172a'}; font-family: monospace;">
-              ${row.tracking_number}
-            </span>
+            <span style="font-family: monospace; font-weight: 600;">${row.tracking_number}</span>
           </td>
-          <td style="color: #475569; font-size: 13px;">${row.shipping_time}</td>
+          <td style="font-size: 13px; color: #475569;">${row.shipping_time}</td>
           <td>
             <span class="badge badge-${row.status_color}">${row.status_badge}</span>
-            <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">${row.delivery_status}</div>
+            <div class="cell-subtext">${row.delivery_status}</div>
           </td>
         `;
-        tbody.appendChild(tr);
+        logTbody.appendChild(tr);
       });
+    }
+
+    function switchTab(type, el) {
+      document.querySelectorAll(".nav-tab").forEach(t => t.classList.remove("active"));
+      if (el) el.classList.add("active");
+
+      const secDanger = document.getElementById("sectionDanger");
+      const secPending = document.getElementById("sectionPending");
+      const secLogistics = document.getElementById("sectionLogistics");
+
+      if (type === "all") {
+        secDanger.style.display = "block";
+        secPending.style.display = "block";
+        secLogistics.style.display = "block";
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else if (type === "danger") {
+        secDanger.style.display = "block";
+        secPending.style.display = "none";
+        secLogistics.style.display = "none";
+        secDanger.scrollIntoView({ behavior: 'smooth' });
+      } else if (type === "pending") {
+        secDanger.style.display = "none";
+        secPending.style.display = "block";
+        secLogistics.style.display = "none";
+        secPending.scrollIntoView({ behavior: 'smooth' });
+      } else if (type === "logistics") {
+        secDanger.style.display = "none";
+        secPending.style.display = "none";
+        secLogistics.style.display = "block";
+        secLogistics.scrollIntoView({ behavior: 'smooth' });
+      }
     }
 
     function copyText(txt) {
@@ -587,31 +804,35 @@
       });
     }
 
-    function exportTableToCSV(filename) {
-      let csv = [];
-      let rows = document.querySelectorAll("table tr");
-      for (let i = 0; i < rows.length; i++) {
-        let row = [], cols = rows[i].querySelectorAll("td, th");
-        for (let j = 0; j < cols.length; j++) {
-          let data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, " ").replace(/📋/g, "").trim();
-          data = data.replace(/"/g, '""');
-          row.push('"' + data + '"');
-        }
-        csv.push(row.join(","));
-      }
-      let csvContent = "\uFEFF" + csv.join("\n");
+    function exportUnifiedCSV() {
+      if (!DASHBOARD_DATA) return;
+      let rows = [["类别", "订单号", "ASIN/关联", "产品标题", "售价/总额", "采购成本", "预估利润", "最迟发货/发货时间", "状态", "收件人"]];
+
+      // OOS
+      (DASHBOARD_DATA.out_of_stock_orders || []).forEach(o => {
+        rows.push(["🚨 严重缺货", o.order_id, o.asin, o.title, o.selling_price_str, "N/A", "0.00 €", o.shipped_at_max, o.stock_badge, o.recipient_address_full]);
+      });
+
+      // Pending
+      (DASHBOARD_DATA.pending_orders || []).forEach(o => {
+        rows.push(["🛒 待采购新单", o.order_id, o.asin, o.title, o.selling_price_str, o.amazon_cost_str, o.profit_str, o.shipped_at_max, o.order_state_badge, o.recipient_address_full]);
+      });
+
+      // Logistics
+      (DASHBOARD_DATA.amazon_orders || []).forEach(o => {
+        rows.push(["🚚 物流在途/签收", o.order_id, o.tracking_number, o.title, o.total_amount, "-", "-", o.shipping_time, o.status_badge, o.recipient]);
+      });
+
+      let csvContent = "\uFEFF" + rows.map(r => r.map(cell => '"' + (cell || "").toString().replace(/"/g, '""') + '"').join(",")).join("\n");
       let blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
       let link = document.createElement("a");
-      let url = URL.createObjectURL(blob);
-      link.setAttribute("href", url);
-      link.setAttribute("download", filename);
-      link.style.visibility = "hidden";
+      link.href = URL.createObjectURL(blob);
+      link.setAttribute("download", `cdiscount_amazon_unified_tracker_${new Date().toISOString().slice(0,10)}.csv`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
     }
 
-    // Check stored credentials on load
     window.addEventListener("DOMContentLoaded", checkStoredAuth);
   </script>
 </body>
