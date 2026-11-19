@@ -208,7 +208,7 @@
     /* Platform Radio Grid */
     .platform-selector {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-columns: repeat(4, 1fr);
       gap: 12px;
       margin-bottom: 20px;
     }
@@ -383,7 +383,7 @@
   <main class="container">
     <div class="page-header">
       <h1>🏨 酒旅客房与民宿预订需求提报</h1>
-      <p>面向 Booking.com、Trip.com、Expedia 等 OTA 平台的住宿预订工单提报，严格执行防关联隔离与账号轮换保护</p>
+      <p>面向 Booking.com、Trip.com、Agoda、Expedia 等 OTA 平台的住宿预订工单提报，严格执行防关联隔离与账号轮换保护</p>
     </div>
 
     <!-- 90-Day Anti-Association Rule Alert -->
@@ -418,6 +418,11 @@
                   <div class="name">Trip.com</div>
                   <div class="sub">携程国际/海外</div>
                 </div>
+                <div class="platform-card" onclick="selectPlatform('AGODA', this)">
+                  <div class="icon">🌴</div>
+                  <div class="name">Agoda</div>
+                  <div class="sub">安可达全球特惠</div>
+                </div>
                 <div class="platform-card" onclick="selectPlatform('EXPEDIA', this)">
                   <div class="icon">🌐</div>
                   <div class="name">Expedia</div>
@@ -442,7 +447,7 @@
             <!-- Listing URL -->
             <div class="form-group">
               <label for="listingUrl">房源详情链接或平台房源 ID <span class="required">*</span></label>
-              <textarea id="listingUrl" rows="2" placeholder="粘贴 Booking / Trip / Expedia 上的房源详情页面链接..." required></textarea>
+              <textarea id="listingUrl" rows="2" placeholder="粘贴 Booking / Trip / Agoda / Expedia 上的房源详情页面链接..." required></textarea>
             </div>
 
             <!-- Check-in & Check-out -->
