@@ -3,34 +3,37 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>酒旅 OTA 预订需求提报通道</title>
+  <title>酒旅 OTA 预订需求提报中心 - Cloud Order Dispatch</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
   <style>
     :root {
       --primary: #059669;
-      --primary-light: #ecfdf5;
       --primary-dark: #047857;
-      --success: #16a34a;
-      --success-light: #f0fdf4;
-      --warning: #eab308;
-      --warning-light: #fefce8;
-      --danger: #dc2626;
-      --text-main: #0f172a;
-      --text-muted: #64748b;
-      --bg-page: #f8fafc;
+      --primary-light: #ecfdf5;
+      --accent: #2563eb;
+      --bg: #f8fafc;
       --bg-card: #ffffff;
+      --text: #0f172a;
+      --text-muted: #64748b;
       --border: #e2e8f0;
       --radius: 12px;
       --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: var(--bg-page);
-      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
       line-height: 1.5;
-      min-height: 100vh;
       padding-bottom: 60px;
     }
 
@@ -38,18 +41,17 @@
     .top-nav {
       background: #ffffff;
       border-bottom: 1px solid var(--border);
+      padding: 14px 24px;
       position: sticky;
       top: 0;
-      z-index: 100;
+      z-index: 50;
     }
     .nav-container {
-      max-width: 1100px;
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 0 24px;
-      height: 64px;
       display: flex;
-      align-items: center;
       justify-content: space-between;
+      align-items: center;
     }
     .nav-left {
       display: flex;
@@ -57,21 +59,20 @@
       gap: 16px;
     }
     .back-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 13.5px;
-      font-weight: 600;
       color: var(--text-muted);
       text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
       padding: 6px 12px;
-      border-radius: 6px;
-      transition: all 0.2s;
-      background: #f1f5f9;
+      border-radius: 8px;
+      transition: background 0.2s;
     }
     .back-btn:hover {
-      background: #e2e8f0;
-      color: var(--text-main);
+      background: #f1f5f9;
+      color: var(--text);
     }
     .brand-title {
       font-size: 16px;
@@ -79,22 +80,21 @@
       color: #0f172a;
     }
 
-    /* Container */
+    /* Main Container */
     .container {
-      max-width: 1100px;
-      margin: 28px auto 0;
-      padding: 0 24px;
+      max-width: 1200px;
+      margin: 28px auto;
+      padding: 0 20px;
     }
+
     .page-header {
       margin-bottom: 24px;
     }
     .page-header h1 {
       font-size: 26px;
-      font-weight: 700;
+      font-weight: 800;
       color: #0f172a;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      letter-spacing: -0.5px;
     }
     .page-header p {
       font-size: 14.5px;
@@ -186,19 +186,22 @@
       margin-bottom: 8px;
     }
     .required {
-      color: var(--danger);
+      color: #e11d48;
     }
-    input, select, textarea {
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    select,
+    textarea {
       width: 100%;
-      padding: 11px 14px;
-      border: 1.5px solid var(--border);
+      padding: 10px 14px;
+      border: 1px solid var(--border);
       border-radius: 8px;
       font-size: 14px;
-      color: var(--text-main);
+      color: #0f172a;
       background: #ffffff;
       outline: none;
       transition: all 0.2s;
-      font-family: inherit;
     }
     input:focus, select:focus, textarea:focus {
       border-color: var(--primary);
@@ -211,6 +214,11 @@
       grid-template-columns: repeat(4, 1fr);
       gap: 12px;
       margin-bottom: 20px;
+    }
+    @media (max-width: 640px) {
+      .platform-selector {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
     .platform-card {
       border: 1.5px solid var(--border);
@@ -244,6 +252,101 @@
       color: var(--text-muted);
     }
 
+    /* Room Fee Toggle Switch Cards */
+    .toggle-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .toggle-card {
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      cursor: pointer;
+      background: #ffffff;
+      transition: all 0.2s;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .toggle-card:hover {
+      border-color: #94a3b8;
+    }
+    .toggle-card.selected {
+      border-color: var(--primary);
+      background: #f0fdf4;
+      box-shadow: 0 0 0 2px var(--primary);
+    }
+    .toggle-card .icon {
+      font-size: 22px;
+      line-height: 1;
+      margin-top: 2px;
+    }
+    .toggle-card .title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .toggle-card .desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+      line-height: 1.4;
+    }
+
+    /* Live Pricing & Currency Conversion Breakdown Panel */
+    .calc-box {
+      background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+      border: 1.5px solid #a7f3d0;
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+    .calc-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 12px;
+      border-bottom: 1px dashed #6ee7b7;
+      margin-bottom: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #065f46;
+    }
+    .calc-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      color: #047857;
+      margin-bottom: 8px;
+    }
+    .calc-row.muted {
+      color: #059669;
+      font-size: 12px;
+    }
+    .calc-total {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding-top: 12px;
+      border-top: 1.5px solid #34d399;
+      margin-top: 12px;
+    }
+    .calc-total-label {
+      font-size: 15px;
+      font-weight: 700;
+      color: #064e3b;
+    }
+    .calc-total-amount {
+      font-size: 26px;
+      font-weight: 800;
+      color: #047857;
+      letter-spacing: -0.5px;
+    }
+
     /* Buttons */
     .btn {
       display: inline-flex;
@@ -274,6 +377,20 @@
     }
     .btn-secondary:hover {
       background: #e2e8f0;
+    }
+    .btn-pay {
+      background: #2563eb;
+      color: white;
+      padding: 5px 12px;
+      font-size: 12.5px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+    .btn-pay:hover {
+      background: #1d4ed8;
     }
 
     /* Sidebar */
@@ -323,14 +440,14 @@
     }
     th {
       background: #f8fafc;
-      padding: 12px 16px;
+      padding: 12px 14px;
       font-weight: 600;
       color: #475569;
       border-bottom: 1px solid var(--border);
       white-space: nowrap;
     }
     td {
-      padding: 14px 16px;
+      padding: 14px 14px;
       border-bottom: 1px solid var(--border);
       color: #1e293b;
     }
@@ -344,8 +461,60 @@
       font-weight: 600;
     }
     .badge-primary { background: #ecfdf5; color: #047857; }
-    .badge-warning { background: #fefce8; color: #854d0e; }
-    .badge-success { background: #f0fdf4; color: #166534; }
+    .badge-warning { background: #fefce8; color: #854d0e; border: 1px solid #fef08a; }
+    .badge-success { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+    .badge-amber { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+    .badge-blue { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+    .badge-neutral { background: #f1f5f9; color: #475569; }
+
+    /* Modal / Cashier */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 16px;
+    }
+    .modal-container {
+      background: #ffffff;
+      border-radius: 16px;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+      animation: modalFadeIn 0.2s ease-out;
+    }
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.96); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .modal-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f8fafc;
+    }
+    .modal-header h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .modal-close {
+      cursor: pointer;
+      font-size: 20px;
+      color: var(--text-muted);
+      border: none;
+      background: none;
+    }
+    .modal-body {
+      padding: 24px;
+    }
 
     #toast {
       position: fixed;
@@ -360,7 +529,7 @@
       display: none;
       align-items: center;
       gap: 10px;
-      z-index: 1000;
+      z-index: 1100;
     }
   </style>
 </head>
@@ -374,7 +543,7 @@
         <div class="brand-title">🏨 酒旅 OTA 预订需求提报</div>
       </div>
       <div style="font-size: 13px; color: var(--text-muted); font-weight: 500;">
-        酒旅 OTA 专属通道
+        酒旅 OTA 专属通道 · 汇率智能换算
       </div>
     </div>
   </header>
@@ -383,7 +552,7 @@
   <main class="container">
     <div class="page-header">
       <h1>🏨 酒旅客房与民宿预订需求提报</h1>
-      <p>面向 Booking.com、Trip.com、Agoda、Expedia 等 OTA 平台的住宿预订工单提报，严格执行防关联隔离与账号轮换保护</p>
+      <p>面向 Booking.com、Trip.com、Agoda、Expedia 等 OTA 平台的住宿预订工单提报，严格执行防关联隔离、外币精准折算与账号轮换保护</p>
     </div>
 
     <!-- 90-Day Anti-Association Rule Alert -->
@@ -462,22 +631,63 @@
               </div>
             </div>
 
-            <!-- Budget & Rooms -->
+            <!-- Payment Mode: Pay Room Fee YES or NO -->
+            <div class="form-group">
+              <label>是否需要由我方代付房费？ <span class="required">*</span></label>
+              <div class="toggle-cards">
+                <div class="toggle-card selected" id="togglePayYes" onclick="selectPayMode('YES')">
+                  <div class="icon">💳</div>
+                  <div>
+                    <div class="title">是 · 我方代付房费 (预付单)</div>
+                    <div class="desc">客户支付：折合人民币房费 + 调度手续费。我方海外纯净账号绑卡支付外币房费。</div>
+                  </div>
+                </div>
+                <div class="toggle-card" id="togglePayNo" onclick="selectPayMode('NO')">
+                  <div class="icon">🏨</div>
+                  <div>
+                    <div class="title">否 · 客户到店自付 (到付/担保)</div>
+                    <div class="desc">客户仅支付：调度手续费。房费由入住人在酒店前台自行结算。</div>
+                  </div>
+                </div>
+              </div>
+              <input type="hidden" id="payRoomFee" value="YES">
+            </div>
+
+            <!-- Room Fee Budget, Currency & Service Fee -->
             <div class="form-row">
               <div class="form-group" style="margin-bottom: 0;">
-                <label for="budget">预订总房费与币种 <span class="required">*</span></label>
+                <label for="budget">平台标价房费与币种 <span class="required">*</span></label>
                 <div style="display: flex; gap: 8px;">
-                  <select id="currency" style="width: 100px;">
-                    <option value="CNY">CNY (¥)</option>
-                    <option value="EUR">EUR (€)</option>
+                  <select id="currency" style="width: 120px;" onchange="recalculate()">
                     <option value="USD">USD ($)</option>
+                    <option value="EUR">EUR (€)</option>
+                    <option value="GBP">GBP (£)</option>
+                    <option value="HKD">HKD (HK$)</option>
+                    <option value="JPY">JPY (¥)</option>
+                    <option value="AUD">AUD (A$)</option>
+                    <option value="CNY">CNY (¥)</option>
                   </select>
-                  <input type="text" id="budget" placeholder="例如: 580" required>
+                  <input type="number" step="0.01" id="budget" placeholder="例如: 20.00" value="20" required oninput="recalculate()">
                 </div>
               </div>
               <div class="form-group" style="margin-bottom: 0;">
+                <label for="serviceFee">平台调度手续费 (CNY) <span class="required">*</span></label>
+                <input type="number" step="0.01" id="serviceFee" value="30.00" required oninput="recalculate()">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group" style="margin-bottom: 0;">
                 <label for="rooms">房间数 / 入住人数</label>
                 <input type="text" id="rooms" value="1 间房 / 2 位成人" required>
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="urgency">任务紧急度</label>
+                <select id="urgency">
+                  <option value="NORMAL">🟢 普通正常预订</option>
+                  <option value="PRIORITY">🟡 优先锁房</option>
+                  <option value="URGENT">🔴 紧急即刻锁房</option>
+                </select>
               </div>
             </div>
 
@@ -493,20 +703,9 @@
               </div>
             </div>
 
-            <!-- Urgency & Submitter -->
-            <div class="form-row">
-              <div class="form-group" style="margin-bottom: 0;">
-                <label for="urgency">任务紧急度</label>
-                <select id="urgency">
-                  <option value="NORMAL">🟢 普通正常预订</option>
-                  <option value="PRIORITY">🟡 优先锁房</option>
-                  <option value="URGENT">🔴 紧急即刻锁房</option>
-                </select>
-              </div>
-              <div class="form-group" style="margin-bottom: 0;">
-                <label for="submitter">提报人 / 归属组</label>
-                <input type="text" id="submitter" value="酒旅运营组">
-              </div>
+            <div class="form-group">
+              <label for="submitter">提报人 / 归属组</label>
+              <input type="text" id="submitter" value="酒旅运营组">
             </div>
 
             <div class="form-group">
@@ -514,8 +713,41 @@
               <textarea id="notes" rows="2" placeholder="如：要求高楼层安静房、预计深夜 23:00 后入住、退房后需协助好评返图等..."></textarea>
             </div>
 
+            <!-- Live Calculation & Quotation Box -->
+            <div class="calc-box">
+              <div class="calc-header">
+                <span>💰 计费明细与外币折算实时清单</span>
+                <span id="calcModeTag" style="font-size: 12px; background: #34d399; color: #064e3b; padding: 2px 8px; border-radius: 4px;">代付房费 (预付单)</span>
+              </div>
+              
+              <div class="calc-row">
+                <span>外币房费金额:</span>
+                <strong id="calcForeignAmount">20.00 USD</strong>
+              </div>
+              <div class="calc-row muted">
+                <span>折算汇率 (中行现钞卖出价 + 0.05 缓冲溢价):</span>
+                <span id="calcRateText">1 USD = 7.3300 CNY (基准 7.2800 + 0.05)</span>
+              </div>
+              <div class="calc-row muted" id="calcCardFeeRow">
+                <span>海外独立虚拟卡制卡工本费:</span>
+                <span>¥8.00</span>
+              </div>
+              <div class="calc-row" style="padding-top: 6px; border-top: 1px dashed #a7f3d0;">
+                <span>折合人民币房费小计:</span>
+                <strong id="calcRoomFeeCNY">¥154.60</strong>
+              </div>
+              <div class="calc-row">
+                <span>平台调度服务手续费:</span>
+                <strong id="calcServiceFee">¥30.00</strong>
+              </div>
+              <div class="calc-total">
+                <span class="calc-total-label">客户应付总金额 (CNY):</span>
+                <span class="calc-total-amount" id="calcTotalAmount">¥184.60</span>
+              </div>
+            </div>
+
             <button type="submit" class="btn btn-primary" style="margin-top: 10px;">
-              🚀 提交酒旅预订需求并派单
+              🚀 提报酒旅预订需求并生成收款工单
             </button>
           </form>
         </div>
@@ -524,11 +756,19 @@
       <!-- Right: Sidebar -->
       <div>
         <div class="guide-box">
-          <h4>📌 酒旅 OTA 履约标准</h4>
+          <h4>📌 计费与外币折算规范</h4>
           <ul class="guide-list">
-            <li><strong>90 天安全隔离校验</strong>：后台实时排查该房源历史下单记录，严格杜绝同账号 90 天内重复下单。</li>
-            <li><strong>海外真实环境预订</strong>：每一个预订账号均在海外独立住宅 IP 和指纹浏览器中执行，保障订单真实性。</li>
-            <li><strong>预订确认与回执</strong>：预订成功后，平台订单编号与预订凭据将同步回传归档。</li>
+            <li><strong>汇率取值原则</strong>：统一按照<strong>中国银行官方现钞卖出价</strong>为基准，上浮 <strong>+0.05</strong> 作为跨国结算波动与银行卡外币兑换缓冲。</li>
+            <li><strong>海外虚拟卡工本费</strong>：因海外平台强风控机制，每笔外币预订均开具全新独立虚拟卡（One-Time Card），固定加收 <strong>8 元制卡费</strong>。</li>
+            <li><strong>到店自付单说明</strong>：若选择“否（客户到店自付）”，则房费不计入线上应收账单，仅收取平台调度服务手续费。</li>
+          </ul>
+        </div>
+
+        <div class="guide-box">
+          <h4>🛡️ 90 天防关联履约闭环</h4>
+          <ul class="guide-list">
+            <li><strong>防关联排查</strong>：自动比对酒店历史下单记录，杜绝 90 天内同账号复下。</li>
+            <li><strong>付款即调度</strong>：客户完成线上支付后，系统工单<strong>自动转入【待下单】调度队列</strong>，由纯净海外环境极速锁房。</li>
           </ul>
         </div>
 
@@ -548,7 +788,7 @@
     <div class="card" style="margin-top: 24px;">
       <div class="card-title" style="justify-content: space-between;">
         <div style="display: flex; align-items: center; gap: 8px;">
-          <span>📋</span> 本地酒旅预订提报记录
+          <span>📋</span> 本地酒旅预订提报记录与收款调度中心
         </div>
         <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 12px;" onclick="clearHistory()">
           清空记录
@@ -564,9 +804,11 @@
               <th>酒店/店铺</th>
               <th>房型</th>
               <th>入住与离店</th>
-              <th>房费金额</th>
+              <th>房费模式</th>
+              <th>费用拆解 (房费/手续费)</th>
+              <th>客户应付总计</th>
               <th>入住人</th>
-              <th>状态</th>
+              <th>工单状态</th>
               <th>操作</th>
             </tr>
           </thead>
@@ -577,14 +819,93 @@
     </div>
   </main>
 
+  <!-- Cashier Modal (线上收银台) -->
+  <div class="modal-overlay" id="cashierModal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3>💳 线上收银台 · 客户扫码收款确认</h3>
+        <button class="modal-close" onclick="closeCashier()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="background: #f8fafc; border-radius: 8px; padding: 14px; margin-bottom: 16px; font-size: 13px;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+            <span style="color: var(--text-muted);">工单编号:</span>
+            <strong id="modalTaskId">TRV-000000</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+            <span style="color: var(--text-muted);">预订酒店:</span>
+            <span id="modalHotelName" style="font-weight: 600;">-</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+            <span style="color: var(--text-muted);">房费模式:</span>
+            <span id="modalPayMode">-</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--text-muted);">折算明细:</span>
+            <span id="modalBreakdown">-</span>
+          </div>
+        </div>
+
+        <div style="text-align: center; margin: 18px 0;">
+          <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 4px;">客户应付结算总额</div>
+          <div style="font-size: 32px; font-weight: 800; color: #047857;" id="modalTotalPayable">¥0.00</div>
+        </div>
+
+        <!-- Simulated QR Payment Code -->
+        <div style="text-align: center; background: #ffffff; border: 1.5px dashed var(--border); border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+          <div style="display: inline-block; padding: 10px; background: #f8fafc; border-radius: 8px;">
+            <svg width="140" height="140" viewBox="0 0 100 100" fill="#0f172a">
+              <rect x="10" y="10" width="25" height="25" fill="#0f172a" />
+              <rect x="14" y="14" width="17" height="17" fill="#ffffff" />
+              <rect x="18" y="18" width="9" height="9" fill="#0f172a" />
+              <rect x="65" y="10" width="25" height="25" fill="#0f172a" />
+              <rect x="69" y="14" width="17" height="17" fill="#ffffff" />
+              <rect x="73" y="18" width="9" height="9" fill="#0f172a" />
+              <rect x="10" y="65" width="25" height="25" fill="#0f172a" />
+              <rect x="14" y="69" width="17" height="17" fill="#ffffff" />
+              <rect x="18" y="73" width="9" height="9" fill="#0f172a" />
+              <rect x="42" y="15" width="6" height="6" />
+              <rect x="52" y="25" width="6" height="6" />
+              <rect x="42" y="42" width="16" height="16" fill="#059669" />
+              <rect x="65" y="45" width="8" height="8" />
+              <rect x="75" y="55" width="6" height="6" />
+              <rect x="45" y="70" width="8" height="8" />
+              <rect x="60" y="75" width="15" height="15" />
+            </svg>
+          </div>
+          <div style="font-size: 12px; color: var(--text-muted); margin-top: 8px;">支持 微信支付 / 支付宝 / 聚合收银台扫码收款</div>
+        </div>
+
+        <button class="btn btn-primary" onclick="confirmPayment()" style="background: #2563eb; font-size: 15px;">
+          ✅ 客户已付款，确认收款并转入【待下单】
+        </button>
+      </div>
+    </div>
+  </div>
+
   <div id="toast">
     <span>✅</span> <span id="toastText">工单提交成功！</span>
   </div>
 
   <script>
     const STORAGE_KEY = "cloud_travel_tasks";
-    
-    // Set default dates: checkin today, checkout tomorrow
+
+    // 中行现钞卖出价基准表 (Bank of China Cash Selling Rates)
+    const BOC_RATES = {
+      USD: 7.28,
+      EUR: 7.68,
+      GBP: 9.22,
+      HKD: 0.935,
+      JPY: 0.0475,
+      AUD: 4.75,
+      CNY: 1.00
+    };
+    const BUFFER_RATE = 0.05; // 汇率安全波动溢价
+    const VIRTUAL_CARD_FEE = 8.00; // 海外虚拟制卡费
+
+    let activeCashierTaskId = null;
+
+    // Set default dates
     const today = new Date();
     const tomorrow = new Date(Date.now() + 24 * 3600 * 1000);
     document.getElementById("checkIn").value = today.toISOString().split("T")[0];
@@ -596,6 +917,63 @@
       document.getElementById("selectedPlatform").value = platform;
     }
 
+    function selectPayMode(mode) {
+      document.getElementById("togglePayYes").classList.toggle("selected", mode === "YES");
+      document.getElementById("togglePayNo").classList.toggle("selected", mode === "NO");
+      document.getElementById("payRoomFee").value = mode;
+      recalculate();
+    }
+
+    function recalculate() {
+      const payMode = document.getElementById("payRoomFee").value;
+      const currency = document.getElementById("currency").value;
+      const foreignAmount = parseFloat(document.getElementById("budget").value) || 0;
+      const serviceFee = parseFloat(document.getElementById("serviceFee").value) || 0;
+
+      const bocRate = BOC_RATES[currency] || 1.0;
+      let effectiveRate = bocRate;
+      let cardFee = 0;
+      let roomFeeCNY = 0;
+
+      if (currency !== "CNY") {
+        if (currency === "JPY") {
+          effectiveRate = (bocRate * 100 + BUFFER_RATE) / 100;
+        } else {
+          effectiveRate = bocRate + BUFFER_RATE;
+        }
+        cardFee = VIRTUAL_CARD_FEE;
+      }
+
+      if (payMode === "YES") {
+        document.getElementById("calcModeTag").innerText = "代付房费 (预付单)";
+        document.getElementById("calcModeTag").style.background = "#34d399";
+        document.getElementById("calcCardFeeRow").style.display = (currency === "CNY") ? "none" : "flex";
+
+        if (currency === "CNY") {
+          roomFeeCNY = foreignAmount;
+          document.getElementById("calcRateText").innerText = "本币结算 (1:1，无汇率折算与制卡费)";
+        } else {
+          roomFeeCNY = foreignAmount * effectiveRate + cardFee;
+          document.getElementById("calcRateText").innerText = `1 ${currency} = ${effectiveRate.toFixed(4)} CNY (中行基准 ${bocRate.toFixed(4)} + ${BUFFER_RATE} 缓冲)`;
+        }
+
+        const totalPayable = roomFeeCNY + serviceFee;
+        document.getElementById("calcForeignAmount").innerText = `${foreignAmount.toFixed(2)} ${currency}`;
+        document.getElementById("calcRoomFeeCNY").innerText = `¥${roomFeeCNY.toFixed(2)}`;
+        document.getElementById("calcServiceFee").innerText = `¥${serviceFee.toFixed(2)}`;
+        document.getElementById("calcTotalAmount").innerText = `¥${totalPayable.toFixed(2)}`;
+      } else {
+        document.getElementById("calcModeTag").innerText = "客户到店自付 (免代付房费)";
+        document.getElementById("calcModeTag").style.background = "#94a3b8";
+        document.getElementById("calcCardFeeRow").style.display = "none";
+        document.getElementById("calcRateText").innerText = "到店自付单，房费由客人在入住前台自行缴纳";
+        document.getElementById("calcForeignAmount").innerText = `${foreignAmount.toFixed(2)} ${currency} (前台自付)`;
+        document.getElementById("calcRoomFeeCNY").innerText = "¥0.00 (客户前台自理)";
+        document.getElementById("calcServiceFee").innerText = `¥${serviceFee.toFixed(2)}`;
+        document.getElementById("calcTotalAmount").innerText = `¥${serviceFee.toFixed(2)}`;
+      }
+    }
+
     function handleTravelSubmit(e) {
       e.preventDefault();
       const platform = document.getElementById("selectedPlatform").value;
@@ -604,14 +982,30 @@
       const listingUrl = document.getElementById("listingUrl").value.trim();
       const checkIn = document.getElementById("checkIn").value;
       const checkOut = document.getElementById("checkOut").value;
+      const payRoomFee = document.getElementById("payRoomFee").value;
       const currency = document.getElementById("currency").value;
-      const budget = document.getElementById("budget").value.trim();
+      const foreignAmount = parseFloat(document.getElementById("budget").value) || 0;
+      const serviceFee = parseFloat(document.getElementById("serviceFee").value) || 0;
       const rooms = document.getElementById("rooms").value.trim();
       const guestName = document.getElementById("guestName").value.trim();
       const guestContact = document.getElementById("guestContact").value.trim();
       const urgency = document.getElementById("urgency").value;
       const submitter = document.getElementById("submitter").value.trim();
       const notes = document.getElementById("notes").value.trim();
+
+      const bocRate = BOC_RATES[currency] || 1.0;
+      const effectiveRate = (currency === "CNY") ? 1.0 : (currency === "JPY" ? (bocRate * 100 + BUFFER_RATE)/100 : bocRate + BUFFER_RATE);
+      const cardFee = (currency === "CNY") ? 0 : VIRTUAL_CARD_FEE;
+      let roomFeeCNY = 0;
+      let totalPayable = 0;
+
+      if (payRoomFee === "YES") {
+        roomFeeCNY = (currency === "CNY") ? foreignAmount : (foreignAmount * effectiveRate + cardFee);
+        totalPayable = roomFeeCNY + serviceFee;
+      } else {
+        roomFeeCNY = 0;
+        totalPayable = serviceFee;
+      }
 
       const newTask = {
         id: "TRV-" + Date.now().toString().slice(-6),
@@ -621,26 +1015,32 @@
         roomType,
         listingUrl,
         dates: `${checkIn} 至 ${checkOut}`,
-        amount: `${budget} ${currency}`,
+        payRoomFee,
+        currency,
+        foreignAmount,
+        effectiveRate,
+        cardFee,
+        roomFeeCNY: parseFloat(roomFeeCNY.toFixed(2)),
+        serviceFee: parseFloat(serviceFee.toFixed(2)),
+        totalPayable: parseFloat(totalPayable.toFixed(2)),
         rooms,
         guestName,
         guestContact,
         urgency,
         submitter,
         notes,
-        status: "待校验派单"
+        status: "待客户支付" // 初始状态：待线上收款
       };
 
       const tasks = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
       tasks.unshift(newTask);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
 
-      showToast(`工单 ${newTask.id} 提交成功！已加入酒旅排单队列`);
+      showToast(`工单 ${newTask.id} 生成成功！请点击【线上收款】完成资金核销`);
       renderHistory();
 
-      document.getElementById("listingUrl").value = "";
-      document.getElementById("budget").value = "";
-      document.getElementById("notes").value = "";
+      // Open cashier automatically for instant payment flow
+      openCashier(newTask.id);
     }
 
     function renderHistory() {
@@ -648,45 +1048,121 @@
       const tasks = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
 
       if (tasks.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: var(--text-muted); padding: 32px;">暂无酒旅预订提报记录</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="11" style="text-align: center; color: var(--text-muted); padding: 36px;">暂无酒旅预订提报记录</td></tr>`;
         return;
       }
 
       tbody.innerHTML = tasks.map(t => {
-        let urgencyBadge = '<span class="badge badge-primary">普通</span>';
-        if (t.urgency === "PRIORITY") urgencyBadge = '<span class="badge badge-warning">优先</span>';
-        if (t.urgency === "URGENT") urgencyBadge = '<span class="badge badge-warning" style="background:#fee2e2;color:#b91c1c;">加急</span>';
+        let statusBadge = '<span class="badge badge-amber">⏳ 待客户支付</span>';
+        let actionBtn = `<button class="btn-pay" onclick="openCashier('${t.id}')">💳 线上收款</button>`;
+
+        if (t.status === "待下单") {
+          statusBadge = '<span class="badge badge-blue">🚀 待下单 (已收款)</span>';
+          actionBtn = `<button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px; color: #2563eb;" onclick="markFulfilled('${t.id}')">🏨 录入预订号</button>`;
+        } else if (t.status === "已完成预订") {
+          statusBadge = '<span class="badge badge-success">✅ 已完成预订</span>';
+          actionBtn = `<span style="font-size: 12px; color: #166534;">单号:${t.bookingRef || '已核实'}</span>`;
+        }
+
+        const modeBadge = (t.payRoomFee === "YES")
+          ? `<span class="badge badge-primary">代付房费</span>`
+          : `<span class="badge badge-neutral">前台自付</span>`;
+
+        const feeDetail = (t.payRoomFee === "YES")
+          ? `<div style="font-size: 12px;">房费: ¥${t.roomFeeCNY} <span style="color:var(--text-muted);">(${t.foreignAmount} ${t.currency})</span></div><div style="font-size: 11.5px; color:var(--text-muted);">手续费: ¥${t.serviceFee} (含卡费¥${t.cardFee||8})</div>`
+          : `<div style="font-size: 12px;">手续费: ¥${t.serviceFee}</div><div style="font-size: 11.5px; color:var(--text-muted);">房费前台自付</div>`;
 
         return `
           <tr>
             <td style="white-space: nowrap; font-size: 12.5px; color: var(--text-muted);">${t.createTime}</td>
             <td><strong>${t.platform}</strong></td>
-            <td><span class="badge badge-primary">${t.hotelName}</span></td>
+            <td><span class="badge badge-primary" style="font-weight:700;">${t.hotelName}</span></td>
             <td>${t.roomType || '标配房型'}</td>
             <td style="white-space: nowrap; font-size: 12.5px;">${t.dates}</td>
-            <td style="font-weight: 700; white-space: nowrap;">${t.amount}</td>
+            <td>${modeBadge}</td>
+            <td>${feeDetail}</td>
+            <td style="font-weight: 800; font-size: 14.5px; color: #047857; white-space: nowrap;">¥${t.totalPayable}</td>
             <td>${t.guestName}</td>
-            <td><span class="badge badge-success">⏳ ${t.status}</span></td>
-            <td style="white-space: nowrap;">
-              <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="copyTask('${t.id}')">复制任务</button>
+            <td>${statusBadge}</td>
+            <td style="white-space: nowrap; display: flex; gap: 6px; align-items: center;">
+              ${actionBtn}
+              <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="copyTask('${t.id}')">复制</button>
             </td>
           </tr>
         `;
       }).join("");
     }
 
+    function openCashier(id) {
+      const tasks = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      const t = tasks.find(x => x.id === id);
+      if (!t) return;
+
+      activeCashierTaskId = id;
+      document.getElementById("modalTaskId").innerText = t.id;
+      document.getElementById("modalHotelName").innerText = `${t.hotelName} (${t.platform})`;
+      document.getElementById("modalPayMode").innerText = (t.payRoomFee === "YES") ? "我方代付房费 (预付单)" : "客户到店自付 (免代付房费)";
+      document.getElementById("modalTotalPayable").innerText = `¥${t.totalPayable.toFixed(2)}`;
+
+      if (t.payRoomFee === "YES") {
+        document.getElementById("modalBreakdown").innerText = `折合房费 ¥${t.roomFeeCNY} (${t.foreignAmount} ${t.currency} @${t.effectiveRate.toFixed(2)} + 制卡费¥${t.cardFee}) + 手续费 ¥${t.serviceFee}`;
+      } else {
+        document.getElementById("modalBreakdown").innerText = `调度手续费 ¥${t.serviceFee} (房费由客户入住时自付)`;
+      }
+
+      document.getElementById("cashierModal").style.display = "flex";
+    }
+
+    function closeCashier() {
+      document.getElementById("cashierModal").style.display = "none";
+      activeCashierTaskId = null;
+    }
+
+    function confirmPayment() {
+      if (!activeCashierTaskId) return;
+      const tasks = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      const t = tasks.find(x => x.id === activeCashierTaskId);
+      if (!t) return;
+
+      t.status = "待下单";
+      t.paidAt = new Date().toLocaleString();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+
+      closeCashier();
+      showToast(`🎉 收款确认到账！工单 ${t.id} 已转入【待下单】调度队列`);
+      renderHistory();
+    }
+
+    function markFulfilled(id) {
+      const ref = prompt("请输入平台预订成功回执号 (Booking / Trip / Agoda 预订编号):", "BK-" + Date.now().toString().slice(-6));
+      if (!ref) return;
+
+      const tasks = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+      const t = tasks.find(x => x.id === id);
+      if (!t) return;
+
+      t.status = "已完成预订";
+      t.bookingRef = ref;
+      t.fulfilledAt = new Date().toLocaleString();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+
+      showToast(`工单 ${id} 已标记完成！预订号: ${ref}`);
+      renderHistory();
+    }
+
     function copyTask(id) {
       const tasks = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
       const t = tasks.find(x => x.id === id);
       if (!t) return;
-      const text = `【酒旅预订派单指令】\n平台: ${t.platform}\n酒店/民宿: ${t.hotelName}\n房型: ${t.roomType || '按链接'}\n链接: ${t.listingUrl}\n入住日期: ${t.dates}\n房费: ${t.amount} (${t.rooms})\n入住人: ${t.guestName} (${t.guestContact || '无'})\n紧急度: ${t.urgency}\n防关联要求: 执行同一酒店90天单账号冷却规则\n备注: ${t.notes || '无'}\n提报人: ${t.submitter}`;
+      const modeText = (t.payRoomFee === "YES") ? `我方代付房费预付单 (折合房费: ¥${t.roomFeeCNY})` : "客户前台到店自付 (免代付房费)";
+      const text = `【酒旅预订派单指令】\n工单号: ${t.id}\n状态: ${t.status}\n平台: ${t.platform}\n酒店/民宿: ${t.hotelName}\n房型: ${t.roomType || '按链接'}\n房源链接: ${t.listingUrl}\n入住日期: ${t.dates}\n房费模式: ${modeText}\n客户原价: ${t.foreignAmount} ${t.currency}\n结算汇率: ${t.effectiveRate || '1.0'}\n制卡费: ¥${t.cardFee || '8.00'}\n调度手续费: ¥${t.serviceFee}\n客户应付总额: ¥${t.totalPayable}\n入住人: ${t.guestName} (${t.guestContact || '无'})\n紧急度: ${t.urgency}\n防关联安全: 严格执行同一酒店90天单账号冷却机制\n特殊需求: ${t.notes || '无'}\n提报人: ${t.submitter}`;
       navigator.clipboard.writeText(text).then(() => {
-        showToast("已成功复制预订派单指令！");
+        showToast("已成功复制预订派单指令至剪贴板！");
       });
     }
 
     function copyTemplate() {
-      const text = "【酒旅 OTA 预订需求模板】\n平台：Booking.com / Trip.com / Expedia\n酒店/民宿名：\n房源链接/房型：\n入住与离店日期：\n房费总预算：\n房间数及人数：\n入住人姓名与电话：\n特殊需求说明：";
+      const text = "【酒旅 OTA 预订提报模板】\n平台：Booking.com / Trip.com / Agoda / Expedia\n酒店/民宿名：\n房源详情链接：\n房型与间数：\n入住与离店日期：\n是否由我方代付房费：是(预付) / 否(前台自付)\n平台币种与标价：例如 20 USD\n入住人姓名与电话：\n特殊需求：";
       navigator.clipboard.writeText(text).then(() => {
         showToast("已复制空白模板至剪贴板！");
       });
@@ -695,9 +1171,9 @@
     function exportCSV() {
       const tasks = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
       if (tasks.length === 0) return alert("暂无数据可导出");
-      let csv = "工单号,提报时间,平台,酒店名,房型,日期,房费,入住人,电话,紧急度,状态,备注\n";
+      let csv = "工单号,提报时间,平台,酒店名,房型,日期,房费模式,原币种,外币金额,折合汇率,制卡费,折合人民币房费,手续费,应付总额,入住人,状态,预订号\n";
       tasks.forEach(t => {
-        csv += `"${t.id}","${t.createTime}","${t.platform}","${t.hotelName}","${t.roomType}","${t.dates}","${t.amount}","${t.guestName}","${t.guestContact}","${t.urgency}","${t.status}","${(t.notes||'').replace(/"/g, '""')}"\n`;
+        csv += `"${t.id}","${t.createTime}","${t.platform}","${t.hotelName}","${t.roomType}","${t.dates}","${t.payRoomFee==='YES'?'代付房费':'到店自付'}","${t.currency}","${t.foreignAmount}","${t.effectiveRate}","${t.cardFee}","${t.roomFeeCNY}","${t.serviceFee}","${t.totalPayable}","${t.guestName}","${t.status}","${t.bookingRef||''}"\n`;
       });
       const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
       const link = document.createElement("a");
@@ -720,7 +1196,10 @@
       setTimeout(() => { toast.style.display = "none"; }, 3500);
     }
 
-    window.addEventListener("DOMContentLoaded", renderHistory);
+    window.addEventListener("DOMContentLoaded", () => {
+      recalculate();
+      renderHistory();
+    });
   </script>
 </body>
 </html>
