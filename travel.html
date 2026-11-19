@@ -682,12 +682,19 @@
                 <input type="text" id="rooms" value="1 间房 / 2 位成人" required>
               </div>
               <div class="form-group" style="margin-bottom: 0;">
-                <label for="urgency">任务紧急度</label>
-                <select id="urgency">
-                  <option value="NORMAL">🟢 普通正常预订</option>
-                  <option value="PRIORITY">🟡 优先锁房</option>
-                  <option value="URGENT">🔴 紧急即刻锁房</option>
-                </select>
+                <label>下单履约时效规则</label>
+                <div style="padding: 10px 14px; background: #fffbeb; border: 1.5px solid #fde68a; border-radius: 8px; font-size: 13px; color: #92400e; display: flex; align-items: center; gap: 8px;">
+                  <span style="font-size: 16px;">⏳</span>
+                  <span><strong>通常 2-3 日内下单</strong>（全面取消加急通道 · 不接急单）</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Prominent Notice: No Urgent Orders -->
+            <div style="background: #f8fafc; border: 1.5px dashed #cbd5e1; border-radius: 10px; padding: 12px 16px; margin-bottom: 20px; font-size: 13px; color: #475569; display: flex; align-items: flex-start; gap: 10px;">
+              <span style="font-size: 17px; line-height: 1.2;">⚠️</span>
+              <div>
+                <strong style="color: #0f172a;">排单排期规范：</strong>为保证海外独立环境安全与 90 天防关联冷却达标，系统<strong>坚决不接急单</strong>。客户完成线上付款后，订单将按合规流程<strong>在 2-3 日内稳妥下单锁房</strong>，请务必预留充分时间。
               </div>
             </div>
 
@@ -755,6 +762,14 @@
 
       <!-- Right: Sidebar -->
       <div>
+        <div class="guide-box" style="background: #fffbeb; border: 1.5px solid #fde68a;">
+          <h4 style="color: #92400e;">⏳ 排单履约时效须知</h4>
+          <ul class="guide-list" style="color: #78350f;">
+            <li><strong>一律不接急单</strong>：为保障海外独立买家账号资产与房源长期安全，平台已全面取消加急通道，杜绝高危操作。</li>
+            <li><strong>通常 2-3 日内下单</strong>：客户完成线上付款后，系统按合规冷却计划在 <strong>2-3 日内稳妥下单锁房</strong>。</li>
+          </ul>
+        </div>
+
         <div class="guide-box">
           <h4>📌 计费与外币折算规范</h4>
           <ul class="guide-list">
@@ -989,7 +1004,7 @@
       const rooms = document.getElementById("rooms").value.trim();
       const guestName = document.getElementById("guestName").value.trim();
       const guestContact = document.getElementById("guestContact").value.trim();
-      const urgency = document.getElementById("urgency").value;
+      const executionWindow = "通常2-3日内下单 (全面取消急单)";
       const submitter = document.getElementById("submitter").value.trim();
       const notes = document.getElementById("notes").value.trim();
 
@@ -1026,7 +1041,7 @@
         rooms,
         guestName,
         guestContact,
-        urgency,
+        executionWindow,
         submitter,
         notes,
         status: "待客户支付" // 初始状态：待线上收款
@@ -1155,7 +1170,7 @@
       const t = tasks.find(x => x.id === id);
       if (!t) return;
       const modeText = (t.payRoomFee === "YES") ? `我方代付房费预付单 (折合房费: ¥${t.roomFeeCNY})` : "客户前台到店自付 (免代付房费)";
-      const text = `【酒旅预订派单指令】\n工单号: ${t.id}\n状态: ${t.status}\n平台: ${t.platform}\n酒店/民宿: ${t.hotelName}\n房型: ${t.roomType || '按链接'}\n房源链接: ${t.listingUrl}\n入住日期: ${t.dates}\n房费模式: ${modeText}\n客户原价: ${t.foreignAmount} ${t.currency}\n结算汇率: ${t.effectiveRate || '1.0'}\n制卡费: ¥${t.cardFee || '8.00'}\n调度手续费: ¥${t.serviceFee}\n客户应付总额: ¥${t.totalPayable}\n入住人: ${t.guestName} (${t.guestContact || '无'})\n紧急度: ${t.urgency}\n防关联安全: 严格执行同一酒店90天单账号冷却机制\n特殊需求: ${t.notes || '无'}\n提报人: ${t.submitter}`;
+      const text = `【酒旅预订派单指令】\n工单号: ${t.id}\n状态: ${t.status}\n平台: ${t.platform}\n酒店/民宿: ${t.hotelName}\n房型: ${t.roomType || '按链接'}\n房源链接: ${t.listingUrl}\n入住日期: ${t.dates}\n房费模式: ${modeText}\n客户原价: ${t.foreignAmount} ${t.currency}\n结算汇率: ${t.effectiveRate || '1.0'}\n制卡费: ¥${t.cardFee || '8.00'}\n调度手续费: ¥${t.serviceFee}\n客户应付总额: ¥${t.totalPayable}\n入住人: ${t.guestName} (${t.guestContact || '无'})\n下单时效: 通常2-3日内稳妥下单 (不接急单)\n防关联安全: 严格执行同一酒店90天单账号冷却机制\n特殊需求: ${t.notes || '无'}\n提报人: ${t.submitter}`;
       navigator.clipboard.writeText(text).then(() => {
         showToast("已成功复制预订派单指令至剪贴板！");
       });
