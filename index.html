@@ -168,6 +168,7 @@
     .pill-danger { background: #fee2e2; color: #b91c1c; }
     .pill-primary { background: #dbeafe; color: #1e40af; }
     .pill-success { background: #dcfce7; color: #15803d; }
+    .pill-neutral { background: #f1f5f9; color: #475569; }
 
     /* Main Dashboard Layout */
     #dashboardContent {
@@ -609,6 +610,9 @@
         <button class="nav-tab" onclick="switchTab('purchased', this)">
           ✅ 采购成功待发货 <span class="tab-pill pill-success" id="navPurchasedCount">0</span>
         </button>
+        <button class="nav-tab" onclick="switchTab('cancelled', this)">
+          🛑 已取消订单 <span class="tab-pill pill-neutral" id="navCancelledCount">0</span>
+        </button>
         <button class="nav-tab" onclick="switchTab('logistics', this)">
           🚚 亚马逊采购与物流追踪 <span class="tab-pill pill-success" id="navLogisticsCount">0</span>
         </button>
@@ -624,8 +628,6 @@
         <p class="subtitle">已打通 Cdiscount (Octopia) 官方订单接口与亚马逊矩阵买家自动化采购流程</p>
       </div>
       <div class="actions">
-        <a href="travel-tracker.html" class="btn" style="color: #059669; font-weight: 700; border-color: #a7f3d0; background: #ecfdf5; text-decoration: none;">🏨 酒旅全盘看板</a>
-        <a href="dispatch.html" class="btn" style="text-decoration: none;">🚀 需求提报中心</a>
         <button class="btn" onclick="exportUnifiedCSV()">📥 导出完整数据表 (CSV)</button>
         <button class="btn" onclick="lockPage()">🔒 锁定页面</button>
         <button class="btn btn-primary" onclick="window.location.reload()">🔄 刷新最新状态</button>
@@ -676,6 +678,15 @@
           <div class="stat-label">待采购预估利润</div>
           <div class="stat-val" id="kpiProfit" style="color: #16a34a;">0.00 €</div>
           <div class="stat-sub">待下单商品预估毛利</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background: #f1f5f9; color: #475569;">🛑</div>
+        <div class="stat-info">
+          <div class="stat-label">已取消订单</div>
+          <div class="stat-val" id="kpiCancelled" style="color: #475569;">0 笔</div>
+          <div class="stat-sub">已取消，不用下单</div>
         </div>
       </div>
 
@@ -783,6 +794,36 @@
       </div>
     </div>
 
+    <!-- SECTION 2.6: CANCELLED ORDERS -->
+    <div class="section-card" id="sectionCancelled" style="border-left: 4px solid #64748b; margin-top: 24px;">
+      <div class="section-header" style="background: #f8fafc;">
+        <div class="section-title" style="color: #475569;">
+          <span>🛑 已取消订单专区 (平台/买家已取消，已安全拦截，不用下单)</span>
+          <span class="badge badge-neutral" id="cancelledBadgeCount">0 笔已取消</span>
+        </div>
+        <div style="font-size: 13px; color: #64748b;">
+          安全原则：该专区订单在 Cdiscount 均已取消或关闭，系统永久终止采购，防止误拍
+        </div>
+      </div>
+      <div class="table-wrapper">
+        <table id="cancelledTable">
+          <thead>
+            <tr>
+              <th>Cdiscount 订单号</th>
+              <th>商品信息 (ASIN + 商品名称)</th>
+              <th>原平台售价</th>
+              <th>下单时间</th>
+              <th>买家收件信息</th>
+              <th>状态标注与处理说明</th>
+            </tr>
+          </thead>
+          <tbody id="cancelledTbody">
+            <!-- Rendered by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
     <!-- SECTION 3: AMAZON LOGISTICS & SHIPMENTS -->
     <div class="section-card" id="sectionLogistics">
       <div class="section-header">
@@ -822,7 +863,7 @@
 
   <script>
     const TARGET_HASH = "895789b8d8ad587c690004287c8628046c7d40ab0dc4fb8360db82f63c4121cd";
-    const ENCRYPTED_PAYLOAD = "eyJzdW1tYXJ5IjogeyJ0b3RhbF9uZXdfb3JkZXJzIjogNCwgIm91dF9vZl9zdG9ja19jb3VudCI6IDEsICJwZW5kaW5nX3B1cmNoYXNlX2NvdW50IjogMSwgInB1cmNoYXNlZF9jb3VudCI6IDAsICJkZWxpdmVyZWRfY291bnQiOiAxLCAidG90YWxfcHJvamVjdGVkX3Byb2ZpdCI6ICIrMC4wMCDigqwiLCAidG90YWxfcHVyY2hhc2VkX3Byb2ZpdCI6ICIrMC4wMCDigqwiLCAibGFzdF9zeW5jX3RpbWUiOiAiMjAyNi0xMS0yMCAwOToxNTozNiJ9LCAib3V0X29mX3N0b2NrX29yZGVycyI6IFt7Im9yZGVyX2lkIjogIjI2MTExNDIzNDRQQllEUiIsICJjaGFubmVsIjogIkNkaXNjb3VudCBGUiIsICJwdXJjaGFzZWRfYXQiOiAiMjAyNi0xMS0xNCIsICJzaGlwcGVkX2F0X21heCI6ICIyMDI2LTExLTE3IiwgImFzaW4iOiAiQjBGRFRaRDQzSiIsICJhbWF6b25fdXJsIjogImh0dHBzOi8vd3d3LmFtYXpvbi5mci9kcC9CMEZEVFpENDNKIiwgInRpdGxlIjogIklETWFya2V0IFRhYmxlIMOgIG1hbmdlciBleHRlbnNpYmxlIHJvbmRlIDExMC0xNTAgY20gYmxhbmNoZSBldCBib2lzIEFMSVgiLCAicXVhbnRpdHkiOiAxLCAic2VsbGluZ19wcmljZSI6IDEzNC44MiwgInNlbGxpbmdfcHJpY2Vfc3RyIjogIjEzNC44MiDigqwiLCAiYW1hem9uX2Nvc3QiOiA3OS45OSwgImFtYXpvbl9jb3N0X3N0ciI6ICI3OS45OSDigqwiLCAicHJvZml0IjogMC4wLCAicHJvZml0X3N0ciI6ICIwLjAwIOKCrCIsICJwcm9maXRfbWFyZ2luX3N0ciI6ICIwJSIsICJzdG9ja19zdGF0dXMiOiAib3V0X29mX3N0b2NrIiwgInN0b2NrX2JhZGdlIjogIvCfmqgg5Lil6YeN57y66LSnICjml6DotKcpIiwgInN0b2NrX2Rlc2MiOiAi5Lil6YeN57y66LSnIChBY3R1ZWxsZW1lbnQgaW5kaXNwb25pYmxlIC0g5a6Y5pa55pat6LSn5peg5Zyo5ZSu5Y2W5a62KSIsICJvcmRlcl9zdGF0ZSI6ICJvdXRfb2Zfc3RvY2siLCAib3JkZXJfc3RhdGVfYmFkZ2UiOiAi8J+aqCDml6DotKfpooToraYiLCAib3JkZXJfc3RhdGVfZGVzYyI6ICLwn5qoIOS4pemHjee8uui0pyAoQVNJTiBCMEZEVFpENDNKIOS6mumprOmAiuWumOaWueW3suaWrei0pykiLCAiYmFkZ2VfY29sb3IiOiAiZGFuZ2VyIiwgImFtYXpvbl9vcmRlcl9pZCI6ICIiLCAiYXNzaWduZWRfYWNjb3VudCI6IG51bGwsICJhc3NpZ25lZF9hY2NvdW50X25hbWUiOiAi5pegICjlt7Lmi6bmiKrkuIvljZUpIiwgInJlY2lwaWVudF9uYW1lIjogIk1hw6kgSHVldCIsICJyZWNpcGllbnRfY2l0eSI6ICJJbmdyZSIsICJyZWNpcGllbnRfemlwIjogIjQ1MTQwIiwgInJlY2lwaWVudF9waG9uZSI6ICIwNjUwNTcyMDM4IiwgInJlY2lwaWVudF9hZGRyZXNzX2Z1bGwiOiAiTWHDqSBIdWV0LCAxMDMgUnVlIERlIExhIEp1c3RpY2UsIDQ1MTQwIEluZ3JlLCBGcmFuY2UgKFRlbDogMDY1MDU3MjAzOCkiLCAiYWN0aW9uX2FkdmljZSI6ICLkvpvlupTllYbmlq3otKfvvIzor7flnKggQ2Rpc2NvdW50IOWNluWutuWQjuWPsOiBlOezu+S5sOWutuWNj+WVhuaIluWPlua2iCJ9XSwgInBlbmRpbmdfb3JkZXJzIjogW3sib3JkZXJfaWQiOiAiMjYxMTE5MTI0NFBRTE5MIiwgImNoYW5uZWwiOiAiQ2Rpc2NvdW50IEZSIiwgInB1cmNoYXNlZF9hdCI6ICIyMDI2LTExLTE5IiwgInNoaXBwZWRfYXRfbWF4IjogIjIwMjYtMTEtMjQiLCAiYXNpbiI6ICJCMDlDUTRYWDlSIiwgImFtYXpvbl91cmwiOiAiaHR0cHM6Ly93d3cuYW1hem9uLmZyL2RwL0IwOUNRNFhYOVIiLCAidGl0bGUiOiAiTWF0ZWxhcyA4MHgxOTAgY20gw6lwYWlzc2V1ciAxNCBjbSBlcmdvbm9taXF1ZSByZXNwIiwgInF1YW50aXR5IjogMSwgInNlbGxpbmdfcHJpY2UiOiAxNTcuNzQsICJzZWxsaW5nX3ByaWNlX3N0ciI6ICIxNTcuNzQg4oKsIiwgImFtYXpvbl9jb3N0IjogMC4wLCAiYW1hem9uX2Nvc3Rfc3RyIjogIk4vQSIsICJwcm9maXQiOiAwLjAsICJwcm9maXRfc3RyIjogIjAuMDAg4oKsIiwgInByb2ZpdF9tYXJnaW5fc3RyIjogIjAlIiwgInN0b2NrX3N0YXR1cyI6ICJ1bmtub3duIiwgInN0b2NrX2JhZGdlIjogIueOsOi0p+W+hemHh+i0rSIsICJzdG9ja19kZXNjIjogIuW+heaOkuafpeW6k+WtmCIsICJvcmRlcl9zdGF0ZSI6ICJwZW5kaW5nIiwgIm9yZGVyX3N0YXRlX2JhZGdlIjogIuW+heaWsOWNoemHh+i0rSIsICJvcmRlcl9zdGF0ZV9kZXNjIjogIuW+heWkhOeQhiIsICJiYWRnZV9jb2xvciI6ICJ3YXJuaW5nIiwgImFtYXpvbl9vcmRlcl9pZCI6ICIiLCAiYXNzaWduZWRfYWNjb3VudCI6IG51bGwsICJhc3NpZ25lZF9hY2NvdW50X25hbWUiOiAi5b6F5YiG6YWNIiwgInJlY2lwaWVudF9uYW1lIjogIlBhc2NhbGUgQkFSQkVUIiwgInJlY2lwaWVudF9jaXR5IjogIkRvdWFpIiwgInJlY2lwaWVudF96aXAiOiAiNTk1MDAiLCAicmVjaXBpZW50X3Bob25lIjogIjA3ODYzNzA4NDMiLCAicmVjaXBpZW50X2FkZHJlc3NfZnVsbCI6ICJQYXNjYWxlIEJBUkJFVCwgNjggLEFsbMOpZSBSQVlNT05EIFRFTExJRVIsIDU5NTAwIERvdWFpLCBGcmFuY2UiLCAiYWN0aW9uX2FkdmljZSI6ICLlt7LplIHljZXlvoXnlKjmiLfnoa7orqTlkI7ljbPlj6/oh6rliqjkuIvljZUifV0sICJwdXJjaGFzZWRfb3JkZXJzIjogW10sICJhbWF6b25fb3JkZXJzIjogW3sib3JkZXJfaWQiOiAiNDA1LTI0MjQ1MzAtNTgwMTk2OCIsICJvcmRlcl9kYXRlIjogIjIwMjYtMTEtMTciLCAiY3JlYXRlZF9hdCI6ICIyMDI2LTExLTE3IDExOjM1OjQ2IiwgImNkaXNjb3VudF9vcmRlcl9pZCI6ICIyNjExMTUxMjU1UEQxQlQiLCAiY2Rpc2NvdW50X3B1cmNoYXNlZF9hdCI6ICIyMDI2LTExLTE1IiwgImFjY291bnRfbmlja25hbWUiOiAiMDkgLSBzaGlyZSAoZnJfbWlncmF0ZWRfMDkpIiwgImNvdW50cnkiOiAi8J+Hq/Cfh7cg5rOV5Zu9IiwgImFzaW4iOiAiQjBCWlZXVzQzOSIsICJhbWF6b25fdXJsIjogImh0dHBzOi8vd3d3LmFtYXpvbi5mci9kcC9CMEJaVldXNDM5IiwgInRpdGxlIjogIkdUUExBWUVSIENoYWlzZSBHYW1pbmcsIEZhdXRldWlsIEdhbWluZywgQ2hhaXNlIEJ1cmVhdSBFcmdvbm9taXF1ZSwgU2nDqGdlIFLDqWdsYWJsZSwgUmVwb3NlLVBpZWRzIFTDqWxlc2NvcGlxdWUsIHBpdm90YW50ZSwgU3VwcG9ydGUgMTgwIGtnLCBCbGFuYyIsICJ0b3RhbF9hbW91bnQiOiAiMTY5LDk5IOKCrCIsICJ0cmFja2luZ19udW1iZXIiOiAiMDE0MTUwNjc5NDU0NDUgKERQRCkiLCAic2hpcHBpbmdfdGltZSI6ICJMaXZyYWlzb24gcHLDqXZ1ZSAyNCBub3ZlbWJyZSAtIDI2IG5vdmVtYnJlIiwgImRlbGl2ZXJ5X3N0YXR1cyI6ICLov5DovpPkuK0gKOmihOiuoSAyNC0yNiBub3YuIDIwMjYpIiwgInN0YXR1c19iYWRnZSI6ICLlt7Llj5HotKcgKERQRCkiLCAic3RhdHVzX2NvbG9yIjogInByaW1hcnkiLCAicmVjaXBpZW50IjogIkFsZWtzYW5kcmEgVkVSU1lDSyAoRmxpbnMgU3VyIFNlaW5lKSJ9LCB7Im9yZGVyX2lkIjogIjQwNi04ODQ3NDI0LTMxMDk5NDMiLCAib3JkZXJfZGF0ZSI6ICIyMDI2LTExLTE3IiwgImNyZWF0ZWRfYXQiOiAiMjAyNi0xMS0xNyAwODoxODo0OCIsICJjZGlzY291bnRfb3JkZXJfaWQiOiAiMjYxMTEzMjA1M1A4TlREIiwgImNkaXNjb3VudF9wdXJjaGFzZWRfYXQiOiAiMjAyNi0xMS0xMyIsICJhY2NvdW50X25pY2tuYW1lIjogIjA4IC0gU2FtYSAoZnJfbWlncmF0ZWRfMDgpIiwgImNvdW50cnkiOiAi8J+Hq/Cfh7cg5rOV5Zu9IiwgImFzaW4iOiAiQjBHUUszQ1NaNyIsICJhbWF6b25fdXJsIjogImh0dHBzOi8vd3d3LmFtYXpvbi5mci9kcC9CMEdRSzNDU1o3IiwgInRpdGxlIjogIldPTFRVIEJ1cmVhdSBBc3NpcyBEZWJvdXQgw4lsZWN0cmlxdWUsIFLDqWdsYWJsZSBlbiBIYXV0ZXVyLCA4MHg0OCwgTm9pciIsICJ0b3RhbF9hbW91bnQiOiAiODQsOTkg4oKsIiwgInRyYWNraW5nX251bWJlciI6ICJYTjIxMzU0NzUyNEpCIChDaHJvbm9wb3N0KSIsICJzaGlwcGluZ190aW1lIjogIjIwMjYtMTEtMTcgKEZSKSIsICJkZWxpdmVyeV9zdGF0dXMiOiAi6L+Q6L6T5LitICjpooTorqEgMjAyNi0xMS0yMSAtIDIwMjYtMTEtMjMpIiwgInN0YXR1c19iYWRnZSI6ICLlt7Llj5HotKcgKENocm9ub3Bvc3QpIiwgInN0YXR1c19jb2xvciI6ICJwcmltYXJ5IiwgInJlY2lwaWVudCI6ICJTYW1pciBBYmFocmkgKExpZXVzYWludCkifSwgeyJvcmRlcl9pZCI6ICI0MDItNTU3MTk0Mi03NzYyNzQ2IiwgIm9yZGVyX2RhdGUiOiAiMjAyNi0xMS0wOSIsICJjcmVhdGVkX2F0IjogIjIwMjYtMTEtMDkgMTM6MTk6NTAiLCAiY2Rpc2NvdW50X29yZGVyX2lkIjogIjI2MTEwODIxNDdPUU9JTCIsICJjZGlzY291bnRfcHVyY2hhc2VkX2F0IjogIjIwMjYtMTEtMDgiLCAiYWNjb3VudF9uaWNrbmFtZSI6ICIxMSAtIFRyYWNpIExhbmRlcnMgKGZyX21pZ3JhdGVkXzExKSIsICJjb3VudHJ5IjogIvCfh6vwn4e3IOazleWbvSIsICJhc2luIjogIkIwR1pXR0hEUE4iLCAiYW1hem9uX3VybCI6ICJodHRwczovL3d3dy5hbWF6b24uZnIvZHAvQjBHWldHSERQTiIsICJ0aXRsZSI6ICJTdW4gR2FyZGVuIE1hdGVsYXMgcG91ciBlbmZhbnQgOTAgeCAyMDAgY20sIDMgw6AgMTIgYW5zLCBmYWJyaXF1w6kgZW4gRXVyb3BlIHwgc3lzdMOobWUgw6l2b2x1dGlmIDItZW4tMSBwb3VyIGxpdCBkJ2VuZmFudCBldCBsaXQgZCdhZG9sZXNjZW50LCBjZXJ0aWZpw6kgT2Vrby1UZXggZXQgRGVybWF0ZXN0IC0gVHLDqHMgYmllbiwgUkcyOCBkZSAxNSBjbSIsICJ0b3RhbF9hbW91bnQiOiAiMTA2LDk1IOKCrCIsICJ0cmFja2luZ19udW1iZXIiOiAiQ0EwODYxNjc0MzNERSAoREhMKSIsICJzaGlwcGluZ190aW1lIjogIjIwMjYtMTEtMTAgMTg6MTMgKERFKSIsICJkZWxpdmVyeV9zdGF0dXMiOiAi5bey562+5pS2ICjmnIDnu4jnirbmgIEpIiwgInN0YXR1c19iYWRnZSI6ICLlt7LpgIHovr7nrb7mlLYiLCAic3RhdHVzX2NvbG9yIjogInN1Y2Nlc3MiLCAicmVjaXBpZW50IjogIk1yIENBU1RFTCBQYXVsaW5lIChBbGl4YW4pIn1dfQ==";
+    const ENCRYPTED_PAYLOAD = "eyJzdW1tYXJ5IjogeyJ0b3RhbF9uZXdfb3JkZXJzIjogNCwgIm91dF9vZl9zdG9ja19jb3VudCI6IDAsICJwZW5kaW5nX3B1cmNoYXNlX2NvdW50IjogMSwgInB1cmNoYXNlZF9jb3VudCI6IDAsICJjYW5jZWxsZWRfY291bnQiOiAxLCAiZGVsaXZlcmVkX2NvdW50IjogMSwgInRvdGFsX3Byb2plY3RlZF9wcm9maXQiOiAiKzAuMDAg4oKsIiwgInRvdGFsX3B1cmNoYXNlZF9wcm9maXQiOiAiKzAuMDAg4oKsIiwgImxhc3Rfc3luY190aW1lIjogIjIwMjYtMTEtMjAgMDk6NTg6MTEifSwgIm91dF9vZl9zdG9ja19vcmRlcnMiOiBbXSwgInBlbmRpbmdfb3JkZXJzIjogW3sib3JkZXJfaWQiOiAiMjYxMTE5MTI0NFBRTE5MIiwgImNoYW5uZWwiOiAiQ2Rpc2NvdW50IEZSIiwgInB1cmNoYXNlZF9hdCI6ICIyMDI2LTExLTE5IiwgInNoaXBwZWRfYXRfbWF4IjogIjIwMjYtMTEtMjQiLCAiYXNpbiI6ICJCMDlDUTRYWDlSIiwgImFtYXpvbl91cmwiOiAiaHR0cHM6Ly93d3cuYW1hem9uLmZyL2RwL0IwOUNRNFhYOVIiLCAidGl0bGUiOiAiTWF0ZWxhcyA4MHgxOTAgY20gw6lwYWlzc2V1ciAxNCBjbSBlcmdvbm9taXF1ZSByZXNwIiwgInF1YW50aXR5IjogMSwgInNlbGxpbmdfcHJpY2UiOiAxNTcuNzQsICJzZWxsaW5nX3ByaWNlX3N0ciI6ICIxNTcuNzQg4oKsIiwgImFtYXpvbl9jb3N0IjogMC4wLCAiYW1hem9uX2Nvc3Rfc3RyIjogIk4vQSIsICJwcm9maXQiOiAwLjAsICJwcm9maXRfc3RyIjogIjAuMDAg4oKsIiwgInByb2ZpdF9tYXJnaW5fc3RyIjogIjAlIiwgInN0b2NrX3N0YXR1cyI6ICJ1bmtub3duIiwgInN0b2NrX2JhZGdlIjogIueOsOi0p+W+hemHh+i0rSIsICJzdG9ja19kZXNjIjogIuW+heaOkuafpeW6k+WtmCIsICJvcmRlcl9zdGF0ZSI6ICJwZW5kaW5nIiwgIm9yZGVyX3N0YXRlX2JhZGdlIjogIuW+heaWsOWNoemHh+i0rSIsICJvcmRlcl9zdGF0ZV9kZXNjIjogIuW+heWkhOeQhiIsICJiYWRnZV9jb2xvciI6ICJ3YXJuaW5nIiwgImFtYXpvbl9vcmRlcl9pZCI6ICIiLCAiYXNzaWduZWRfYWNjb3VudCI6IG51bGwsICJhc3NpZ25lZF9hY2NvdW50X25hbWUiOiAi5b6F5YiG6YWNIiwgInJlY2lwaWVudF9uYW1lIjogIlBhc2NhbGUgQkFSQkVUIiwgInJlY2lwaWVudF9jaXR5IjogIkRvdWFpIiwgInJlY2lwaWVudF96aXAiOiAiNTk1MDAiLCAicmVjaXBpZW50X3Bob25lIjogIjA3ODYzNzA4NDMiLCAicmVjaXBpZW50X2FkZHJlc3NfZnVsbCI6ICJQYXNjYWxlIEJBUkJFVCwgNjggLEFsbMOpZSBSQVlNT05EIFRFTExJRVIsIDU5NTAwIERvdWFpLCBGcmFuY2UiLCAiYWN0aW9uX2FkdmljZSI6ICLlt7LplIHljZXlvoXnlKjmiLfnoa7orqTlkI7ljbPlj6/oh6rliqjkuIvljZUifV0sICJwdXJjaGFzZWRfb3JkZXJzIjogW10sICJjYW5jZWxsZWRfb3JkZXJzIjogW3sib3JkZXJfaWQiOiAiMjYxMTE0MjM0NFBCWURSIiwgImNoYW5uZWwiOiAiQ2Rpc2NvdW50IEZSIiwgInB1cmNoYXNlZF9hdCI6ICIyMDI2LTExLTE0IiwgInNoaXBwZWRfYXRfbWF4IjogIjIwMjYtMTEtMTciLCAiYXNpbiI6ICJCMEZEVFpENDNKIiwgImFtYXpvbl91cmwiOiAiaHR0cHM6Ly93d3cuYW1hem9uLmZyL2RwL0IwRkRUWkQ0M0oiLCAidGl0bGUiOiAiSURNYXJrZXQgVGFibGUgw6AgbWFuZ2VyIGV4dGVuc2libGUgcm9uZGUgMTEwLTE1MCBjbSBibGFuY2hlIGV0IGJvaXMgQUxJWCIsICJxdWFudGl0eSI6IDEsICJzZWxsaW5nX3ByaWNlIjogMTM0LjgyLCAic2VsbGluZ19wcmljZV9zdHIiOiAiMTM0LjgyIOKCrCIsICJhbWF6b25fY29zdCI6IDc5Ljk5LCAiYW1hem9uX2Nvc3Rfc3RyIjogIjc5Ljk5IOKCrCIsICJwcm9maXQiOiA1NC44MywgInByb2ZpdF9zdHIiOiAiKzU0LjgzIOKCrCIsICJwcm9maXRfbWFyZ2luX3N0ciI6ICI0MC43JSIsICJzdG9ja19zdGF0dXMiOiAiY2FuY2VsbGVkIiwgInN0b2NrX2JhZGdlIjogIvCfm5Eg5bey5Y+W5raIIiwgInN0b2NrX2Rlc2MiOiAiQ2Rpc2NvdW50IOW5s+WPsOW3suWPlua2iCAo5LiN55So5LiL5Y2VKSIsICJvcmRlcl9zdGF0ZSI6ICJjYW5jZWxsZWQiLCAib3JkZXJfc3RhdGVfYmFkZ2UiOiAi8J+bkSDlt7Llj5bmtojvvIzkuI3nlKjkuIvljZUiLCAib3JkZXJfc3RhdGVfZGVzYyI6ICLwn5uRIOiuouWNleW3suWPlua2iO+8jOaXoOmcgOmHh+i0reWxpee6pu+8jOS4jeeUqOS4i+WNlSIsICJiYWRnZV9jb2xvciI6ICJuZXV0cmFsIiwgImFtYXpvbl9vcmRlcl9pZCI6ICIiLCAiYXNzaWduZWRfYWNjb3VudCI6IG51bGwsICJhc3NpZ25lZF9hY2NvdW50X25hbWUiOiAi5pegICjlt7Llj5bmtojvvIzkuI3nlKjkuIvljZUpIiwgInJlY2lwaWVudF9uYW1lIjogIk1hw6kgSHVldCIsICJyZWNpcGllbnRfY2l0eSI6ICJJbmdyZSIsICJyZWNpcGllbnRfemlwIjogIjQ1MTQwIiwgInJlY2lwaWVudF9waG9uZSI6ICIwNjUwNTcyMDM4IiwgInJlY2lwaWVudF9hZGRyZXNzX2Z1bGwiOiAiTWHDqSBIdWV0LCAxMDMgUnVlIERlIExhIEp1c3RpY2UsIDQ1MTQwIEluZ3JlLCBGcmFuY2UgKFRlbDogMDY1MDU3MjAzOCkiLCAiYWN0aW9uX2FkdmljZSI6ICLorqLljZXlnKggQ2Rpc2NvdW50IOW5s+WPsOW3suWFs+mXreWPlua2iO+8jOaXoOmcgOmHh+i0re+8jOS4jeeUqOS4i+WNlSJ9XSwgImFtYXpvbl9vcmRlcnMiOiBbeyJvcmRlcl9pZCI6ICI0MDUtMjQyNDUzMC01ODAxOTY4IiwgIm9yZGVyX2RhdGUiOiAiMjAyNi0xMS0xNyIsICJjcmVhdGVkX2F0IjogIjIwMjYtMTEtMTcgMTE6MzU6NDYiLCAiY2Rpc2NvdW50X29yZGVyX2lkIjogIjI2MTExNTEyNTVQRDFCVCIsICJjZGlzY291bnRfcHVyY2hhc2VkX2F0IjogIjIwMjYtMTEtMTUiLCAiYWNjb3VudF9uaWNrbmFtZSI6ICIwOSAtIHNoaXJlIChmcl9taWdyYXRlZF8wOSkiLCAiY291bnRyeSI6ICLwn4er8J+HtyDms5Xlm70iLCAiYXNpbiI6ICJCMEJaVldXNDM5IiwgImFtYXpvbl91cmwiOiAiaHR0cHM6Ly93d3cuYW1hem9uLmZyL2RwL0IwQlpWV1c0MzkiLCAidGl0bGUiOiAiR1RQTEFZRVIgQ2hhaXNlIEdhbWluZywgRmF1dGV1aWwgR2FtaW5nLCBDaGFpc2UgQnVyZWF1IEVyZ29ub21pcXVlLCBTacOoZ2UgUsOpZ2xhYmxlLCBSZXBvc2UtUGllZHMgVMOpbGVzY29waXF1ZSwgcGl2b3RhbnRlLCBTdXBwb3J0ZSAxODAga2csIEJsYW5jIiwgInRvdGFsX2Ftb3VudCI6ICIxNjksOTkg4oKsIiwgInRyYWNraW5nX251bWJlciI6ICIwMTQxNTA2Nzk0NTQ0NSAoRFBEKSIsICJzaGlwcGluZ190aW1lIjogIkxpdnJhaXNvbiBwcsOpdnVlIDI0IG5vdmVtYnJlIC0gMjYgbm92ZW1icmUiLCAiZGVsaXZlcnlfc3RhdHVzIjogIui/kOi+k+S4rSAo6aKE6K6hIDI0LTI2IG5vdi4gMjAyNikiLCAic3RhdHVzX2JhZGdlIjogIuW3suWPkei0pyAoRFBEKSIsICJzdGF0dXNfY29sb3IiOiAicHJpbWFyeSIsICJyZWNpcGllbnQiOiAiQWxla3NhbmRyYSBWRVJTWUNLIChGbGlucyBTdXIgU2VpbmUpIn0sIHsib3JkZXJfaWQiOiAiNDA2LTg4NDc0MjQtMzEwOTk0MyIsICJvcmRlcl9kYXRlIjogIjIwMjYtMTEtMTciLCAiY3JlYXRlZF9hdCI6ICIyMDI2LTExLTE3IDA4OjE4OjQ4IiwgImNkaXNjb3VudF9vcmRlcl9pZCI6ICIyNjExMTMyMDUzUDhOVEQiLCAiY2Rpc2NvdW50X3B1cmNoYXNlZF9hdCI6ICIyMDI2LTExLTEzIiwgImFjY291bnRfbmlja25hbWUiOiAiMDggLSBTYW1hIChmcl9taWdyYXRlZF8wOCkiLCAiY291bnRyeSI6ICLwn4er8J+HtyDms5Xlm70iLCAiYXNpbiI6ICJCMEdRSzNDU1o3IiwgImFtYXpvbl91cmwiOiAiaHR0cHM6Ly93d3cuYW1hem9uLmZyL2RwL0IwR1FLM0NTWjciLCAidGl0bGUiOiAiV09MVFUgQnVyZWF1IEFzc2lzIERlYm91dCDDiWxlY3RyaXF1ZSwgUsOpZ2xhYmxlIGVuIEhhdXRldXIsIDgweDQ4LCBOb2lyIiwgInRvdGFsX2Ftb3VudCI6ICI4NCw5OSDigqwiLCAidHJhY2tpbmdfbnVtYmVyIjogIlhOMjEzNTQ3NTI0SkIgKENocm9ub3Bvc3QpIiwgInNoaXBwaW5nX3RpbWUiOiAiMjAyNi0xMS0xNyAoRlIpIiwgImRlbGl2ZXJ5X3N0YXR1cyI6ICLov5DovpPkuK0gKOmihOiuoSAyMDI2LTExLTIxIC0gMjAyNi0xMS0yMykiLCAic3RhdHVzX2JhZGdlIjogIuW3suWPkei0pyAoQ2hyb25vcG9zdCkiLCAic3RhdHVzX2NvbG9yIjogInByaW1hcnkiLCAicmVjaXBpZW50IjogIlNhbWlyIEFiYWhyaSAoTGlldXNhaW50KSJ9LCB7Im9yZGVyX2lkIjogIjQwMi01NTcxOTQyLTc3NjI3NDYiLCAib3JkZXJfZGF0ZSI6ICIyMDI2LTExLTA5IiwgImNyZWF0ZWRfYXQiOiAiMjAyNi0xMS0wOSAxMzoxOTo1MCIsICJjZGlzY291bnRfb3JkZXJfaWQiOiAiMjYxMTA4MjE0N09RT0lMIiwgImNkaXNjb3VudF9wdXJjaGFzZWRfYXQiOiAiMjAyNi0xMS0wOCIsICJhY2NvdW50X25pY2tuYW1lIjogIjExIC0gVHJhY2kgTGFuZGVycyAoZnJfbWlncmF0ZWRfMTEpIiwgImNvdW50cnkiOiAi8J+Hq/Cfh7cg5rOV5Zu9IiwgImFzaW4iOiAiQjBHWldHSERQTiIsICJhbWF6b25fdXJsIjogImh0dHBzOi8vd3d3LmFtYXpvbi5mci9kcC9CMEdaV0dIRFBOIiwgInRpdGxlIjogIlN1biBHYXJkZW4gTWF0ZWxhcyBwb3VyIGVuZmFudCA5MCB4IDIwMCBjbSwgMyDDoCAxMiBhbnMsIGZhYnJpcXXDqSBlbiBFdXJvcGUgfCBzeXN0w6htZSDDqXZvbHV0aWYgMi1lbi0xIHBvdXIgbGl0IGQnZW5mYW50IGV0IGxpdCBkJ2Fkb2xlc2NlbnQsIGNlcnRpZmnDqSBPZWtvLVRleCBldCBEZXJtYXRlc3QgLSBUcsOocyBiaWVuLCBSRzI4IGRlIDE1IGNtIiwgInRvdGFsX2Ftb3VudCI6ICIxMDYsOTUg4oKsIiwgInRyYWNraW5nX251bWJlciI6ICJDQTA4NjE2NzQzM0RFIChESEwpIiwgInNoaXBwaW5nX3RpbWUiOiAiMjAyNi0xMS0xMCAxODoxMyAoREUpIiwgImRlbGl2ZXJ5X3N0YXR1cyI6ICLlt7Lnrb7mlLYgKOacgOe7iOeKtuaAgSkiLCAic3RhdHVzX2JhZGdlIjogIuW3sumAgei+vuetvuaUtiIsICJzdGF0dXNfY29sb3IiOiAic3VjY2VzcyIsICJyZWNpcGllbnQiOiAiTXIgQ0FTVEVMIFBhdWxpbmUgKEFsaXhhbikifV19";
     let DASHBOARD_DATA = null;
 
     function checkStoredAuth() {
@@ -909,22 +950,26 @@
       setTxt("kpiOos", (s.out_of_stock_count || 0) + " 笔");
       setTxt("kpiPending", (s.pending_purchase_count || 0) + " 笔");
       setTxt("kpiPurchased", (s.purchased_count || 0) + " 笔");
+      setTxt("kpiCancelled", (s.cancelled_count || 0) + " 笔");
       setTxt("kpiProfit", s.total_projected_profit || "0.00 €");
       setTxt("kpiLogistics", (data.amazon_orders ? data.amazon_orders.length : 0) + " 笔");
 
       setTxt("navOosCount", s.out_of_stock_count || 0);
       setTxt("navPendingCount", s.pending_purchase_count || 0);
       setTxt("navPurchasedCount", s.purchased_count || 0);
+      setTxt("navCancelledCount", s.cancelled_count || 0);
       setTxt("navLogisticsCount", data.amazon_orders ? data.amazon_orders.length : 0);
       setTxt("pendingBadgeCount", (s.pending_purchase_count || 0) + " 笔待确认");
       setTxt("purchasedBadgeCount", (s.purchased_count || 0) + " 笔待发货出库");
+      setTxt("cancelledBadgeCount", (s.cancelled_count || 0) + " 笔已取消");
       setTxt("syncTimestamp", s.last_sync_time || new Date().toLocaleString());
 
       if (s.out_of_stock_count > 0) {
         document.getElementById("urgentBannerText").innerHTML = 
-          `检测到 <strong>${s.out_of_stock_count}</strong> 笔订单因<strong>亚马逊官方断货</strong>（餐桌 B0FDTZD43J）无法采购，已自动拦截保护资金！另有 <strong>1</strong> 笔订单（电竞椅 406-5859193-6269127）已提交但提示<strong>待支付验证 (发卡行拦截，需换卡)</strong>；<strong>1</strong> 笔现货订单（升降桌 B0GQK3CSZ7）已锁定防重复待扣款下单。`;
+          `检测到 <strong>${s.out_of_stock_count}</strong> 笔进行中订单因<strong>亚马逊官方断货</strong>无法采购，已自动拦截保护资金！`;
       } else {
-        document.getElementById("urgentBannerText").innerText = "所有订单供货正常，采购管道运行平稳。";
+        const cancelNote = (s.cancelled_count && s.cancelled_count > 0) ? `（已有 <strong>${s.cancelled_count}</strong> 笔订单在 Cdiscount 平台关闭取消，已标注<strong>【已取消，不用下单】</strong>安全拦截）` : '';
+        document.getElementById("urgentBannerText").innerHTML = `供货正常，采购管道平稳运行${cancelNote}。`;
       }
 
       // 1. Render Out of Stock
@@ -1063,6 +1108,46 @@
         }
       }
 
+      // 2c. Render Cancelled Orders
+      const cancelledTbody = document.getElementById("cancelledTbody");
+      if (cancelledTbody) {
+        cancelledTbody.innerHTML = "";
+        if ((data.cancelled_orders || []).length === 0) {
+          cancelledTbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 24px 20px; color: #94a3b8; font-size: 13px;">暂无已取消订单</td></tr>`;
+        } else {
+          (data.cancelled_orders || []).forEach(o => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+              <td>
+                <span class="order-code">${o.order_id}
+                  <button class="copy-btn" onclick="copyText('${o.order_id}')" title="复制">📋</button>
+                </span>
+              </td>
+              <td>
+                ${renderProductCell(o.asin, o.title, o.amazon_url)}
+                <div class="cell-subtext" style="margin-top: 4px;">数量: ${o.quantity} 件</div>
+              </td>
+              <td style="font-weight: 600; color: #94a3b8; text-decoration: line-through;">${o.selling_price_str}</td>
+              <td>
+                <div style="font-weight: 600; color: #475569;">${o.purchased_at}</div>
+                <div class="cell-subtext" style="color: #64748b;">平台状态: ${o.octopia_status || "Cancelled"}</div>
+              </td>
+              <td>
+                <div style="font-weight: 600; color: #64748b;">${o.recipient_name}</div>
+                <div class="cell-subtext">${o.recipient_city}, France</div>
+              </td>
+              <td>
+                <span class="badge badge-neutral" style="background: #f1f5f9; color: #334155; font-weight: 700; border: 1px solid #cbd5e1;">🛑 已取消，不用下单</span>
+                <div style="font-size: 12.5px; color: #64748b; margin-top: 4px; line-height: 1.4;">
+                  ${o.action_advice || "该订单在平台已关闭取消，无需采购履约，不用下单"}
+                </div>
+              </td>
+            `;
+            cancelledTbody.appendChild(tr);
+          });
+        }
+      }
+
       // 3. Render Logistics
       const logTbody = document.getElementById("logisticsTbody");
       logTbody.innerHTML = "";
@@ -1117,36 +1202,49 @@
       const secDanger = document.getElementById("sectionDanger");
       const secPending = document.getElementById("sectionPending");
       const secPurchased = document.getElementById("sectionPurchased");
+      const secCancelled = document.getElementById("sectionCancelled");
       const secLogistics = document.getElementById("sectionLogistics");
 
       if (type === "all") {
         secDanger.style.display = "block";
         secPending.style.display = "block";
         if (secPurchased) secPurchased.style.display = "block";
+        if (secCancelled) secCancelled.style.display = "block";
         secLogistics.style.display = "block";
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (type === "danger") {
         secDanger.style.display = "block";
         secPending.style.display = "none";
         if (secPurchased) secPurchased.style.display = "none";
+        if (secCancelled) secCancelled.style.display = "none";
         secLogistics.style.display = "none";
         secDanger.scrollIntoView({ behavior: 'smooth' });
       } else if (type === "pending") {
         secDanger.style.display = "none";
         secPending.style.display = "block";
         if (secPurchased) secPurchased.style.display = "none";
+        if (secCancelled) secCancelled.style.display = "none";
         secLogistics.style.display = "none";
         secPending.scrollIntoView({ behavior: 'smooth' });
       } else if (type === "purchased") {
         secDanger.style.display = "none";
         secPending.style.display = "none";
         if (secPurchased) secPurchased.style.display = "block";
+        if (secCancelled) secCancelled.style.display = "none";
         secLogistics.style.display = "none";
         secPurchased.scrollIntoView({ behavior: 'smooth' });
+      } else if (type === "cancelled") {
+        secDanger.style.display = "none";
+        secPending.style.display = "none";
+        if (secPurchased) secPurchased.style.display = "none";
+        if (secCancelled) secCancelled.style.display = "block";
+        secLogistics.style.display = "none";
+        secCancelled.scrollIntoView({ behavior: 'smooth' });
       } else if (type === "logistics") {
         secDanger.style.display = "none";
         secPending.style.display = "none";
         if (secPurchased) secPurchased.style.display = "none";
+        if (secCancelled) secCancelled.style.display = "none";
         secLogistics.style.display = "block";
         secLogistics.scrollIntoView({ behavior: 'smooth' });
       }
@@ -1175,6 +1273,11 @@
       // Purchased
       (DASHBOARD_DATA.purchased_orders || []).forEach(o => {
         rows.push(["✅ 采购成功待发货", o.order_id, o.purchased_at, o.amazon_order_id || "-", o.asin, o.title, o.selling_price_str, o.amazon_cost_str, o.shipped_at_max, o.order_state_badge, o.recipient_address_full]);
+      });
+
+      // Cancelled
+      (DASHBOARD_DATA.cancelled_orders || []).forEach(o => {
+        rows.push(["🛑 已取消不用下单", o.order_id, o.purchased_at, "-", o.asin, o.title, o.selling_price_str, "N/A", o.shipped_at_max || "-", "已取消，不用下单", o.recipient_address_full]);
       });
 
       // Logistics
