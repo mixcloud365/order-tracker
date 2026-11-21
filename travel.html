@@ -560,12 +560,12 @@
       <p>面向 Booking.com、Trip.com、Agoda、Expedia 等 OTA 平台的住宿预订工单提报，严格执行防关联隔离、外币精准折算与账号轮换保护</p>
     </div>
 
-    <!-- 90-Day Anti-Association Rule Alert -->
+    <!-- 30-Day Anti-Association Rule Alert -->
     <div class="rule-alert">
       <div class="rule-icon">🛡️</div>
       <div class="rule-content">
-        <h3>酒旅 OTA 严格防关联安全机制（3 个月 / 90 天冷却保护）</h3>
-        <p>为保障平台账号与房源长期安全，系统对<strong>同一店铺/酒店严格执行“3 个月内单账号仅下 1 单”</strong>的防关联规则。提交工单后，管理员将调用店铺选号校验器匹配纯净从未下单或已满 3 个月冷却解冻的优质账号执行。</p>
+        <h3>酒旅 OTA 严格防关联安全机制（30 天店铺冷却保护）</h3>
+        <p>为保障平台账号与房源长期安全，系统对<strong>同一店铺/酒店严格执行“30 天内单账号仅下 1 单”</strong>的防关联规则。提交工单后，管理员将调用店铺选号校验器匹配纯净从未下单或已满 30 天冷却解冻的优质账号执行。</p>
       </div>
     </div>
 
@@ -699,7 +699,7 @@
             <div style="background: #f8fafc; border: 1.5px dashed #cbd5e1; border-radius: 10px; padding: 12px 16px; margin-bottom: 20px; font-size: 13px; color: #475569; display: flex; align-items: flex-start; gap: 10px;">
               <span style="font-size: 17px; line-height: 1.2;">⚠️</span>
               <div>
-                <strong style="color: #0f172a;">排单排期规范：</strong>为保证海外独立环境安全与 90 天防关联冷却达标，系统<strong>坚决不接急单</strong>。客户完成线上付款后，订单将按合规流程<strong>在 2-3 日内稳妥下单锁房</strong>，请务必预留充分时间。
+                <strong style="color: #0f172a;">排单排期规范：</strong>为保证海外独立环境安全与 30 天防关联冷却达标，系统<strong>坚决不接急单</strong>。客户完成线上付款后，订单将按合规流程<strong>在 2-3 日内稳妥下单锁房</strong>，请务必预留充分时间。
               </div>
             </div>
 
@@ -785,9 +785,9 @@
         </div>
 
         <div class="guide-box">
-          <h4>🛡️ 90 天防关联履约闭环</h4>
+          <h4>🛡️ 30 天防关联履约闭环</h4>
           <ul class="guide-list">
-            <li><strong>防关联排查</strong>：自动比对酒店历史下单记录，杜绝 90 天内同账号复下。</li>
+            <li><strong>防关联排查</strong>：自动比对酒店历史下单记录，杜绝 30 天内同账号复下。</li>
             <li><strong>付款即调度</strong>：客户完成线上支付后，系统工单<strong>自动转入【待下单】调度队列</strong>，由纯净海外环境极速锁房。</li>
           </ul>
         </div>
@@ -1175,7 +1175,7 @@
       const t = tasks.find(x => x.id === id);
       if (!t) return;
       const modeText = (t.payRoomFee === "YES") ? `我方代付房费预付单 (折合房费: ¥${t.roomFeeCNY})` : "客户前台到店自付 (免代付房费)";
-      const text = `【酒旅预订派单指令】\n工单号: ${t.id}\n状态: ${t.status}\n平台: ${t.platform}\n酒店/民宿: ${t.hotelName}\n房型: ${t.roomType || '按链接'}\n房源链接: ${t.listingUrl}\n入住日期: ${t.dates}\n房费模式: ${modeText}\n客户原价: ${t.foreignAmount} ${t.currency}\n结算汇率: ${t.effectiveRate || '1.0'}\n制卡费: ¥${t.cardFee || '8.00'}\n调度手续费: ¥${t.serviceFee}\n客户应付总额: ¥${t.totalPayable}\n入住人: ${t.guestName} (${t.guestContact || '无'})\n下单时效: 通常2-3日内稳妥下单 (不接急单)\n防关联安全: 严格执行同一酒店90天单账号冷却机制\n特殊需求: ${t.notes || '无'}\n提报人: ${t.submitter}`;
+      const text = `【酒旅预订派单指令】\n工单号: ${t.id}\n状态: ${t.status}\n平台: ${t.platform}\n酒店/民宿: ${t.hotelName}\n房型: ${t.roomType || '按链接'}\n房源链接: ${t.listingUrl}\n入住日期: ${t.dates}\n房费模式: ${modeText}\n客户原价: ${t.foreignAmount} ${t.currency}\n结算汇率: ${t.effectiveRate || '1.0'}\n制卡费: ¥${t.cardFee || '8.00'}\n调度手续费: ¥${t.serviceFee}\n客户应付总额: ¥${t.totalPayable}\n入住人: ${t.guestName} (${t.guestContact || '无'})\n下单时效: 通常2-3日内稳妥下单 (不接急单)\n防关联安全: 严格执行同一酒店30天单账号冷却机制\n特殊需求: ${t.notes || '无'}\n提报人: ${t.submitter}`;
       navigator.clipboard.writeText(text).then(() => {
         showToast("已成功复制预订派单指令至剪贴板！");
       });

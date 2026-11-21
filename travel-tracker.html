@@ -564,7 +564,7 @@
     <div class="page-header">
       <div class="page-header-text">
         <h1>📊 酒旅全盘采购订单履约跟踪中心</h1>
-        <p>集中管控 Booking.com / Trip.com / Agoda / Expedia 全平台预订工单，严格执行外币实时汇率折算、制卡费结算与 90 天单账号防关联隔离</p>
+        <p>集中管控 Booking.com / Trip.com / Agoda / Expedia 全平台预订工单，严格执行外币实时汇率折算、制卡费结算与 30 天单账号防关联隔离</p>
       </div>
       <div style="font-size: 13px; color: var(--text-muted); font-weight: 600;">
         数据源: 本地离线同步 + 云端派单矩阵 · 实时在线
@@ -762,21 +762,23 @@
       <div class="modal-body">
         <div style="background:#f8fafc; border-radius: 8px; padding: 12px; margin-bottom: 16px; font-size: 13px;">
           <div>工单: <strong id="assignTaskId">-</strong> | 酒店: <span id="assignHotelName">-</span></div>
-          <div style="color:var(--text-muted); margin-top: 4px;">平台: <span id="assignPlatform">-</span> | 需防关联冷却: <strong>90 天</strong></div>
+          <div style="color:var(--text-muted); margin-top: 4px;">平台: <span id="assignPlatform">-</span> | 需防关联冷却: <strong>30 天 (同一店铺/酒店)</strong></div>
         </div>
 
         <div style="margin-bottom: 16px;">
           <label style="display:block; font-size:13px; font-weight:700; margin-bottom:6px;">选择符合防关联隔离的海外环境：</label>
           <select id="assignedAccountSelect" class="filter-select" style="width:100%; padding:10px;">
-            <option value="us_buyer_02|9.142.39.245:7415|US">us_buyer_02 (US · 9.142.39.245 · 纯净可用)</option>
-            <option value="us_buyer_05|9.142.39.154:7324|US">us_buyer_05 (US · 9.142.39.154 · 纯净可用)</option>
-            <option value="fr_migrated_07|82.22.86.158:7366|FR">fr_migrated_07 (FR · 82.22.86.158 · 纯净可用)</option>
-            <option value="fr_migrated_18|45.89.248.37:5910|FR">fr_migrated_18 (FR · 45.89.248.37 · 纯净可用)</option>
-            <option value="fr_1792933046|46.203.53.254:7754|FR">fr_1792933046 (FR · 46.203.53.254 · 纯净可用)</option>
-            <option value="fr_migrated_26|62.164.241.22:8255|FR">fr_migrated_26 (FR · 62.164.241.22 · 纯净可用)</option>
-            <option value="fr_migrated_27|46.203.53.254:7754|FR">fr_migrated_27 (FR · 46.203.53.254 · 纯净可用)</option>
-            <option value="fr_migrated_21|82.23.55.13:7265|FR">fr_migrated_21 (FR · 82.23.55.13 · 纯净可用)</option>
-            <option value="fr_migrated_24|82.23.55.107:7359|FR">fr_migrated_24 (FR · 82.23.55.107 · 纯净可用)</option>
+            <option value="fr_migrated_27|46.203.53.254:7754|FR" selected>⭐ fr_migrated_27 (hauwbsuwn14@gmail.com · 全新纯净·从未下过baihong/YOJQI·首选)</option>
+            <option value="us_buyer_02|9.142.39.245:7415|US">us_buyer_02 (US · 9.142.39.245 · 8月单已满30天解冻·可用)</option>
+            <option value="fr_migrated_18|45.89.248.37:5910|FR">fr_migrated_18 (FR · 45.89.248.37 · 8月单已满30天解冻·可用)</option>
+            <option value="us_buyer_05|9.142.39.154:7324|US">us_buyer_05 (US · 9.142.39.154 · 从未下过该店·纯净可用)</option>
+            <option value="fr_migrated_07|82.22.86.158:7366|FR">fr_migrated_07 (FR · 82.22.86.158 · 从未下过该店·纯净可用)</option>
+            <option value="fr_1792933046|46.203.53.254:7754|FR">fr_1792933046 (FR · 46.203.53.254 · 从未下过该店·纯净可用)</option>
+            <option value="fr_migrated_26|62.164.241.22:8255|FR">fr_migrated_26 (FR · 62.164.241.22 · 从未下过该店·纯净可用)</option>
+            <option value="fr_migrated_21|82.23.55.13:7265|FR">fr_migrated_21 (FR · 82.23.55.13 · 从未下过该店·纯净可用)</option>
+            <option value="fr_migrated_24|82.23.55.107:7359|FR">fr_migrated_24 (FR · 82.23.55.107 · 从未下过该店·纯净可用)</option>
+            <option value="fr_migrated_17|82.22.86.158:7366|FR" disabled>⚠️ fr_migrated_17 (FR · 11-14下单·冷却中·还剩23天)</option>
+            <option value="us_buyer_04|9.142.39.141:7311|US" disabled>⚠️ us_buyer_04 (US · 11-02下单·冷却中·还剩11天)</option>
           </select>
         </div>
 
@@ -1223,7 +1225,7 @@
       const t = tasks.find(x => x.id === id);
       if (!t) return;
       const modeText = (t.payRoomFee === "YES") ? `我方代付房费 (折合房费: ¥${t.roomFeeCNY})` : "客户前台自付 (免代付房费)";
-      const text = `【管理员酒旅采购派单令】\n工单号: ${t.id}\n状态: ${t.status}\n平台: ${t.platform}\n酒店/民宿: ${t.hotelName}\n房型: ${t.roomType || '按房源链接'}\n房源链接: ${t.listingUrl || '见工单'}\n入住离店: ${t.dates}\n房费模式: ${modeText}\n客户原价: ${t.foreignAmount} ${t.currency}\n结算汇率: ${t.effectiveRate || '1.0'}\n制卡工本费: ¥${t.cardFee || '8.00'}\n调度手续费: ¥${t.serviceFee}\n客户应付总计: ¥${t.totalPayable}\n指定执行账号: ${t.assignedAccount || '待调度系统分配'}\n对应出口IP: ${t.assignedProxy || '独立住宅代理'}\n入住人: ${t.guestName} (${t.guestContact || '无'})\n防关联规则: 严格执行同一酒店90天单账号隔离保护\n下单时效: 通常2-3日内稳妥下单 (不接急单)\n官方预订号: ${t.bookingRef || '待锁房回填'}\n备注说明: ${t.notes || '无'}`;
+      const text = `【管理员酒旅采购派单令】\n工单号: ${t.id}\n状态: ${t.status}\n平台: ${t.platform}\n酒店/民宿: ${t.hotelName}\n房型: ${t.roomType || '按房源链接'}\n房源链接: ${t.listingUrl || '见工单'}\n入住离店: ${t.dates}\n房费模式: ${modeText}\n客户原价: ${t.foreignAmount} ${t.currency}\n结算汇率: ${t.effectiveRate || '1.0'}\n制卡工本费: ¥${t.cardFee || '8.00'}\n调度手续费: ¥${t.serviceFee}\n客户应付总计: ¥${t.totalPayable}\n指定执行账号: ${t.assignedAccount || '待调度系统分配'}\n对应出口IP: ${t.assignedProxy || '独立住宅代理'}\n入住人: ${t.guestName} (${t.guestContact || '无'})\n防关联规则: 严格执行同一酒店30天单账号隔离保护\n下单时效: 通常2-3日内稳妥下单 (不接急单)\n官方预订号: ${t.bookingRef || '待锁房回填'}\n备注说明: ${t.notes || '无'}`;
       navigator.clipboard.writeText(text).then(() => {
         showToast("已成功复制管理员级采购派单令！");
       });
