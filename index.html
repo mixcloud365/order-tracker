@@ -478,6 +478,112 @@
       line-height: 1.25;
     }
 
+    
+    /* Complete Recipient Information Card */
+    .recipient-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 8px 10px;
+      min-width: 250px;
+      max-width: 320px;
+      font-size: 12px;
+      line-height: 1.45;
+      text-align: left;
+      transition: all 0.2s ease;
+    }
+    .recipient-box:hover {
+      border-color: #cbd5e1;
+      background: #ffffff;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    .recipient-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 6px;
+      padding-bottom: 5px;
+      border-bottom: 1px dashed #e2e8f0;
+      flex-wrap: wrap;
+    }
+    .recipient-name {
+      color: #0f172a;
+      font-weight: 700;
+      font-size: 13px;
+    }
+    .recipient-civility {
+      font-size: 10px;
+      background: #e0e7ff;
+      color: #3730a3;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-weight: 700;
+    }
+    .recipient-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      margin-top: 3px;
+      color: #334155;
+      word-break: break-word;
+    }
+    .recipient-item .item-icon {
+      font-size: 12px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .recipient-item .item-text {
+      flex: 1;
+      min-width: 0;
+    }
+    .recipient-item .address-text {
+      color: #1e293b;
+      font-weight: 500;
+      font-size: 11.5px;
+    }
+    .recipient-item .phone-text {
+      font-family: monospace;
+      font-weight: 700;
+      color: #0284c7;
+      font-size: 12px;
+    }
+    .recipient-item .email-text {
+      font-family: monospace;
+      font-size: 11px;
+      color: #475569;
+      word-break: break-all;
+    }
+    .copy-btn.mini-copy {
+      margin-left: auto;
+      font-size: 10px;
+      padding: 1px 6px;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      color: #475569;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+    .copy-btn.mini-copy:hover {
+      background: #2563eb;
+      border-color: #1d4ed8;
+      color: #ffffff;
+    }
+    .copy-btn.micro-copy {
+      padding: 0 4px;
+      font-size: 10.5px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      opacity: 0.5;
+      transition: opacity 0.15s ease;
+    }
+    .copy-btn.micro-copy:hover {
+      opacity: 1;
+      color: #2563eb;
+    }
+
     /* Product Cell & Interactive Tooltip / Truncation */
     .product-compact-box {
       max-width: 340px;
@@ -783,7 +889,7 @@
               <th>缺货商品 (ASIN + 商品名称)</th>
               <th>平台售价</th>
               <th>最迟发货时间</th>
-              <th>买家收件信息</th>
+              <th>买家完整收件信息</th>
               <th>供货排查与建议处置</th>
             </tr>
           </thead>
@@ -816,7 +922,7 @@
               <th>最迟发货时效</th>
               <th>分配买家号</th>
               <th>当前采购就绪状态</th>
-              <th>收件人及城市</th>
+              <th>买家完整收件信息</th>
             </tr>
           </thead>
           <tbody id="pendingTbody">
@@ -848,7 +954,7 @@
               <th>最迟发货时效</th>
               <th>下单买家号</th>
               <th>当前采购就绪状态</th>
-              <th>收件人及城市</th>
+              <th>买家完整收件信息</th>
             </tr>
           </thead>
           <tbody id="purchasedTbody">
@@ -877,7 +983,7 @@
               <th>商品信息 (ASIN + 商品名称)</th>
               <th>原平台售价</th>
               <th>下单时间</th>
-              <th>买家收件信息</th>
+              <th>买家完整收件信息</th>
               <th>状态标注与处理说明</th>
             </tr>
           </thead>
@@ -920,8 +1026,8 @@
                 亚马逊下单日期（当地） <span id="iconLogisticsAmzDate" class="sort-icon"><span class="sort-badge">最新在前 ▼</span></span>
               </th>
               <th>采购账号</th>
-              <th>国家</th>
               <th>采购商品 (ASIN + 商品名称)</th>
+              <th>买家完整收件信息</th>
               <th>采购金额</th>
               <th>亚马逊订单号</th>
               <th>物流承运商及单号</th>
@@ -940,7 +1046,7 @@
 
   <script>
     const TARGET_HASH = "895789b8d8ad587c690004287c8628046c7d40ab0dc4fb8360db82f63c4121cd";
-    const ENCRYPTED_PAYLOAD = "eyJzdW1tYXJ5IjogeyJ0b3RhbF9uZXdfb3JkZXJzIjogNSwgIm91dF9vZl9zdG9ja19jb3VudCI6IDAsICJwZW5kaW5nX3B1cmNoYXNlX2NvdW50IjogMCwgInB1cmNoYXNlZF9jb3VudCI6IDEsICJjYW5jZWxsZWRfY291bnQiOiAyLCAiZGVsaXZlcmVkX2NvdW50IjogMiwgInRvdGFsX3Byb2plY3RlZF9wcm9maXQiOiAiKzAuMDAg4oKsIiwgInRvdGFsX3B1cmNoYXNlZF9wcm9maXQiOiAiKzc5LjM3IOKCrCIsICJjYXJkX3Bvb2xfYXZhaWxhYmxlIjogMiwgImNhcmRfcG9vbF90b3RhbCI6IDMwLCAibGFzdF9zeW5jX3RpbWUiOiAiMjAyNi0xMS0yNCAyMTowNTo0MyJ9LCAib3V0X29mX3N0b2NrX29yZGVycyI6IFtdLCAicGVuZGluZ19vcmRlcnMiOiBbXSwgInB1cmNoYXNlZF9vcmRlcnMiOiBbeyJvcmRlcl9pZCI6ICIyNjExMjExMDQ2UFhKVDEiLCAiY2hhbm5lbCI6ICJDZGlzY291bnQgRlIiLCAicHVyY2hhc2VkX2F0IjogIjIwMjYtMTEtMjEgMTA6NDY6NDUiLCAic2hpcHBlZF9hdF9tYXgiOiAiMjAyNi0xMS0yNSIsICJhc2luIjogIkIwRFQ5UjZXNEMiLCAiYW1hem9uX3VybCI6ICJodHRwczovL3d3dy5hbWF6b24uZnIvZHAvQjBEVDlSNlc0QyIsICJ0aXRsZSI6ICJMdXhpcmVzdCBNYXRlbGFzIDE0MHgxOTAgY20g4oCTIMOJcGFpc3NldXIgMTUgY20g4oCTIE1vdXNzZSBFcmdvbm9taXF1ZSIsICJxdWFudGl0eSI6IDEsICJzZWxsaW5nX3ByaWNlIjogMTg5LjM2LCAic2VsbGluZ19wcmljZV9zdHIiOiAiMTg5LjM2IOKCrCIsICJhbWF6b25fY29zdCI6IDEwOS45OSwgImFtYXpvbl9jb3N0X3N0ciI6ICIxMDkuOTkg4oKsIiwgInByb2ZpdCI6IDc5LjM3LCAicHJvZml0X3N0ciI6ICIrNzkuMzcg4oKsIiwgInByb2ZpdF9tYXJnaW5fc3RyIjogIjQxLjklIiwgInN0b2NrX3N0YXR1cyI6ICJwdXJjaGFzZWQiLCAic3RvY2tfYmFkZ2UiOiAi4pyFIOmHh+i0reaIkOWKnyIsICJzdG9ja19kZXNjIjogIuWFqOaWsOWNoSAwMTAyIOeLrOeri+e7keWumumHh+i0reaIkOWKn++8jOWkh+i0p+S4rSAo6aKE6K6hIDEy5pyIMeaXpemAgei+vikiLCAib3JkZXJfc3RhdGUiOiAicHVyY2hhc2VkIiwgIm9yZGVyX3N0YXRlX2JhZGdlIjogIuW3suWujOaIkOmHh+i0rSIsICJvcmRlcl9zdGF0ZV9kZXNjIjogIuKchSDkuprpqazpgIrorqLljZXlt7LnlJ/miJAgKDE3MS0wMjg1NTEzLTA2NDI3NjEp77yM562J5b6F5Ye65bqT5YiG6YWN5Y2V5Y+3IiwgImJhZGdlX2NvbG9yIjogInN1Y2Nlc3MiLCAiYW1hem9uX29yZGVyX2lkIjogIjE3MS0wMjg1NTEzLTA2NDI3NjEiLCAiYXNzaWduZWRfYWNjb3VudCI6ICJmcl9taWdyYXRlZF8yOCIsICJhc3NpZ25lZF9hY2NvdW50X25hbWUiOiAiU2FtIEFpbGFtIChmcl9taWdyYXRlZF8yOCkiLCAicmVjaXBpZW50X25hbWUiOiAiVGlmZmFuaWUgQ2FsYWJ1aWciLCAicmVjaXBpZW50X2NpdHkiOiAiTUFSU0VJTExFIiwgInJlY2lwaWVudF96aXAiOiAiMTMwMDkiLCAicmVjaXBpZW50X3Bob25lIjogIjA3NjI4ODI0NjIiLCAicmVjaXBpZW50X2FkZHJlc3NfZnVsbCI6ICJUaWZmYW5pZSBDYWxhYnVpZywgMTI0IFJVRSBBVUdVU1RJTiBBVUJFUlQsIEJhdCBBLCAxMzAwOSBNQVJTRUlMTEUsIEZyYW5jZSIsICJhY3Rpb25fYWR2aWNlIjogIuW3suWcqOS6mumprOmAiuWujOaIkOmHh+i0reS4i+WNle+8jOetieW+heWPkei0p+S4juWbnuS8oOeJqea1geWNleWPtyJ9XSwgImNhbmNlbGxlZF9vcmRlcnMiOiBbeyJvcmRlcl9pZCI6ICIyNjExMTkxMjQ0UFFMTkwiLCAiY2hhbm5lbCI6ICJDZGlzY291bnQgRlIiLCAicHVyY2hhc2VkX2F0IjogIjIwMjYtMTEtMTkgMTI6NDQ6NTgiLCAic2hpcHBlZF9hdF9tYXgiOiAiMjAyNi0xMS0yNCIsICJhc2luIjogIkIwOUNRNFhYOVIiLCAiYW1hem9uX3VybCI6ICJodHRwczovL3d3dy5hbWF6b24uZnIvZHAvQjA5Q1E0WFg5UiIsICJ0aXRsZSI6ICJET1JNSVNTSU1PIE1hdGVsYXMgODB4MTkwIGNtIFByb21vIENvbmZvcnQgw4lwYWlzc2V1ciAxNCBjbSBFcmdvbm9taXF1ZSBSZXNwaXJhbnQgTcOpbW9pcmUiLCAicXVhbnRpdHkiOiAxLCAic2VsbGluZ19wcmljZSI6IDE1Ny43NCwgInNlbGxpbmdfcHJpY2Vfc3RyIjogIjE1Ny43NCDigqwiLCAiYW1hem9uX2Nvc3QiOiA4Ny4wLCAiYW1hem9uX2Nvc3Rfc3RyIjogIjg3LjAwIOKCrCIsICJwcm9maXQiOiA3MC43NCwgInByb2ZpdF9zdHIiOiAiKzcwLjc0IOKCrCIsICJwcm9maXRfbWFyZ2luX3N0ciI6ICI0NC44JSIsICJzdG9ja19zdGF0dXMiOiAiY2FuY2VsbGVkIiwgInN0b2NrX2JhZGdlIjogIvCfm5Eg5bey5Y+W5raIIiwgInN0b2NrX2Rlc2MiOiAiQ2Rpc2NvdW50IOW5s+WPsOW3suWPlua2iCAo5LiN55So5LiL5Y2VKSIsICJvcmRlcl9zdGF0ZSI6ICJjYW5jZWxsZWQiLCAib3JkZXJfc3RhdGVfYmFkZ2UiOiAi8J+bkSDlt7Llj5bmtojvvIzkuI3nlKjkuIvljZUiLCAib3JkZXJfc3RhdGVfZGVzYyI6ICLwn5uRIOiuouWNleW3suWPlua2iO+8jOaXoOmcgOmHh+i0reWxpee6pu+8jOS4jeeUqOS4i+WNlSIsICJiYWRnZV9jb2xvciI6ICJuZXV0cmFsIiwgImFtYXpvbl9vcmRlcl9pZCI6ICI0MDgtODUzNTkwNy0wMzQ1MTU0IiwgImFzc2lnbmVkX2FjY291bnQiOiAiZnJfbWlncmF0ZWRfMTUiLCAiYXNzaWduZWRfYWNjb3VudF9uYW1lIjogIuaXoCAo5bey5Y+W5raI77yM5LiN55So5LiL5Y2VKSIsICJyZWNpcGllbnRfbmFtZSI6ICJQYXNjYWxlIEJBUkJFVCIsICJyZWNpcGllbnRfY2l0eSI6ICJEb3VhaSIsICJyZWNpcGllbnRfemlwIjogIjU5NTAwIiwgInJlY2lwaWVudF9waG9uZSI6ICIwNzg2MzcwODQzIiwgInJlY2lwaWVudF9hZGRyZXNzX2Z1bGwiOiAiUGFzY2FsZSBCQVJCRVQsIDY4ICxBbGzDqWUgUkFZTU9ORCBURUxMSUVSLCA1OTUwMCBEb3VhaSwgRnJhbmNlIChUZWw6IDA3ODYzNzA4NDMpIiwgImFjdGlvbl9hZHZpY2UiOiAi6K6i5Y2V5ZyoIENkaXNjb3VudCDlubPlj7Dlt7LlhbPpl63lj5bmtojvvIzml6DpnIDph4fotK3vvIzkuI3nlKjkuIvljZUifSwgeyJvcmRlcl9pZCI6ICIyNjExMTQyMzQ0UEJZRFIiLCAiY2hhbm5lbCI6ICJDZGlzY291bnQgRlIiLCAicHVyY2hhc2VkX2F0IjogIjIwMjYtMTEtMTQgMjM6NDQ6MDAiLCAic2hpcHBlZF9hdF9tYXgiOiAiMjAyNi0xMS0xOCIsICJhc2luIjogIkIwRkRUWkQ0M0oiLCAiYW1hem9uX3VybCI6ICJodHRwczovL3d3dy5hbWF6b24uZnIvZHAvQjBGRFRaRDQzSiIsICJ0aXRsZSI6ICJJRE1hcmtldCBUYWJsZSDDoCBtYW5nZXIgZXh0ZW5zaWJsZSByb25kZSAxMTAtMTUwIGNtIGJsYW5jaGUgZXQgYm9pcyBBTElYIiwgInF1YW50aXR5IjogMSwgInNlbGxpbmdfcHJpY2UiOiAxMzQuODIsICJzZWxsaW5nX3ByaWNlX3N0ciI6ICIxMzQuODIg4oKsIiwgImFtYXpvbl9jb3N0IjogNzkuOTksICJhbWF6b25fY29zdF9zdHIiOiAiNzkuOTkg4oKsIiwgInByb2ZpdCI6IDU0LjgzLCAicHJvZml0X3N0ciI6ICIrNTQuODMg4oKsIiwgInByb2ZpdF9tYXJnaW5fc3RyIjogIjQwLjclIiwgInN0b2NrX3N0YXR1cyI6ICJjYW5jZWxsZWQiLCAic3RvY2tfYmFkZ2UiOiAi8J+bkSDlt7Llj5bmtogiLCAic3RvY2tfZGVzYyI6ICJDZGlzY291bnQg5bmz5Y+w5bey5Y+W5raIICjkuI3nlKjkuIvljZUpIiwgIm9yZGVyX3N0YXRlIjogImNhbmNlbGxlZCIsICJvcmRlcl9zdGF0ZV9iYWRnZSI6ICLwn5uRIOW3suWPlua2iO+8jOS4jeeUqOS4i+WNlSIsICJvcmRlcl9zdGF0ZV9kZXNjIjogIvCfm5Eg6K6i5Y2V5bey5Y+W5raI77yM5peg6ZyA6YeH6LSt5bGl57qm77yM5LiN55So5LiL5Y2VIiwgImJhZGdlX2NvbG9yIjogIm5ldXRyYWwiLCAiYW1hem9uX29yZGVyX2lkIjogIiIsICJhc3NpZ25lZF9hY2NvdW50IjogbnVsbCwgImFzc2lnbmVkX2FjY291bnRfbmFtZSI6ICLml6AgKOW3suWPlua2iO+8jOS4jeeUqOS4i+WNlSkiLCAicmVjaXBpZW50X25hbWUiOiAiTWHDqSBIdWV0IiwgInJlY2lwaWVudF9jaXR5IjogIkluZ3JlIiwgInJlY2lwaWVudF96aXAiOiAiNDUxNDAiLCAicmVjaXBpZW50X3Bob25lIjogIjA2NTA1NzIwMzgiLCAicmVjaXBpZW50X2FkZHJlc3NfZnVsbCI6ICJNYcOpIEh1ZXQsIDEwMyBSdWUgRGUgTGEgSnVzdGljZSwgNDUxNDAgSW5ncmUsIEZyYW5jZSAoVGVsOiAwNjUwNTcyMDM4KSIsICJhY3Rpb25fYWR2aWNlIjogIuiuouWNleWcqCBDZGlzY291bnQg5bmz5Y+w5bey5YWz6Zet5Y+W5raI77yM5peg6ZyA6YeH6LSt77yM5LiN55So5LiL5Y2VIn1dLCAiYW1hem9uX29yZGVycyI6IFt7Im9yZGVyX2lkIjogIjQwOC04NTM1OTA3LTAzNDUxNTQiLCAib3JkZXJfZGF0ZSI6ICIyMDI2LTExLTI0IiwgImNyZWF0ZWRfYXQiOiAiMjAyNi0xMS0yNCAxMDo0ODozMyIsICJjZGlzY291bnRfb3JkZXJfaWQiOiAiMjYxMTE5MTI0NFBRTE5MIiwgImNkaXNjb3VudF9wdXJjaGFzZWRfYXQiOiAiMjAyNi0xMS0xOSAxMjo0NDowMCIsICJhY2NvdW50X25pY2tuYW1lIjogIjI0IC0gTGFuZSBHYXJjaWEgKGZyX21pZ3JhdGVkXzI0KSIsICJjb3VudHJ5IjogIvCfh6vwn4e3IOazleWbvSIsICJhc2luIjogIkIwOUNRNFhYOVIiLCAiYW1hem9uX3VybCI6ICJodHRwczovL3d3dy5hbWF6b24uZnIvZHAvQjA5Q1E0WFg5UiIsICJ0aXRsZSI6ICJET1JNSVNTSU1PIE1hdGVsYXMgODB4MTkwIGNtIFByb21vIENvbmZvcnQgw4lwYWlzc2V1ciAxNCBjbSBFcmdvbm9taXF1ZSBSZXNwaXJhbnQgTcOpbW9pcmUiLCAidG90YWxfYW1vdW50IjogIjg3LjAwIOKCrCIsICJ0cmFja2luZ19udW1iZXIiOiAi562J5b6F5Ye65bqT5YiG6YWN5Y2V5Y+3IiwgInNoaXBwaW5nX3RpbWUiOiAi6K6i5Y2V5bey5Y+W5raIICjml6DmiaPmrL4pIiwgImRlbGl2ZXJ5X3N0YXR1cyI6ICLliY3luo/lpLHotKXorqLljZXlt7LmiJDlip/lj5bmtojvvIzlvoXnu5HlrprmlrDljaHph43mi40iLCAic3RhdHVzX2JhZGdlIjogIuW3suWPlua2iCAo5a6J5YWo5YWz5Y2VKSIsICJzdGF0dXNfY29sb3IiOiAibmV1dHJhbCIsICJyZWNpcGllbnQiOiAiUGFzY2FsZSBCQVJCRVQgKERvdWFpKSJ9LCB7Im9yZGVyX2lkIjogIjE3MS0wMjg1NTEzLTA2NDI3NjEiLCAib3JkZXJfZGF0ZSI6ICIyMDI2LTExLTIyIiwgImNyZWF0ZWRfYXQiOiAiMjAyNi0xMS0yMiAxNTo0Njo1MiIsICJjZGlzY291bnRfb3JkZXJfaWQiOiAiMjYxMTIxMTA0NlBYSlQxIiwgImNkaXNjb3VudF9wdXJjaGFzZWRfYXQiOiAiMjAyNi0xMS0yMSAxMDo0NjowMCIsICJhY2NvdW50X25pY2tuYW1lIjogIjI4IC0gU2FtIEFpbGFtIChmcl9taWdyYXRlZF8yOCkiLCAiY291bnRyeSI6ICLwn4er8J+HtyDms5Xlm70iLCAiYXNpbiI6ICJCMERUOVI2VzRDIiwgImFtYXpvbl91cmwiOiAiaHR0cHM6Ly93d3cuYW1hem9uLmZyL2RwL0IwRFQ5UjZXNEMiLCAidGl0bGUiOiAiTHV4aXJlc3QgTWF0ZWxhcyAxNDB4MTkwIC0gw4lwYWlzc2V1ciAxNWNtIC0gTWF0ZWxhcyBlbiBNb3Vzc2UgLSBNYXRlbGFzIEVyZ29ub21pcXVlIChNYXRlbGFzIDE0MHgxOTB4MTVjbSkiLCAidG90YWxfYW1vdW50IjogIjEwOS45OSDigqwiLCAidHJhY2tpbmdfbnVtYmVyIjogIuetieW+heWHuuW6k+WIhumFjeWNleWPtyIsICJzaGlwcGluZ190aW1lIjogIuWkh+i0p+S4rSAo6aKE6K6hIDEy5pyIMeaXpSkiLCAiZGVsaXZlcnlfc3RhdHVzIjogIuWkh+i0p+S4rSAo6aKE6K6hIDEy5pyIMeaXpemAgei+vikiLCAic3RhdHVzX2JhZGdlIjogIuKchSDph4fotK3miJDlip8gKOW3suS4i+WNleWkh+i0p+S4rSkiLCAic3RhdHVzX2NvbG9yIjogInN1Y2Nlc3MiLCAicmVjaXBpZW50IjogIlRpZmZhbmllIENhbGFidWlnIChNQVJTRUlMTEUpIn0sIHsib3JkZXJfaWQiOiAiNDA1LTI0MjQ1MzAtNTgwMTk2OCIsICJvcmRlcl9kYXRlIjogIjIwMjYtMTEtMTciLCAiY3JlYXRlZF9hdCI6ICIyMDI2LTExLTE3IDExOjM1OjQ2IiwgImNkaXNjb3VudF9vcmRlcl9pZCI6ICIyNjExMTUxMjU1UEQxQlQiLCAiY2Rpc2NvdW50X3B1cmNoYXNlZF9hdCI6ICIyMDI2LTExLTE1IDEyOjU1OjAwIiwgImFjY291bnRfbmlja25hbWUiOiAiMDkgLSBzaGlyZSAoZnJfbWlncmF0ZWRfMDkpIiwgImNvdW50cnkiOiAi8J+Hq/Cfh7cg5rOV5Zu9IiwgImFzaW4iOiAiQjBCWlZXVzQzOSIsICJhbWF6b25fdXJsIjogImh0dHBzOi8vd3d3LmFtYXpvbi5mci9kcC9CMEJaVldXNDM5IiwgInRpdGxlIjogIkdUUExBWUVSIENoYWlzZSBHYW1pbmcsIEZhdXRldWlsIEdhbWluZywgQ2hhaXNlIEJ1cmVhdSBFcmdvbm9taXF1ZSwgU2nDqGdlIFLDqWdsYWJsZSwgUmVwb3NlLVBpZWRzIFTDqWxlc2NvcGlxdWUsIHBpdm90YW50ZSwgU3VwcG9ydGUgMTgwIGtnLCBCbGFuYyIsICJ0b3RhbF9hbW91bnQiOiAiMTY5LDk5IOKCrCIsICJ0cmFja2luZ19udW1iZXIiOiAiMDE0MTUwNjc5NDU0NDUgKERQRCkiLCAic2hpcHBpbmdfdGltZSI6ICJMaXZyYWlzb24gcHLDqXZ1ZSAyNCBub3ZlbWJyZSAtIDI2IG5vdmVtYnJlIiwgImRlbGl2ZXJ5X3N0YXR1cyI6ICLov5DovpPkuK0gKOmihOiuoSAyNC0yNiBub3YuIDIwMjYpIiwgInN0YXR1c19iYWRnZSI6ICLlt7Llj5HotKcgKERQRCkiLCAic3RhdHVzX2NvbG9yIjogInByaW1hcnkiLCAicmVjaXBpZW50IjogIkFsZWtzYW5kcmEgVkVSU1lDSyAoRmxpbnMgU3VyIFNlaW5lKSJ9LCB7Im9yZGVyX2lkIjogIjQwNi04ODQ3NDI0LTMxMDk5NDMiLCAib3JkZXJfZGF0ZSI6ICIyMDI2LTExLTE3IiwgImNyZWF0ZWRfYXQiOiAiMjAyNi0xMS0xNyAwODoxODo0OCIsICJjZGlzY291bnRfb3JkZXJfaWQiOiAiMjYxMTEzMjA1M1A4TlREIiwgImNkaXNjb3VudF9wdXJjaGFzZWRfYXQiOiAiMjAyNi0xMS0xMyAyMDo1MzowMCIsICJhY2NvdW50X25pY2tuYW1lIjogIjA4IC0gU2FtYSAoZnJfbWlncmF0ZWRfMDgpIiwgImNvdW50cnkiOiAi8J+Hq/Cfh7cg5rOV5Zu9IiwgImFzaW4iOiAiQjBHUUszQ1NaNyIsICJhbWF6b25fdXJsIjogImh0dHBzOi8vd3d3LmFtYXpvbi5mci9kcC9CMEdRSzNDU1o3IiwgInRpdGxlIjogIldPTFRVIEJ1cmVhdSBBc3NpcyBEZWJvdXQgw4lsZWN0cmlxdWUsIFLDqWdsYWJsZSBlbiBIYXV0ZXVyLCA4MHg0OCwgTm9pciIsICJ0b3RhbF9hbW91bnQiOiAiODQsOTkg4oKsIiwgInRyYWNraW5nX251bWJlciI6ICJYTjIxMzU0NzUyNEpCIChDaHJvbm9wb3N0KSIsICJzaGlwcGluZ190aW1lIjogIjIwMjYtMTEtMTcg5Y+R6LSnIC0+IDExLTE5IDEwOjQ1IOW3suetvuaUtiIsICJkZWxpdmVyeV9zdGF0dXMiOiAi5bey562+5pS2ICjmnIDnu4jnirbmgIEpIiwgInN0YXR1c19iYWRnZSI6ICLlt7LpgIHovr7nrb7mlLYiLCAic3RhdHVzX2NvbG9yIjogInN1Y2Nlc3MiLCAicmVjaXBpZW50IjogIlNhbWlyIEFiYWhyaSAoTGlldXNhaW50KSJ9LCB7Im9yZGVyX2lkIjogIjQwMi01NTcxOTQyLTc3NjI3NDYiLCAib3JkZXJfZGF0ZSI6ICIyMDI2LTExLTA5IiwgImNyZWF0ZWRfYXQiOiAiMjAyNi0xMS0wOSAxMzoxOTo1MCIsICJjZGlzY291bnRfb3JkZXJfaWQiOiAiMjYxMTA4MjE0N09RT0lMIiwgImNkaXNjb3VudF9wdXJjaGFzZWRfYXQiOiAiMjAyNi0xMS0wOCAyMTo0NzowMCIsICJhY2NvdW50X25pY2tuYW1lIjogIjExIC0gVHJhY2kgTGFuZGVycyAoZnJfbWlncmF0ZWRfMTEpIiwgImNvdW50cnkiOiAi8J+Hq/Cfh7cg5rOV5Zu9IiwgImFzaW4iOiAiQjBHWldHSERQTiIsICJhbWF6b25fdXJsIjogImh0dHBzOi8vd3d3LmFtYXpvbi5mci9kcC9CMEdaV0dIRFBOIiwgInRpdGxlIjogIlN1biBHYXJkZW4gTWF0ZWxhcyBwb3VyIGVuZmFudCA5MCB4IDIwMCBjbSwgMyDDoCAxMiBhbnMsIGZhYnJpcXXDqSBlbiBFdXJvcGUgfCBzeXN0w6htZSDDqXZvbHV0aWYgMi1lbi0xIHBvdXIgbGl0IGQnZW5mYW50IGV0IGxpdCBkJ2Fkb2xlc2NlbnQsIGNlcnRpZmnDqSBPZWtvLVRleCBldCBEZXJtYXRlc3QgLSBUcsOocyBiaWVuLCBSRzI4IGRlIDE1IGNtIiwgInRvdGFsX2Ftb3VudCI6ICIxMDYsOTUg4oKsIiwgInRyYWNraW5nX251bWJlciI6ICJDQTA4NjE2NzQzM0RFIChESEwpIiwgInNoaXBwaW5nX3RpbWUiOiAiMjAyNi0xMS0xMCAxODoxMyAoREUpIiwgImRlbGl2ZXJ5X3N0YXR1cyI6ICLlt7Lnrb7mlLYgKOacgOe7iOeKtuaAgSkiLCAic3RhdHVzX2JhZGdlIjogIuW3sumAgei+vuetvuaUtiIsICJzdGF0dXNfY29sb3IiOiAic3VjY2VzcyIsICJyZWNpcGllbnQiOiAiTXIgQ0FTVEVMIFBhdWxpbmUgKEFsaXhhbikifV19";
+    const ENCRYPTED_PAYLOAD = "eyJzdW1tYXJ5IjogeyJ0b3RhbF9uZXdfb3JkZXJzIjogNSwgIm91dF9vZl9zdG9ja19jb3VudCI6IDAsICJwZW5kaW5nX3B1cmNoYXNlX2NvdW50IjogMCwgInB1cmNoYXNlZF9jb3VudCI6IDEsICJjYW5jZWxsZWRfY291bnQiOiAyLCAiZGVsaXZlcmVkX2NvdW50IjogMiwgInRvdGFsX3Byb2plY3RlZF9wcm9maXQiOiAiKzAuMDAg4oKsIiwgInRvdGFsX3B1cmNoYXNlZF9wcm9maXQiOiAiKzc5LjM3IOKCrCIsICJjYXJkX3Bvb2xfYXZhaWxhYmxlIjogMiwgImNhcmRfcG9vbF90b3RhbCI6IDMwLCAibGFzdF9zeW5jX3RpbWUiOiAiMjAyNi0xMS0yNCAyMTo1Njo0NSJ9LCAib3V0X29mX3N0b2NrX29yZGVycyI6IFtdLCAicGVuZGluZ19vcmRlcnMiOiBbXSwgInB1cmNoYXNlZF9vcmRlcnMiOiBbeyJvcmRlcl9pZCI6ICIyNjExMjExMDQ2UFhKVDEiLCAiY2hhbm5lbCI6ICJDZGlzY291bnQgRlIiLCAicHVyY2hhc2VkX2F0IjogIjIwMjYtMTEtMjEgMTA6NDY6NDUiLCAic2hpcHBlZF9hdF9tYXgiOiAiMjAyNi0xMS0yNSIsICJhc2luIjogIkIwRFQ5UjZXNEMiLCAiYW1hem9uX3VybCI6ICJodHRwczovL3d3dy5hbWF6b24uZnIvZHAvQjBEVDlSNlc0QyIsICJ0aXRsZSI6ICJMdXhpcmVzdCBNYXRlbGFzIDE0MHgxOTAgY20g4oCTIMOJcGFpc3NldXIgMTUgY20g4oCTIE1vdXNzZSBFcmdvbm9taXF1ZSIsICJxdWFudGl0eSI6IDEsICJzZWxsaW5nX3ByaWNlIjogMTg5LjM2LCAic2VsbGluZ19wcmljZV9zdHIiOiAiMTg5LjM2IOKCrCIsICJhbWF6b25fY29zdCI6IDEwOS45OSwgImFtYXpvbl9jb3N0X3N0ciI6ICIxMDkuOTkg4oKsIiwgInByb2ZpdCI6IDc5LjM3LCAicHJvZml0X3N0ciI6ICIrNzkuMzcg4oKsIiwgInByb2ZpdF9tYXJnaW5fc3RyIjogIjQxLjklIiwgInN0b2NrX3N0YXR1cyI6ICJwdXJjaGFzZWQiLCAic3RvY2tfYmFkZ2UiOiAi4pyFIOmHh+i0reaIkOWKnyIsICJzdG9ja19kZXNjIjogIuWFqOaWsOWNoSAwMTAyIOeLrOeri+e7keWumumHh+i0reaIkOWKn++8jOWkh+i0p+S4rSAo6aKE6K6hIDEy5pyIMeaXpemAgei+vikiLCAib3JkZXJfc3RhdGUiOiAicHVyY2hhc2VkIiwgIm9yZGVyX3N0YXRlX2JhZGdlIjogIuW3suWujOaIkOmHh+i0rSIsICJvcmRlcl9zdGF0ZV9kZXNjIjogIuKchSDkuprpqazpgIrorqLljZXlt7LnlJ/miJAgKDE3MS0wMjg1NTEzLTA2NDI3NjEp77yM562J5b6F5Ye65bqT5YiG6YWN5Y2V5Y+3IiwgImJhZGdlX2NvbG9yIjogInN1Y2Nlc3MiLCAiYW1hem9uX29yZGVyX2lkIjogIjE3MS0wMjg1NTEzLTA2NDI3NjEiLCAiYXNzaWduZWRfYWNjb3VudCI6ICJmcl9taWdyYXRlZF8yOCIsICJhc3NpZ25lZF9hY2NvdW50X25hbWUiOiAiU2FtIEFpbGFtIChmcl9taWdyYXRlZF8yOCkiLCAicmVjaXBpZW50X25hbWUiOiAiVGlmZmFuaWUgQ2FsYWJ1aWciLCAicmVjaXBpZW50X2NpdmlsaXR5IjogIk1ycyIsICJyZWNpcGllbnRfY2l0eSI6ICJNQVJTRUlMTEUiLCAicmVjaXBpZW50X3ppcCI6ICIxMzAwOSIsICJyZWNpcGllbnRfcGhvbmUiOiAiMDc2Mjg4MjQ2MiIsICJyZWNpcGllbnRfZW1haWwiOiAiYy5jMjYwMmJiZWNjN2M0N2Y1OWY5Mjk3ODkxNGQ2N2NjOUBjbGVtYXJjaGUuY29tIiwgInJlY2lwaWVudF9zdHJlZXQiOiAiMTI0IFJVRSBBVUdVU1RJTiBBVUJFUlQsIEJhdCBBLCBCYXQgQSByZXogc2UgY2hhdXNlZSIsICJyZWNpcGllbnRfY291bnRyeSI6ICJGUiIsICJyZWNpcGllbnRfYWRkcmVzc19mdWxsIjogIlRpZmZhbmllIENhbGFidWlnLCAxMjQgUlVFIEFVR1VTVElOIEFVQkVSVCwgQmF0IEEsIEJhdCBBIHJleiBzZSBjaGF1c2VlLCAxMzAwOSBNQVJTRUlMTEUsIEZyYW5jZSIsICJhY3Rpb25fYWR2aWNlIjogIuW3suWcqOS6mumprOmAiuWujOaIkOmHh+i0reS4i+WNle+8jOetieW+heWPkei0p+S4juWbnuS8oOeJqea1geWNleWPtyJ9XSwgImNhbmNlbGxlZF9vcmRlcnMiOiBbeyJvcmRlcl9pZCI6ICIyNjExMTkxMjQ0UFFMTkwiLCAiY2hhbm5lbCI6ICJDZGlzY291bnQgRlIiLCAicHVyY2hhc2VkX2F0IjogIjIwMjYtMTEtMTkgMTI6NDQ6NTgiLCAic2hpcHBlZF9hdF9tYXgiOiAiMjAyNi0xMS0yNCIsICJhc2luIjogIkIwOUNRNFhYOVIiLCAiYW1hem9uX3VybCI6ICJodHRwczovL3d3dy5hbWF6b24uZnIvZHAvQjA5Q1E0WFg5UiIsICJ0aXRsZSI6ICJET1JNSVNTSU1PIE1hdGVsYXMgODB4MTkwIGNtIFByb21vIENvbmZvcnQgw4lwYWlzc2V1ciAxNCBjbSBFcmdvbm9taXF1ZSBSZXNwaXJhbnQgTcOpbW9pcmUiLCAicXVhbnRpdHkiOiAxLCAic2VsbGluZ19wcmljZSI6IDE1Ny43NCwgInNlbGxpbmdfcHJpY2Vfc3RyIjogIjE1Ny43NCDigqwiLCAiYW1hem9uX2Nvc3QiOiA4Ny4wLCAiYW1hem9uX2Nvc3Rfc3RyIjogIjg3LjAwIOKCrCIsICJwcm9maXQiOiA3MC43NCwgInByb2ZpdF9zdHIiOiAiKzcwLjc0IOKCrCIsICJwcm9maXRfbWFyZ2luX3N0ciI6ICI0NC44JSIsICJzdG9ja19zdGF0dXMiOiAiY2FuY2VsbGVkIiwgInN0b2NrX2JhZGdlIjogIvCfm5Eg5bey5Y+W5raIIiwgInN0b2NrX2Rlc2MiOiAiQ2Rpc2NvdW50IOW5s+WPsOW3suWPlua2iCAo5LiN55So5LiL5Y2VKSIsICJvcmRlcl9zdGF0ZSI6ICJjYW5jZWxsZWQiLCAib3JkZXJfc3RhdGVfYmFkZ2UiOiAi8J+bkSDlt7Llj5bmtojvvIzkuI3nlKjkuIvljZUiLCAib3JkZXJfc3RhdGVfZGVzYyI6ICLwn5uRIOiuouWNleW3suWPlua2iO+8jOaXoOmcgOmHh+i0reWxpee6pu+8jOS4jeeUqOS4i+WNlSIsICJiYWRnZV9jb2xvciI6ICJuZXV0cmFsIiwgImFtYXpvbl9vcmRlcl9pZCI6ICI0MDgtODUzNTkwNy0wMzQ1MTU0IiwgImFzc2lnbmVkX2FjY291bnQiOiAiZnJfbWlncmF0ZWRfMTUiLCAiYXNzaWduZWRfYWNjb3VudF9uYW1lIjogIuaXoCAo5bey5Y+W5raI77yM5LiN55So5LiL5Y2VKSIsICJyZWNpcGllbnRfbmFtZSI6ICJQYXNjYWxlIEJBUkJFVCIsICJyZWNpcGllbnRfY2l2aWxpdHkiOiAiTXIiLCAicmVjaXBpZW50X2NpdHkiOiAiRG91YWkiLCAicmVjaXBpZW50X3ppcCI6ICI1OTUwMCIsICJyZWNpcGllbnRfcGhvbmUiOiAiMDc4NjM3MDg0MyIsICJyZWNpcGllbnRfZW1haWwiOiAiYy5kMzk4YzJmOGExODc0YWVjYWFjNTZhN2Y4ZTI5NTIwYkBjbGVtYXJjaGUuY29tIiwgInJlY2lwaWVudF9zdHJlZXQiOiAiNjggLEFsbMOpZSBSQVlNT05EIFRFTExJRVIiLCAicmVjaXBpZW50X2NvdW50cnkiOiAiRlIiLCAicmVjaXBpZW50X2FkZHJlc3NfZnVsbCI6ICJQYXNjYWxlIEJBUkJFVCwgNjggLEFsbMOpZSBSQVlNT05EIFRFTExJRVIsIDU5NTAwIERvdWFpLCBGcmFuY2UiLCAiYWN0aW9uX2FkdmljZSI6ICLorqLljZXlnKggQ2Rpc2NvdW50IOW5s+WPsOW3suWFs+mXreWPlua2iO+8jOaXoOmcgOmHh+i0re+8jOS4jeeUqOS4i+WNlSJ9LCB7Im9yZGVyX2lkIjogIjI2MTExNDIzNDRQQllEUiIsICJjaGFubmVsIjogIkNkaXNjb3VudCBGUiIsICJwdXJjaGFzZWRfYXQiOiAiMjAyNi0xMS0xNCAyMzo0NDowMCIsICJzaGlwcGVkX2F0X21heCI6ICIyMDI2LTExLTE4IiwgImFzaW4iOiAiQjBGRFRaRDQzSiIsICJhbWF6b25fdXJsIjogImh0dHBzOi8vd3d3LmFtYXpvbi5mci9kcC9CMEZEVFpENDNKIiwgInRpdGxlIjogIklETWFya2V0IFRhYmxlIMOgIG1hbmdlciBleHRlbnNpYmxlIHJvbmRlIDExMC0xNTAgY20gYmxhbmNoZSBldCBib2lzIEFMSVgiLCAicXVhbnRpdHkiOiAxLCAic2VsbGluZ19wcmljZSI6IDEzNC44MiwgInNlbGxpbmdfcHJpY2Vfc3RyIjogIjEzNC44MiDigqwiLCAiYW1hem9uX2Nvc3QiOiA3OS45OSwgImFtYXpvbl9jb3N0X3N0ciI6ICI3OS45OSDigqwiLCAicHJvZml0IjogNTQuODMsICJwcm9maXRfc3RyIjogIis1NC44MyDigqwiLCAicHJvZml0X21hcmdpbl9zdHIiOiAiNDAuNyUiLCAic3RvY2tfc3RhdHVzIjogImNhbmNlbGxlZCIsICJzdG9ja19iYWRnZSI6ICLwn5uRIOW3suWPlua2iCIsICJzdG9ja19kZXNjIjogIkNkaXNjb3VudCDlubPlj7Dlt7Llj5bmtoggKOS4jeeUqOS4i+WNlSkiLCAib3JkZXJfc3RhdGUiOiAiY2FuY2VsbGVkIiwgIm9yZGVyX3N0YXRlX2JhZGdlIjogIvCfm5Eg5bey5Y+W5raI77yM5LiN55So5LiL5Y2VIiwgIm9yZGVyX3N0YXRlX2Rlc2MiOiAi8J+bkSDorqLljZXlt7Llj5bmtojvvIzml6DpnIDph4fotK3lsaXnuqbvvIzkuI3nlKjkuIvljZUiLCAiYmFkZ2VfY29sb3IiOiAibmV1dHJhbCIsICJhbWF6b25fb3JkZXJfaWQiOiAiIiwgImFzc2lnbmVkX2FjY291bnQiOiBudWxsLCAiYXNzaWduZWRfYWNjb3VudF9uYW1lIjogIuaXoCAo5bey5Y+W5raI77yM5LiN55So5LiL5Y2VKSIsICJyZWNpcGllbnRfbmFtZSI6ICJNYcOpIEh1ZXQiLCAicmVjaXBpZW50X2NpdmlsaXR5IjogIk1ycyIsICJyZWNpcGllbnRfY2l0eSI6ICJJbmdyZSIsICJyZWNpcGllbnRfemlwIjogIjQ1MTQwIiwgInJlY2lwaWVudF9waG9uZSI6ICIwNjUwNTcyMDM4IiwgInJlY2lwaWVudF9lbWFpbCI6ICJjLjYzNjEzMGJhNDA5ZDRmZTk5MGM3NzBiODc1M2FjN2FkQGNsZW1hcmNoZS5jb20iLCAicmVjaXBpZW50X3N0cmVldCI6ICIxMDMgUnVlIERlIExhIEp1c3RpY2UiLCAicmVjaXBpZW50X2NvdW50cnkiOiAiRlIiLCAicmVjaXBpZW50X2FkZHJlc3NfZnVsbCI6ICJNYcOpIEh1ZXQsIDEwMyBSdWUgRGUgTGEgSnVzdGljZSwgNDUxNDAgSW5ncmUsIEZyYW5jZSIsICJhY3Rpb25fYWR2aWNlIjogIuiuouWNleWcqCBDZGlzY291bnQg5bmz5Y+w5bey5YWz6Zet5Y+W5raI77yM5peg6ZyA6YeH6LSt77yM5LiN55So5LiL5Y2VIn1dLCAiYW1hem9uX29yZGVycyI6IFt7Im9yZGVyX2lkIjogIjQwOC04NTM1OTA3LTAzNDUxNTQiLCAib3JkZXJfZGF0ZSI6ICIyMDI2LTExLTI0IiwgImNyZWF0ZWRfYXQiOiAiMjAyNi0xMS0yNCAxMDo0ODozMyIsICJjZGlzY291bnRfb3JkZXJfaWQiOiAiMjYxMTE5MTI0NFBRTE5MIiwgImNkaXNjb3VudF9wdXJjaGFzZWRfYXQiOiAiMjAyNi0xMS0xOSAxMjo0NDowMCIsICJhY2NvdW50X25pY2tuYW1lIjogIjI0IC0gTGFuZSBHYXJjaWEgKGZyX21pZ3JhdGVkXzI0KSIsICJjb3VudHJ5IjogIvCfh6vwn4e3IOazleWbvSIsICJhc2luIjogIkIwOUNRNFhYOVIiLCAiYW1hem9uX3VybCI6ICJodHRwczovL3d3dy5hbWF6b24uZnIvZHAvQjA5Q1E0WFg5UiIsICJ0aXRsZSI6ICJET1JNSVNTSU1PIE1hdGVsYXMgODB4MTkwIGNtIFByb21vIENvbmZvcnQgw4lwYWlzc2V1ciAxNCBjbSBFcmdvbm9taXF1ZSBSZXNwaXJhbnQgTcOpbW9pcmUiLCAidG90YWxfYW1vdW50IjogIjg3LjAwIOKCrCIsICJ0cmFja2luZ19udW1iZXIiOiAi562J5b6F5Ye65bqT5YiG6YWN5Y2V5Y+3IiwgInNoaXBwaW5nX3RpbWUiOiAi6K6i5Y2V5bey5Y+W5raIICjml6DmiaPmrL4pIiwgImRlbGl2ZXJ5X3N0YXR1cyI6ICLliY3luo/lpLHotKXorqLljZXlt7LmiJDlip/lj5bmtojvvIzlvoXnu5HlrprmlrDljaHph43mi40iLCAic3RhdHVzX2JhZGdlIjogIuW3suWPlua2iCAo5a6J5YWo5YWz5Y2VKSIsICJzdGF0dXNfY29sb3IiOiAibmV1dHJhbCIsICJyZWNpcGllbnQiOiAiUGFzY2FsZSBCQVJCRVQgKERvdWFpKSIsICJyZWNpcGllbnRfbmFtZSI6ICJQYXNjYWxlIEJBUkJFVCIsICJyZWNpcGllbnRfY2l2aWxpdHkiOiAiTXIiLCAicmVjaXBpZW50X3Bob25lIjogIjA3ODYzNzA4NDMiLCAicmVjaXBpZW50X2VtYWlsIjogImMuZDM5OGMyZjhhMTg3NGFlY2FhYzU2YTdmOGUyOTUyMGJAY2xlbWFyY2hlLmNvbSIsICJyZWNpcGllbnRfc3RyZWV0IjogIjY4ICxBbGzDqWUgUkFZTU9ORCBURUxMSUVSIiwgInJlY2lwaWVudF96aXAiOiAiNTk1MDAiLCAicmVjaXBpZW50X2NpdHkiOiAiRG91YWkiLCAicmVjaXBpZW50X2NvdW50cnkiOiAiRlIiLCAicmVjaXBpZW50X2FkZHJlc3NfZnVsbCI6ICJQYXNjYWxlIEJBUkJFVCwgNjggLEFsbMOpZSBSQVlNT05EIFRFTExJRVIsIDU5NTAwIERvdWFpLCBGcmFuY2UifSwgeyJvcmRlcl9pZCI6ICIxNzEtMDI4NTUxMy0wNjQyNzYxIiwgIm9yZGVyX2RhdGUiOiAiMjAyNi0xMS0yMiIsICJjcmVhdGVkX2F0IjogIjIwMjYtMTEtMjIgMTU6NDY6NTIiLCAiY2Rpc2NvdW50X29yZGVyX2lkIjogIjI2MTEyMTEwNDZQWEpUMSIsICJjZGlzY291bnRfcHVyY2hhc2VkX2F0IjogIjIwMjYtMTEtMjEgMTA6NDY6MDAiLCAiYWNjb3VudF9uaWNrbmFtZSI6ICIyOCAtIFNhbSBBaWxhbSAoZnJfbWlncmF0ZWRfMjgpIiwgImNvdW50cnkiOiAi8J+Hq/Cfh7cg5rOV5Zu9IiwgImFzaW4iOiAiQjBEVDlSNlc0QyIsICJhbWF6b25fdXJsIjogImh0dHBzOi8vd3d3LmFtYXpvbi5mci9kcC9CMERUOVI2VzRDIiwgInRpdGxlIjogIkx1eGlyZXN0IE1hdGVsYXMgMTQweDE5MCAtIMOJcGFpc3NldXIgMTVjbSAtIE1hdGVsYXMgZW4gTW91c3NlIC0gTWF0ZWxhcyBFcmdvbm9taXF1ZSAoTWF0ZWxhcyAxNDB4MTkweDE1Y20pIiwgInRvdGFsX2Ftb3VudCI6ICIxMDkuOTkg4oKsIiwgInRyYWNraW5nX251bWJlciI6ICLnrYnlvoXlh7rlupPliIbphY3ljZXlj7ciLCAic2hpcHBpbmdfdGltZSI6ICLlpIfotKfkuK0gKOmihOiuoSAxMuaciDHml6UpIiwgImRlbGl2ZXJ5X3N0YXR1cyI6ICLlpIfotKfkuK0gKOmihOiuoSAxMuaciDHml6XpgIHovr4pIiwgInN0YXR1c19iYWRnZSI6ICLinIUg6YeH6LSt5oiQ5YqfICjlt7LkuIvljZXlpIfotKfkuK0pIiwgInN0YXR1c19jb2xvciI6ICJzdWNjZXNzIiwgInJlY2lwaWVudCI6ICJUaWZmYW5pZSBDYWxhYnVpZyAoTUFSU0VJTExFKSIsICJyZWNpcGllbnRfbmFtZSI6ICJUaWZmYW5pZSBDYWxhYnVpZyIsICJyZWNpcGllbnRfY2l2aWxpdHkiOiAiTXJzIiwgInJlY2lwaWVudF9waG9uZSI6ICIwNzYyODgyNDYyIiwgInJlY2lwaWVudF9lbWFpbCI6ICJjLmMyNjAyYmJlY2M3YzQ3ZjU5ZjkyOTc4OTE0ZDY3Y2M5QGNsZW1hcmNoZS5jb20iLCAicmVjaXBpZW50X3N0cmVldCI6ICIxMjQgUlVFIEFVR1VTVElOIEFVQkVSVCwgQmF0IEEsIEJhdCBBIHJleiBzZSBjaGF1c2VlIiwgInJlY2lwaWVudF96aXAiOiAiMTMwMDkiLCAicmVjaXBpZW50X2NpdHkiOiAiTUFSU0VJTExFIiwgInJlY2lwaWVudF9jb3VudHJ5IjogIkZSIiwgInJlY2lwaWVudF9hZGRyZXNzX2Z1bGwiOiAiVGlmZmFuaWUgQ2FsYWJ1aWcsIDEyNCBSVUUgQVVHVVNUSU4gQVVCRVJULCBCYXQgQSwgQmF0IEEgcmV6IHNlIGNoYXVzZWUsIDEzMDA5IE1BUlNFSUxMRSwgRnJhbmNlIn0sIHsib3JkZXJfaWQiOiAiNDA1LTI0MjQ1MzAtNTgwMTk2OCIsICJvcmRlcl9kYXRlIjogIjIwMjYtMTEtMTciLCAiY3JlYXRlZF9hdCI6ICIyMDI2LTExLTE3IDExOjM1OjQ2IiwgImNkaXNjb3VudF9vcmRlcl9pZCI6ICIyNjExMTUxMjU1UEQxQlQiLCAiY2Rpc2NvdW50X3B1cmNoYXNlZF9hdCI6ICIyMDI2LTExLTE1IDEyOjU1OjAwIiwgImFjY291bnRfbmlja25hbWUiOiAiMDkgLSBzaGlyZSAoZnJfbWlncmF0ZWRfMDkpIiwgImNvdW50cnkiOiAi8J+Hq/Cfh7cg5rOV5Zu9IiwgImFzaW4iOiAiQjBCWlZXVzQzOSIsICJhbWF6b25fdXJsIjogImh0dHBzOi8vd3d3LmFtYXpvbi5mci9kcC9CMEJaVldXNDM5IiwgInRpdGxlIjogIkdUUExBWUVSIENoYWlzZSBHYW1pbmcsIEZhdXRldWlsIEdhbWluZywgQ2hhaXNlIEJ1cmVhdSBFcmdvbm9taXF1ZSwgU2nDqGdlIFLDqWdsYWJsZSwgUmVwb3NlLVBpZWRzIFTDqWxlc2NvcGlxdWUsIHBpdm90YW50ZSwgU3VwcG9ydGUgMTgwIGtnLCBCbGFuYyIsICJ0b3RhbF9hbW91bnQiOiAiMTY5LDk5IOKCrCIsICJ0cmFja2luZ19udW1iZXIiOiAiMDE0MTUwNjc5NDU0NDUgKERQRCkiLCAic2hpcHBpbmdfdGltZSI6ICJMaXZyYWlzb24gcHLDqXZ1ZSAyNCBub3ZlbWJyZSAtIDI2IG5vdmVtYnJlIiwgImRlbGl2ZXJ5X3N0YXR1cyI6ICLov5DovpPkuK0gKOmihOiuoSAyNC0yNiBub3YuIDIwMjYpIiwgInN0YXR1c19iYWRnZSI6ICLlt7Llj5HotKcgKERQRCkiLCAic3RhdHVzX2NvbG9yIjogInByaW1hcnkiLCAicmVjaXBpZW50IjogIkFsZWtzYW5kcmEgVkVSU1lDSyAoRmxpbnMgU3VyIFNlaW5lKSIsICJyZWNpcGllbnRfbmFtZSI6ICJBbGVrc2FuZHJhIFZFUlNZQ0siLCAicmVjaXBpZW50X2NpdmlsaXR5IjogIk1ycyIsICJyZWNpcGllbnRfcGhvbmUiOiAiMDc4MTgwNDA4MiIsICJyZWNpcGllbnRfZW1haWwiOiAiYy5iOWZiYjYzNTNhYzQ0MjQ1YTNlMzg5YTMwMjc4MzM5Y0BjbGVtYXJjaGUuY29tIiwgInJlY2lwaWVudF9zdHJlZXQiOiAiMSBSdWUgRGVzIEdsYWlzaWVyZXMiLCAicmVjaXBpZW50X3ppcCI6ICI3ODQxMCIsICJyZWNpcGllbnRfY2l0eSI6ICJGbGlucyBTdXIgU2VpbmUiLCAicmVjaXBpZW50X2NvdW50cnkiOiAiRlIiLCAicmVjaXBpZW50X2FkZHJlc3NfZnVsbCI6ICJBbGVrc2FuZHJhIFZFUlNZQ0ssIDEgUnVlIERlcyBHbGFpc2llcmVzLCA3ODQxMCBGbGlucyBTdXIgU2VpbmUsIEZyYW5jZSJ9LCB7Im9yZGVyX2lkIjogIjQwNi04ODQ3NDI0LTMxMDk5NDMiLCAib3JkZXJfZGF0ZSI6ICIyMDI2LTExLTE3IiwgImNyZWF0ZWRfYXQiOiAiMjAyNi0xMS0xNyAwODoxODo0OCIsICJjZGlzY291bnRfb3JkZXJfaWQiOiAiMjYxMTEzMjA1M1A4TlREIiwgImNkaXNjb3VudF9wdXJjaGFzZWRfYXQiOiAiMjAyNi0xMS0xMyAyMDo1MzowMCIsICJhY2NvdW50X25pY2tuYW1lIjogIjA4IC0gU2FtYSAoZnJfbWlncmF0ZWRfMDgpIiwgImNvdW50cnkiOiAi8J+Hq/Cfh7cg5rOV5Zu9IiwgImFzaW4iOiAiQjBHUUszQ1NaNyIsICJhbWF6b25fdXJsIjogImh0dHBzOi8vd3d3LmFtYXpvbi5mci9kcC9CMEdRSzNDU1o3IiwgInRpdGxlIjogIldPTFRVIEJ1cmVhdSBBc3NpcyBEZWJvdXQgw4lsZWN0cmlxdWUsIFLDqWdsYWJsZSBlbiBIYXV0ZXVyLCA4MHg0OCwgTm9pciIsICJ0b3RhbF9hbW91bnQiOiAiODQsOTkg4oKsIiwgInRyYWNraW5nX251bWJlciI6ICJYTjIxMzU0NzUyNEpCIChDaHJvbm9wb3N0KSIsICJzaGlwcGluZ190aW1lIjogIjIwMjYtMTEtMTcg5Y+R6LSnIC0+IDExLTE5IDEwOjQ1IOW3suetvuaUtiIsICJkZWxpdmVyeV9zdGF0dXMiOiAi5bey562+5pS2ICjmnIDnu4jnirbmgIEpIiwgInN0YXR1c19iYWRnZSI6ICLlt7LpgIHovr7nrb7mlLYiLCAic3RhdHVzX2NvbG9yIjogInN1Y2Nlc3MiLCAicmVjaXBpZW50IjogIlNhbWlyIEFiYWhyaSAoTGlldXNhaW50KSIsICJyZWNpcGllbnRfbmFtZSI6ICJTYW1pciBBYmFocmkiLCAicmVjaXBpZW50X2NpdmlsaXR5IjogIk1yIiwgInJlY2lwaWVudF9waG9uZSI6ICIwNjIyNTEwMTI5IiwgInJlY2lwaWVudF9lbWFpbCI6ICJjLjYxODkzMWFhNGNmNTQxMTQ5YWU3MDZhYjBmMmZlMmRkQGNsZW1hcmNoZS5jb20iLCAicmVjaXBpZW50X3N0cmVldCI6ICIxMCBSdWUgUGllcnJlIE1lY2hhaW4sIEFwcGFydGVtZW50IEcxMDQiLCAicmVjaXBpZW50X3ppcCI6ICI3NzEyNyIsICJyZWNpcGllbnRfY2l0eSI6ICJMaWV1c2FpbnQiLCAicmVjaXBpZW50X2NvdW50cnkiOiAiRlIiLCAicmVjaXBpZW50X2FkZHJlc3NfZnVsbCI6ICJTYW1pciBBYmFocmksIDEwIFJ1ZSBQaWVycmUgTWVjaGFpbiwgQXBwYXJ0ZW1lbnQgRzEwNCwgNzcxMjcgTGlldXNhaW50LCBGcmFuY2UifSwgeyJvcmRlcl9pZCI6ICI0MDItNTU3MTk0Mi03NzYyNzQ2IiwgIm9yZGVyX2RhdGUiOiAiMjAyNi0xMS0wOSIsICJjcmVhdGVkX2F0IjogIjIwMjYtMTEtMDkgMTM6MTk6NTAiLCAiY2Rpc2NvdW50X29yZGVyX2lkIjogIjI2MTEwODIxNDdPUU9JTCIsICJjZGlzY291bnRfcHVyY2hhc2VkX2F0IjogIjIwMjYtMTEtMDggMjE6NDc6MDAiLCAiYWNjb3VudF9uaWNrbmFtZSI6ICIxMSAtIFRyYWNpIExhbmRlcnMgKGZyX21pZ3JhdGVkXzExKSIsICJjb3VudHJ5IjogIvCfh6vwn4e3IOazleWbvSIsICJhc2luIjogIkIwR1pXR0hEUE4iLCAiYW1hem9uX3VybCI6ICJodHRwczovL3d3dy5hbWF6b24uZnIvZHAvQjBHWldHSERQTiIsICJ0aXRsZSI6ICJTdW4gR2FyZGVuIE1hdGVsYXMgcG91ciBlbmZhbnQgOTAgeCAyMDAgY20sIDMgw6AgMTIgYW5zLCBmYWJyaXF1w6kgZW4gRXVyb3BlIHwgc3lzdMOobWUgw6l2b2x1dGlmIDItZW4tMSBwb3VyIGxpdCBkJ2VuZmFudCBldCBsaXQgZCdhZG9sZXNjZW50LCBjZXJ0aWZpw6kgT2Vrby1UZXggZXQgRGVybWF0ZXN0IC0gVHLDqHMgYmllbiwgUkcyOCBkZSAxNSBjbSIsICJ0b3RhbF9hbW91bnQiOiAiMTA2LDk1IOKCrCIsICJ0cmFja2luZ19udW1iZXIiOiAiQ0EwODYxNjc0MzNERSAoREhMKSIsICJzaGlwcGluZ190aW1lIjogIjIwMjYtMTEtMTAgMTg6MTMgKERFKSIsICJkZWxpdmVyeV9zdGF0dXMiOiAi5bey562+5pS2ICjmnIDnu4jnirbmgIEpIiwgInN0YXR1c19iYWRnZSI6ICLlt7LpgIHovr7nrb7mlLYiLCAic3RhdHVzX2NvbG9yIjogInN1Y2Nlc3MiLCAicmVjaXBpZW50IjogIlBhdWxpbmUgQ2FzdGVsIChBbGl4YW4pIiwgInJlY2lwaWVudF9uYW1lIjogIlBhdWxpbmUgQ2FzdGVsIiwgInJlY2lwaWVudF9jaXZpbGl0eSI6ICIiLCAicmVjaXBpZW50X3Bob25lIjogIjA2Njc4NTE2NzAiLCAicmVjaXBpZW50X2VtYWlsIjogImMuMDkyYjJlNGEwZTFjNGRmNDg1ODU2NTJhMmZhYzc3OWJAY2xlbWFyY2hlLmNvbSIsICJyZWNpcGllbnRfc3RyZWV0IjogIjggUm91dGUgRGVzIFBleXJlcyIsICJyZWNpcGllbnRfemlwIjogIjI2MzAwIiwgInJlY2lwaWVudF9jaXR5IjogIkFsaXhhbiIsICJyZWNpcGllbnRfY291bnRyeSI6ICJGUiIsICJyZWNpcGllbnRfYWRkcmVzc19mdWxsIjogIlBhdWxpbmUgQ2FzdGVsLCA4IFJvdXRlIERlcyBQZXlyZXMsIDI2MzAwIEFsaXhhbiwgRnJhbmNlIn1dfQ==";
     let DASHBOARD_DATA = null;
 
     function checkStoredAuth() {
@@ -990,6 +1096,78 @@
       if (hint) {
         hint.innerText = el.classList.contains("is-expanded") ? "收起 ▲" : "展开 ▼";
       }
+    }
+
+    
+    function escapeHtml(str) {
+      if (!str) return "";
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function renderRecipientCell(o) {
+      if (!o) return `<span style="color: var(--text-muted);">--</span>`;
+      const name = o.recipient_name || "--";
+      const civility = o.recipient_civility || "";
+      const phone = o.recipient_phone || "";
+      const email = o.recipient_email || "";
+      const street = o.recipient_street || o.recipient_address1 || "";
+      const zip = o.recipient_zip || "";
+      const city = o.recipient_city || "";
+      const country = o.recipient_country || "France";
+      
+      let addressLine = "";
+      if (street) {
+        addressLine = street;
+        if (zip || city) {
+          addressLine += `, ${zip} ${city}`.trim();
+        }
+      } else if (o.recipient_address_full) {
+        addressLine = o.recipient_address_full;
+      } else if (zip || city) {
+        addressLine = `${zip} ${city}, ${country}`.trim();
+      }
+
+      // One-click copy text
+      const parts = [];
+      if (name && name !== "--") parts.push(`姓名: ${name}`);
+      if (phone) parts.push(`电话: ${phone}`);
+      if (email) parts.push(`邮箱: ${email}`);
+      if (addressLine) parts.push(`地址: ${addressLine}`);
+      const allCopyText = parts.join(" | ").replace(/'/g, "\'");
+
+      return `
+        <div class="recipient-box">
+          <div class="recipient-header">
+            <span class="recipient-avatar">👤</span>
+            <strong class="recipient-name" title="${escapeHtml(name)}">${escapeHtml(name)}</strong>
+            ${civility ? `<span class="recipient-civility">${escapeHtml(civility)}</span>` : ""}
+            <button class="copy-btn mini-copy" onclick="copyText('${allCopyText}')" title="一键复制完整收件信息 (姓名|电话|邮箱|地址)">📋 复制全部</button>
+          </div>
+          
+          <div class="recipient-item" title="${escapeHtml(addressLine)}">
+            <span class="item-icon">📍</span>
+            <span class="item-text address-text">${escapeHtml(addressLine) || '<span style="color:#94a3b8">--</span>'}</span>
+            ${addressLine ? `<button class="copy-btn micro-copy" onclick="copyText('${addressLine.replace(/'/g, "\'")}')" title="复制地址">📋</button>` : ""}
+          </div>
+
+          <div class="recipient-item">
+            <span class="item-icon">📞</span>
+            <span class="item-text phone-text">${phone ? escapeHtml(phone) : '<span style="color:#94a3b8;font-size:11px;">未提供电话</span>'}</span>
+            ${phone ? `<button class="copy-btn micro-copy" onclick="copyText('${phone}')" title="复制电话">📋</button>` : ""}
+          </div>
+
+          <div class="recipient-item">
+            <span class="item-icon">✉️</span>
+            <span class="item-text email-text" title="${escapeHtml(email)}">${email ? escapeHtml(email) : '<span style="color:#94a3b8;font-size:11px;">未提供邮箱</span>'}</span>
+            ${email ? `<button class="copy-btn micro-copy" onclick="copyText('${email}')" title="复制邮箱">📋</button>` : ""}
+          </div>
+        </div>
+      `;
     }
 
     function renderProductCell(asin, title, amazonUrl) {
@@ -1071,8 +1249,7 @@
             <div class="cell-subtext">下单时间: ${o.purchased_at}</div>
           </td>
           <td>
-            <div style="font-weight: 600;">${o.recipient_name}</div>
-            <div class="cell-subtext">${o.recipient_city}, France (Tel: ${o.recipient_phone})</div>
+            ${renderRecipientCell(o)}
           </td>
           <td>
             <span class="badge badge-danger">🚨 严重缺货 (Actuellement indisponible)</span>
@@ -1126,8 +1303,7 @@
               <div class="cell-subtext" style="max-width: 220px;">${o.order_state_desc}</div>
             </td>
             <td>
-              <div style="font-weight: 600;">${o.recipient_name}</div>
-              <div class="cell-subtext">${o.recipient_city} (${o.recipient_zip})</div>
+              ${renderRecipientCell(o)}
             </td>
           `;
           pendingTbody.appendChild(tr);
@@ -1177,8 +1353,7 @@
                 <div class="cell-subtext" style="max-width: 240px; color: #15803d; font-weight: 600;">${o.order_state_desc}</div>
               </td>
               <td>
-                <div style="font-weight: 600;">${o.recipient_name}</div>
-                <div class="cell-subtext">${o.recipient_city} (${o.recipient_zip})</div>
+                ${renderRecipientCell(o)}
               </td>
             `;
             purchasedTbody.appendChild(tr);
@@ -1211,8 +1386,7 @@
                 <div class="cell-subtext" style="color: #64748b;">平台状态: ${o.octopia_status || "Cancelled"}</div>
               </td>
               <td>
-                <div style="font-weight: 600; color: #64748b;">${o.recipient_name}</div>
-                <div class="cell-subtext">${o.recipient_city}, France</div>
+                ${renderRecipientCell(o)}
               </td>
               <td>
                 <span class="badge badge-neutral" style="background: #f1f5f9; color: #334155; font-weight: 700; border: 1px solid #cbd5e1;">🛑 已取消，不用下单</span>
@@ -1351,9 +1525,11 @@
             ${row.created_at && row.created_at.includes(' ') ? `<div class="cell-subtext" style="color: #64748b; font-size: 11px;">${row.created_at.split(' ')[1].slice(0, 5)}</div>` : ''}
           </td>
           <td><span class="badge badge-neutral">${row.account_nickname}</span></td>
-          <td style="white-space: nowrap;">${row.country}</td>
           <td>
             ${renderProductCell(row.asin, row.title, row.amazon_url)}
+          </td>
+          <td>
+            ${renderRecipientCell(row)}
           </td>
           <td style="font-weight: 700; color: #0f172a;">${row.total_amount}</td>
           <td>
@@ -1437,31 +1613,31 @@
 
     function exportUnifiedCSV() {
       if (!DASHBOARD_DATA) return;
-      let rows = [["类别", "Cdiscount订单号", "Cdiscount订单日期（当地）", "亚马逊订单号", "亚马逊下单日期（当地）", "单号/ASIN", "产品标题", "售价/总额", "采购成本", "最迟发货/发货时间", "状态", "收件人"]];
+      let rows = [["类别", "Cdiscount订单号", "Cdiscount订单日期（当地）", "亚马逊订单号", "亚马逊下单日期（当地）", "单号/ASIN", "产品标题", "售价/总额", "采购成本", "最迟发货/发货时间", "状态", "收件人姓名", "收件人电话", "收件人邮箱", "收件人完整地址"]];
 
       // OOS
       (DASHBOARD_DATA.out_of_stock_orders || []).forEach(o => {
-        rows.push(["🚨 严重缺货", o.order_id, o.purchased_at, "-", "-", o.asin, o.title, o.selling_price_str, "N/A", o.shipped_at_max, o.stock_badge, o.recipient_address_full]);
+        rows.push(["🚨 严重缺货", o.order_id, o.purchased_at, "-", "-", o.asin, o.title, o.selling_price_str, "N/A", o.shipped_at_max, o.stock_badge, o.recipient_name || "", o.recipient_phone || "", o.recipient_email || "", o.recipient_address_full || ""]);
       });
 
       // Pending
       (DASHBOARD_DATA.pending_orders || []).forEach(o => {
-        rows.push(["🛒 待采购新单", o.order_id, o.purchased_at, "-", "-", o.asin, o.title, o.selling_price_str, o.amazon_cost_str, o.shipped_at_max, o.order_state_badge, o.recipient_address_full]);
+        rows.push(["🛒 待采购新单", o.order_id, o.purchased_at, "-", "-", o.asin, o.title, o.selling_price_str, o.amazon_cost_str, o.shipped_at_max, o.order_state_badge, o.recipient_name || "", o.recipient_phone || "", o.recipient_email || "", o.recipient_address_full || ""]);
       });
 
       // Purchased
       (DASHBOARD_DATA.purchased_orders || []).forEach(o => {
-        rows.push(["✅ 采购成功待发货", o.order_id, o.purchased_at, o.amazon_order_id || "-", "-", o.asin, o.title, o.selling_price_str, o.amazon_cost_str, o.shipped_at_max, o.order_state_badge, o.recipient_address_full]);
+        rows.push(["✅ 采购成功待发货", o.order_id, o.purchased_at, o.amazon_order_id || "-", "-", o.asin, o.title, o.selling_price_str, o.amazon_cost_str, o.shipped_at_max, o.order_state_badge, o.recipient_name || "", o.recipient_phone || "", o.recipient_email || "", o.recipient_address_full || ""]);
       });
 
       // Cancelled
       (DASHBOARD_DATA.cancelled_orders || []).forEach(o => {
-        rows.push(["🛑 已取消不用下单", o.order_id, o.purchased_at, "-", "-", o.asin, o.title, o.selling_price_str, "N/A", o.shipped_at_max || "-", "已取消，不用下单", o.recipient_address_full]);
+        rows.push(["🛑 已取消不用下单", o.order_id, o.purchased_at, "-", "-", o.asin, o.title, o.selling_price_str, "N/A", o.shipped_at_max || "-", "已取消，不用下单", o.recipient_name || "", o.recipient_phone || "", o.recipient_email || "", o.recipient_address_full || ""]);
       });
 
       // Logistics
       (DASHBOARD_DATA.amazon_orders || []).forEach(o => {
-        rows.push(["🚚 亚马逊物流追踪", o.cdiscount_order_id || "-", o.cdiscount_purchased_at || "-", o.order_id, (o.order_date || "") + (o.created_at && o.created_at.includes(" ") ? (" " + o.created_at.split(" ")[1]) : ""), o.tracking_number, (o.asin ? ("[" + o.asin + "] ") : "") + o.title, o.total_amount, "-", o.shipping_time, o.status_badge, o.recipient]);
+        rows.push(["🚚 亚马逊物流追踪", o.cdiscount_order_id || "-", o.cdiscount_purchased_at || "-", o.order_id, (o.order_date || "") + (o.created_at && o.created_at.includes(" ") ? (" " + o.created_at.split(" ")[1]) : ""), o.tracking_number, (o.asin ? ("[" + o.asin + "] ") : "") + o.title, o.total_amount, "-", o.shipping_time, o.status_badge, o.recipient_name || "", o.recipient_phone || "", o.recipient_email || "", o.recipient_address_full || ""]);
       });
 
       let csvContent = "\uFEFF" + rows.map(r => r.map(cell => '"' + (cell || "").toString().replace(/"/g, '""') + '"').join(",")).join("\n");
